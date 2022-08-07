@@ -83,8 +83,8 @@ class ProductItem extends StatelessWidget {
                           Text(
                             item.title,
                             textAlign: TextAlign.right,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
                               fontWeight: FontWeight.bold,
                               fontSize: 20.0,
                             ),
@@ -92,8 +92,8 @@ class ProductItem extends StatelessWidget {
                           Text(
                             '\$${item.price}',
                             textAlign: TextAlign.right,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 16.0,
                             ),
                           )

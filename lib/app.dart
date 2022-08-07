@@ -54,7 +54,7 @@ class App extends StatelessWidget {
           ),
           primaryColor: Colors.teal,
           colorScheme: ColorScheme(
-            primary: Colors.black12,
+            primary: const Color.fromARGB(255, 48, 48, 48),
             onPrimary: Colors.white,
             secondary: Colors.teal,
             onSecondary: Colors.white,

@@ -42,7 +42,7 @@ class ItemBanner extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
               width: 1.0,
               style: BorderStyle.solid,
             ),
@@ -61,22 +61,29 @@ class ItemBanner extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      item.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                    Text(
-                      'Quantity: ${item.quantity}',
-                      style: const TextStyle(
-                        fontSize: 8.0,
-                      ),
+                    const Icon(Icons.shopping_bag),
+                    const SizedBox(width: 4.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          item.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        Text(
+                          'Quantity: ${item.quantity}',
+                          style: const TextStyle(
+                            fontSize: 8.0,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

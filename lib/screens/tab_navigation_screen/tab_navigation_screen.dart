@@ -40,14 +40,14 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
             },
             icon: const Icon(Icons.more_vert),
             itemBuilder: (BuildContext context) => [
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: _FilterOptions.showFavorites,
                 child: ListTile(
                   leading: Icon(
                     Icons.favorite,
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Colors.red,
                   ),
-                  title: const Text('Show Favorites'),
+                  title: Text('Show Favorites'),
                 ),
               ),
               PopupMenuItem(
@@ -111,6 +111,9 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(
+                Icons.shopping_bag_outlined,
+              ),
+              activeIcon: Icon(
                 Icons.shopping_bag,
               ),
               label: 'Shop',
@@ -118,6 +121,9 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.favorite_outline,
+              ),
+              activeIcon: Icon(
+                Icons.favorite,
               ),
               label: 'Favorites',
             ),

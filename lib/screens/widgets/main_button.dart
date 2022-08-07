@@ -65,7 +65,7 @@ class MainButton extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.onPrimary,
             width: 1.0,
             style: BorderStyle.solid,
           ),
