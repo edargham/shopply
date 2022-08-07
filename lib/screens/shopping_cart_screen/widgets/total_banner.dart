@@ -50,7 +50,7 @@ class TotalBanner extends StatelessWidget {
                   fontSize: 16.0,
                 ),
               ),
-              Text('\$$totalPrice'),
+              Text('\$${totalPrice.toStringAsFixed(2)}'),
             ],
           ),
         ));

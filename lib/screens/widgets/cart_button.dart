@@ -23,6 +23,7 @@ class CartButton extends StatelessWidget {
         onTap: () {
           Navigator.of(context).pushNamed(ShoppingCartScreen.routeName);
         },
+        borderRadius: BorderRadius.circular(8.0),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: Row(

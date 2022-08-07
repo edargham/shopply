@@ -4,11 +4,13 @@ class MainButton extends StatelessWidget {
   final String title;
   final IconData? icon;
   final VoidCallback onPressed;
+  final Color color;
   const MainButton({
     super.key,
     required this.onPressed,
     required this.title,
     this.icon,
+    this.color = Colors.teal,
   });
 
   Widget _showTitle() {
@@ -67,8 +69,8 @@ class MainButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           gradient: LinearGradient(
             colors: [
-              Colors.teal.withOpacity(0.64),
-              Colors.teal,
+              color.withOpacity(0.64),
+              color,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
