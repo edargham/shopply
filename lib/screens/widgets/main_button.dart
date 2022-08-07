@@ -13,31 +13,34 @@ class MainButton extends StatelessWidget {
     this.color = Colors.teal,
   });
 
-  Widget _showTitle() {
+  Widget _showTitle(BuildContext context) {
     return icon != null
         ? Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Icon(icon),
+              Icon(
+                icon,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
               const SizedBox(
                 width: 8.0,
               ),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
             ],
           )
         : Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           );
   }
@@ -78,7 +81,7 @@ class MainButton extends StatelessWidget {
         ),
         child: Align(
           alignment: Alignment.center,
-          child: _showTitle(),
+          child: _showTitle(context),
         ),
       ),
     );

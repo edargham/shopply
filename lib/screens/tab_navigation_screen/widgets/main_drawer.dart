@@ -12,13 +12,14 @@ class MainDrawer extends StatelessWidget {
     return ListTile(
       leading: Icon(
         icon,
-        color: Colors.teal,
+        color: Theme.of(context).colorScheme.surface,
       ),
       title: Text(
         caption,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16.0,
+          color: Theme.of(context).colorScheme.onPrimary,
         ),
       ),
       onTap: tileTapped,
@@ -38,8 +39,8 @@ class MainDrawer extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.teal.withOpacity(0.64),
-                  Colors.teal,
+                  Theme.of(context).colorScheme.background.withOpacity(0.64),
+                  Theme.of(context).colorScheme.background,
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

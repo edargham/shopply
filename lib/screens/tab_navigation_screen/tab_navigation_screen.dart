@@ -39,19 +39,25 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
               });
             },
             icon: const Icon(Icons.more_vert),
-            itemBuilder: (_) => const [
+            itemBuilder: (BuildContext context) => [
               PopupMenuItem(
                 value: _FilterOptions.showFavorites,
                 child: ListTile(
-                  leading: Icon(Icons.favorite),
-                  title: Text('Show Favorites'),
+                  leading: Icon(
+                    Icons.favorite,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                  title: const Text('Show Favorites'),
                 ),
               ),
               PopupMenuItem(
                 value: _FilterOptions.showAll,
                 child: ListTile(
-                  leading: Icon(Icons.apps),
-                  title: Text('Show All'),
+                  leading: Icon(
+                    Icons.apps,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                  title: const Text('Show All'),
                 ),
               ),
             ],
@@ -98,9 +104,9 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
         bottomNavigationBar: BottomNavigationBar(
           onTap: _selectScreen,
           currentIndex: _selectedScreenIdx,
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           unselectedItemColor: Colors.grey,
-          selectedItemColor: Colors.white,
+          selectedItemColor: Theme.of(context).colorScheme.surface,
           // type: BottomNavigationBarType.shifting,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(

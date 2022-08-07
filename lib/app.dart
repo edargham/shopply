@@ -28,10 +28,45 @@ class App extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Shopply',
         theme: ThemeData(
-          // TODO - Fix Themeing...
-          primaryColor: Colors.white,
+          textTheme: const TextTheme(
+            bodyLarge: TextStyle(color: Colors.teal),
+            bodyMedium: TextStyle(color: Colors.black),
+            bodySmall: TextStyle(color: Colors.black),
+          ),
+          primaryColor: Colors.teal,
+          colorScheme: ColorScheme(
+            primary: Colors.white,
+            onPrimary: Colors.black,
+            secondary: Colors.teal,
+            onSecondary: Colors.white,
+            error: Colors.red.shade800,
+            onError: Colors.white,
+            background: Colors.teal,
+            onBackground: Colors.white,
+            surface: Colors.teal,
+            onSurface: Colors.white,
+            brightness: Brightness.light,
+          ),
         ),
-        darkTheme: ThemeData.dark(),
+        darkTheme: ThemeData.dark().copyWith(
+          textTheme: const TextTheme(
+            bodyLarge: TextStyle(color: Colors.teal),
+          ),
+          primaryColor: Colors.teal,
+          colorScheme: ColorScheme(
+            primary: Colors.black12,
+            onPrimary: Colors.white,
+            secondary: Colors.teal,
+            onSecondary: Colors.white,
+            error: Colors.red.shade800,
+            onError: Colors.white,
+            background: Colors.teal,
+            onBackground: Colors.white,
+            surface: Colors.teal,
+            onSurface: Colors.white,
+            brightness: Brightness.light,
+          ),
+        ),
         initialRoute: '/',
         routes: {
           '/': (ctx) => const TabNavigationScreen(),
