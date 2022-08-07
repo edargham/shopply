@@ -27,6 +27,10 @@ class App extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Shopply',
+        theme: ThemeData(
+          // TODO - Fix Themeing...
+          primaryColor: Colors.white,
+        ),
         darkTheme: ThemeData.dark(),
         initialRoute: '/',
         routes: {
