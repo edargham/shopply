@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../models/cart.dart';
 import '../../product_details_screen/product_details_screen.dart';
 import '../../../models/product.dart';
+import '../../widgets/item_button.dart';
 
 class ProductItem extends StatelessWidget {
   final double _radius = 8.0;
@@ -47,11 +48,16 @@ class ProductItem extends StatelessWidget {
       onTap: () => _onProductPressed(context, item),
       borderRadius: BorderRadius.circular(_radius),
       child: Container(
-        padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
+        padding: const EdgeInsets.only(right: 8.0),
         margin: const EdgeInsets.all(4.0),
         height: deviceDisplay.size.height * hScale,
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).colorScheme.onPrimary,
+            width: 1.0,
+            style: BorderStyle.solid,
+          ),
           gradient: LinearGradient(
             colors: [
               Colors.teal.withOpacity(0.64),
@@ -106,28 +112,24 @@ class ProductItem extends StatelessWidget {
                             child: Consumer<Product>(
                               builder: (BuildContext context, Product item,
                                       Widget? child) =>
-                                  IconButton(
+                                  ItemButton(
                                 onPressed: () {
                                   item.setFavorite();
                                 },
-                                icon: Icon(
-                                  item.isFavorite
-                                      ? Icons.favorite
-                                      : Icons.favorite_outline,
-                                  color: Colors.red,
-                                ),
+                                icon: item.isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_outline,
+                                color: Colors.red,
                               ),
                             ),
                           ),
                           Flexible(
-                            child: IconButton(
+                            child: ItemButton(
                               onPressed: () {
                                 cart.addItem(item.id, item.price, item.title);
                               },
-                              icon: const Icon(
-                                Icons.add_shopping_cart,
-                                color: Colors.amber,
-                              ),
+                              color: Colors.amber,
+                              icon: Icons.add_shopping_cart,
                             ),
                           ),
                         ],

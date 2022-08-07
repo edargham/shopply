@@ -58,4 +58,11 @@ class Cart with ChangeNotifier {
 
     notifyListeners();
   }
+
+  void deleteItem(String productId) {
+    if (_cart.containsKey(productId)) {
+      _cart.removeWhere((key, value) => key == productId);
+    }
+    notifyListeners();
+  }
 }

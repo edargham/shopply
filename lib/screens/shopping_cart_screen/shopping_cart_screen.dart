@@ -12,12 +12,30 @@ class ShoppingCartScreen extends StatelessWidget {
   static const String routeName = '/shopping_cart';
   const ShoppingCartScreen({super.key});
 
-  Widget _showCart(Cart cart) {
+  Widget _showCart(BuildContext context, Cart cart) {
     if (cart.cartSize == 0) {
-      return const Expanded(
+      return Expanded(
         child: Align(
           alignment: Alignment.center,
-          child: Text('Wow! Such Empty...'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.remove_shopping_cart,
+                size: 64.0,
+                color: Theme.of(context).colorScheme.surface,
+              ),
+              const SizedBox(height: 16.0),
+              Text(
+                'Wow! Such Empty... Perhaps wanna go shopping?',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     } else {
@@ -56,7 +74,7 @@ class ShoppingCartScreen extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _showCart(cart),
+          _showCart(context, cart),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(

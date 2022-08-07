@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/cart.dart';
 import '../../product_details_screen/product_details_screen.dart';
@@ -11,6 +12,66 @@ class ItemBanner extends StatelessWidget {
     required this.item,
     required this.productId,
   });
+
+  Widget _showModalItem(BuildContext context,
+      {required IconData icon,
+      required String title,
+      required VoidCallback onPressed}) {
+    return InkWell(
+      onTap: onPressed,
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: Theme.of(context).colorScheme.surface,
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showBottomMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      clipBehavior: Clip.hardEdge,
+      builder: (_) {
+        return SizedBox(
+          height: 96,
+          child: ListView(
+            children: [
+              _showModalItem(
+                context,
+                icon: Icons.remove_shopping_cart_outlined,
+                title: 'Remove from cart',
+                onPressed: () {
+                  final Cart item = Provider.of<Cart>(context, listen: false);
+                  item.deleteItem(productId);
+                  Navigator.pop(context);
+                },
+              ),
+              _showModalItem(
+                context,
+                icon: Icons.exit_to_app,
+                title: 'Go to item details',
+                onPressed: () {
+                  Navigator.of(context).pushNamed(
+                    ProductDetailsScreen.routeName,
+                    arguments: {
+                      'productId': productId,
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +88,7 @@ class ItemBanner extends StatelessWidget {
         );
       },
       onLongPress: () {
-        // TODO - Show bottom modal to delete item.
+        _showBottomMenu(context);
       },
       borderRadius: BorderRadius.circular(radius),
       child: Container(
