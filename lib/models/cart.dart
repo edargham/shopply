@@ -15,7 +15,7 @@ class CartItem {
 }
 
 class Cart with ChangeNotifier {
-  final Map<String, CartItem> _cart = {};
+  Map<String, CartItem> _cart = {};
 
   Map<String, CartItem> get cart {
     return {..._cart};
@@ -63,6 +63,11 @@ class Cart with ChangeNotifier {
     if (_cart.containsKey(productId)) {
       _cart.removeWhere((key, value) => key == productId);
     }
+    notifyListeners();
+  }
+
+  void clear() {
+    _cart = {};
     notifyListeners();
   }
 }

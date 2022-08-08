@@ -9,6 +9,7 @@ import './screens/shopping_cart_screen/shopping_cart_screen.dart';
 import './providers/products.dart';
 
 import './models/cart.dart';
+import './models/order.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -22,6 +23,9 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (BuildContext ctx) => Cart(),
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext ctx) => Order(),
         ),
       ],
       child: MaterialApp(
