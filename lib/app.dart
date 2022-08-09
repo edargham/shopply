@@ -5,6 +5,7 @@ import './screens/tab_navigation_screen/widgets/main_drawer.dart';
 import './screens/tab_navigation_screen/tab_navigation_screen.dart';
 import './screens/product_details_screen/product_details_screen.dart';
 import './screens/shopping_cart_screen/shopping_cart_screen.dart';
+import './screens/order_history_screen/order_history_screen.dart';
 
 import './providers/products.dart';
 
@@ -76,6 +77,7 @@ class App extends StatelessWidget {
           '/': (ctx) => const TabNavigationScreen(),
           ProductDetailsScreen.routeName: (ctx) => const ProductDetailsScreen(),
           ShoppingCartScreen.routeName: (ctx) => const ShoppingCartScreen(),
+          OrderHistoryScreen.routeName: (ctx) => const OrderHistoryScreen(),
           '/manage': (ctx) => Scaffold(
                 appBar: AppBar(
                   title: const Text(

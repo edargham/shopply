@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../order_history_screen/order_history_screen.dart';
+
 class MainDrawer extends StatelessWidget {
   const MainDrawer({Key? key}) : super(key: key);
 
@@ -67,6 +69,15 @@ class MainDrawer extends StatelessWidget {
             caption: 'Shop',
             tileTapped: () {
               Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+          _buildListTile(
+            context: context,
+            icon: Icons.history,
+            caption: 'Orders',
+            tileTapped: () {
+              Navigator.of(context)
+                  .pushReplacementNamed(OrderHistoryScreen.routeName);
             },
           ),
           _buildListTile(

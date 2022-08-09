@@ -32,4 +32,14 @@ class Order with ChangeNotifier {
     );
     notifyListeners();
   }
+
+  void deleteOder(String orderId) {
+    _orders.removeWhere((OrderItem order) => order.id == orderId);
+    notifyListeners();
+  }
+
+  void clear() {
+    _orders = [];
+    notifyListeners();
+  }
 }

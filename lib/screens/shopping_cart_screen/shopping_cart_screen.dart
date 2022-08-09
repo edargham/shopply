@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/cart.dart';
+import '../../models/order.dart';
 
-import '../shopping_cart_screen/widgets/item_banner.dart';
-
+import '../widgets/item_banner.dart';
 import '../widgets/main_button.dart';
 import './widgets/total_banner.dart';
 
@@ -87,7 +87,16 @@ class ShoppingCartScreen extends StatelessWidget {
                   ),
                 ),
                 MainButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Provider.of<Order>(
+                      context,
+                      listen: false,
+                    ).addOrder(
+                      cart.cart.values.toList(),
+                      cart.totalPrice,
+                    );
+                    cart.clear();
+                  },
                   title: 'Checkout',
                   icon: Icons.shopping_cart_checkout_outlined,
                   color: Colors.amber,

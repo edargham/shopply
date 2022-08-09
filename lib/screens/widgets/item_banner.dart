@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/cart.dart';
-import '../../product_details_screen/product_details_screen.dart';
+import '../../models/cart.dart';
+import '../product_details_screen/product_details_screen.dart';
 
 class ItemBanner extends StatelessWidget {
   final CartItem item;
   final String productId;
+  final bool enabled;
   const ItemBanner({
     super.key,
     required this.item,
     required this.productId,
+    this.enabled = true,
   });
 
-  Widget _showModalItem(BuildContext context,
-      {required IconData icon,
-      required String title,
-      required VoidCallback onPressed}) {
+  Widget _showModalItem(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onPressed,
+  }) {
     return InkWell(
-      onTap: onPressed,
+      onTap: enabled ? onPressed : () {},
       child: ListTile(
         leading: Icon(
           icon,
@@ -80,12 +84,14 @@ class ItemBanner extends StatelessWidget {
     const double hScale = 0.08;
     return InkWell(
       onTap: () {
-        Navigator.of(context).pushNamed(
-          ProductDetailsScreen.routeName,
-          arguments: {
-            'productId': productId,
-          },
-        );
+        if (enabled) {
+          Navigator.of(context).pushNamed(
+            ProductDetailsScreen.routeName,
+            arguments: {
+              'productId': productId,
+            },
+          );
+        }
       },
       onLongPress: () {
         _showBottomMenu(context);
