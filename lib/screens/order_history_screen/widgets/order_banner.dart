@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../../widgets/item_banner.dart';
+import '../../widgets/item_button.dart';
+
 import '../../../models/order.dart';
 
 class OrderBanner extends StatefulWidget {
@@ -18,6 +20,36 @@ class OrderBanner extends StatefulWidget {
 
 class _OrderBannerState extends State<OrderBanner> {
   bool expanded = false;
+
+  void showAlert(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Shopply'),
+        content: const Text('Are you sure you want to remove this item?'),
+        actions: <Widget>[
+          ItemButton(
+            onPressed: () {
+              final Order order = Provider.of<Order>(context, listen: false);
+              order.deleteOder(widget.item.id);
+              Navigator.pop(context);
+            },
+            icon: Icons.check,
+            color: Theme.of(context).colorScheme.background,
+          ),
+          ItemButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icons.close,
+            color: Theme.of(context).colorScheme.error,
+          ),
+        ],
+      ),
+    );
+    if (!mounted) return;
+    Navigator.pop(context);
+  }
 
   Widget _showModalItem(
     BuildContext context, {
@@ -56,10 +88,7 @@ class _OrderBannerState extends State<OrderBanner> {
                 icon: Icons.delete,
                 title: 'Delete Order Data',
                 onPressed: () {
-                  final Order history =
-                      Provider.of<Order>(context, listen: false);
-                  history.deleteOder(widget.item.id);
-                  Navigator.pop(context);
+                  showAlert(context);
                 },
               ),
               !expanded
@@ -105,7 +134,9 @@ class _OrderBannerState extends State<OrderBanner> {
           expanded = !expanded;
         });
       },
-      onLongPress: () => _showBottomMenu(context),
+      onLongPress: () {
+        _showBottomMenu(context);
+      },
       borderRadius: BorderRadius.circular(radius),
       child: Container(
           padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),

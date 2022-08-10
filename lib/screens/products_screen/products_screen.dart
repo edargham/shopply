@@ -40,14 +40,25 @@ class ProductsScreen extends StatelessWidget {
         ),
       );
     } else {
-      return const Center(
-        child: Text(
-          'No items currently to show here.',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16.0,
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(
+            Icons.close,
+            size: 64.0,
+            color: Theme.of(context).colorScheme.surface,
           ),
-        ),
+          const SizedBox(height: 16.0),
+          const Center(
+            child: Text(
+              'No items currently to show here.',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+              ),
+            ),
+          ),
+        ],
       );
     }
   }

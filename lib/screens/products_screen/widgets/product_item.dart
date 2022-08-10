@@ -127,6 +127,27 @@ class ProductItem extends StatelessWidget {
                             child: ItemButton(
                               onPressed: () {
                                 cart.addItem(item.id, item.price, item.title);
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text('x1 ${item.title} added to cart'),
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.65),
+                                    action: SnackBarAction(
+                                        label: 'UNDO',
+                                        textColor: Theme.of(context)
+                                            .colorScheme
+                                            .background,
+                                        onPressed: () {
+                                          cart.deleteSingleItem(item.id);
+                                        }),
+                                    duration: const Duration(milliseconds: 768),
+                                  ),
+                                );
                               },
                               color: Colors.amber,
                               icon: Icons.add_shopping_cart,

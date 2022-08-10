@@ -27,11 +27,18 @@ class ShoppingCartScreen extends StatelessWidget {
                 color: Theme.of(context).colorScheme.surface,
               ),
               const SizedBox(height: 16.0),
-              Text(
-                'Wow! Such Empty... Perhaps wanna go shopping?',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Theme.of(context).colorScheme.onPrimary,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Flexible(
+                  child: Text(
+                    'Wow! Such Empty... Perhaps wanna go shopping?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
                 ),
               ),
             ],
