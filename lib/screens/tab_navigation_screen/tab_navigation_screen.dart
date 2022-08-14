@@ -10,8 +10,13 @@ enum _FilterOptions {
 }
 
 class TabNavigationScreen extends StatefulWidget {
-  const TabNavigationScreen({super.key});
-
+  final Color onPrimaryColor;
+  final Color backgroundColor;
+  const TabNavigationScreen({
+    super.key,
+    required this.onPrimaryColor,
+    required this.backgroundColor,
+  });
   @override
   State<TabNavigationScreen> createState() => _TabNavigationScreenState();
 }
@@ -29,38 +34,60 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
         'title': 'Products',
         'actions': <Widget>[
           const CartButton(),
-          PopupMenuButton(
-            onSelected: (_FilterOptions selectedOption) {
-              setState(() {
-                _filterFavorites =
-                    selectedOption == _FilterOptions.showFavorites;
-                _screens[0]['screen'] =
-                    ProductsScreen(filterFavorites: _filterFavorites);
-              });
-            },
-            icon: const Icon(Icons.more_vert),
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(
-                value: _FilterOptions.showFavorites,
-                child: ListTile(
-                  leading: Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
-                  title: Text('Show Favorites'),
-                ),
+          Container(
+            margin: const EdgeInsets.all(4.0),
+            height: 48,
+            width: 48,
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: widget.onPrimaryColor,
+                width: 1.0,
+                style: BorderStyle.solid,
               ),
-              PopupMenuItem(
-                value: _FilterOptions.showAll,
-                child: ListTile(
-                  leading: Icon(
-                    Icons.apps,
-                    color: Theme.of(context).colorScheme.surface,
-                  ),
-                  title: const Text('Show All'),
-                ),
+              borderRadius: BorderRadius.circular(8.0),
+              gradient: LinearGradient(
+                colors: [
+                  widget.backgroundColor.withOpacity(0.64),
+                  widget.backgroundColor,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            ],
+            ),
+            child: PopupMenuButton(
+              onSelected: (_FilterOptions selectedOption) {
+                setState(() {
+                  _filterFavorites =
+                      selectedOption == _FilterOptions.showFavorites;
+                  _screens[0]['screen'] =
+                      ProductsScreen(filterFavorites: _filterFavorites);
+                });
+              },
+              icon: const Icon(Icons.more_vert),
+              itemBuilder: (BuildContext context) => [
+                const PopupMenuItem(
+                  value: _FilterOptions.showFavorites,
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    ),
+                    title: Text('Show Favorites'),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: _FilterOptions.showAll,
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.apps,
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
+                    title: const Text('Show All'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
         'screen': ProductsScreen(

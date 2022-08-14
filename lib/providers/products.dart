@@ -42,7 +42,7 @@ class Products with ChangeNotifier {
   }
 
   void addProduct(Product newItem) {
-    _items.add(newItem);
+    _items.insert(0, newItem);
     notifyListeners();
   }
 

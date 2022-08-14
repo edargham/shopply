@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../product_form_screen/product_form_screen.dart';
 import '../tab_navigation_screen/widgets/main_drawer.dart';
+import '../widgets/item_button.dart';
 
 class ManageProductsScreen extends StatelessWidget {
   static const String routeName = '/manage';
@@ -18,11 +19,17 @@ class ManageProductsScreen extends StatelessWidget {
           ),
         ),
         actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(ProductFormScreen.routeName);
-            },
-            icon: const Icon(Icons.add),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 2.0,
+              vertical: 1.0,
+            ),
+            child: ItemButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(ProductFormScreen.routeName);
+              },
+              icon: Icons.add,
+            ),
           ),
         ],
         centerTitle: false,

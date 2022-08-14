@@ -52,7 +52,10 @@ class ProductDetailsScreen extends StatelessWidget {
         elevation: 0,
         actions: const [
           Padding(
-            padding: EdgeInsets.only(right: 8.0),
+            padding: EdgeInsets.symmetric(
+              horizontal: 2.0,
+              vertical: 1.0,
+            ),
             child: CartButton(),
           )
         ],
@@ -78,14 +81,14 @@ class ProductDetailsScreen extends StatelessWidget {
                     child: Column(
                       children: <Widget>[
                         SectionHeader(
-                          color: Colors.teal,
+                          color: Theme.of(context).colorScheme.background,
                           icon: Icons.money_sharp,
                           title: 'Price',
                           description: '\$${item.price.toString()}',
                         ),
                         const SizedBox(height: 8.0),
-                        const SectionHeader(
-                          color: Colors.teal,
+                        SectionHeader(
+                          color: Theme.of(context).colorScheme.background,
                           icon: Icons.list,
                           title: 'Description',
                         ),
@@ -105,14 +108,15 @@ class ProductDetailsScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: MainButton(
-                          onPressed: () {
-                            cart.addItem(item.id, item.price, item.title);
-                          },
-                          title: 'BUY',
-                          icon: Icons.add_shopping_cart,
-                        )),
+                      alignment: Alignment.bottomCenter,
+                      child: MainButton(
+                        onPressed: () {
+                          cart.addItem(item.id, item.price, item.title);
+                        },
+                        title: 'BUY',
+                        icon: Icons.add_shopping_cart,
+                      ),
+                    ),
                   )
                 ],
               ),

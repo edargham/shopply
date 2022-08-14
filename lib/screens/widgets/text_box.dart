@@ -8,6 +8,8 @@ class TextBox extends StatelessWidget {
   final TextInputType inputType;
   final Function(String) onChange;
   final Function(String)? onSubmit;
+  final Function(String?)? onSaved;
+  final String? Function(String? value)? validator;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final int maxLines;
@@ -17,6 +19,8 @@ class TextBox extends StatelessWidget {
     required this.caption,
     required this.onChange,
     this.onSubmit,
+    this.onSaved,
+    this.validator,
     this.hint,
     this.inputType = TextInputType.text,
     this.controller,
@@ -33,12 +37,14 @@ class TextBox extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           TextFormField(
+            onSaved: onSaved,
             textInputAction: actionButton,
             keyboardType: inputType,
             focusNode: focusNode,
             controller: controller,
             onFieldSubmitted: onSubmit,
             maxLines: maxLines,
+            validator: validator,
             inputFormatters: (inputType == TextInputType.number)
                 ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
                 : null,
@@ -47,6 +53,18 @@ class TextBox extends StatelessWidget {
                 caption,
                 style: const TextStyle(
                   color: Colors.white,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Theme.of(context).colorScheme.background,
                 ),
               ),
               hintText: hint,

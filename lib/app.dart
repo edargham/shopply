@@ -75,12 +75,20 @@ class App extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (ctx) => const TabNavigationScreen(),
-          ProductDetailsScreen.routeName: (ctx) => const ProductDetailsScreen(),
-          ShoppingCartScreen.routeName: (ctx) => const ShoppingCartScreen(),
-          OrderHistoryScreen.routeName: (ctx) => const OrderHistoryScreen(),
-          ManageProductsScreen.routeName: (ctx) => const ManageProductsScreen(),
-          ProductFormScreen.routeName: (ctx) => const ProductFormScreen(),
+          '/': (BuildContext ctx) => TabNavigationScreen(
+                backgroundColor: Theme.of(ctx).colorScheme.background,
+                onPrimaryColor: Theme.of(ctx).colorScheme.onPrimary,
+              ),
+          ProductDetailsScreen.routeName: (BuildContext ctx) =>
+              const ProductDetailsScreen(),
+          ShoppingCartScreen.routeName: (BuildContext ctx) =>
+              const ShoppingCartScreen(),
+          OrderHistoryScreen.routeName: (BuildContext ctx) =>
+              const OrderHistoryScreen(),
+          ManageProductsScreen.routeName: (BuildContext ctx) =>
+              const ManageProductsScreen(),
+          ProductFormScreen.routeName: (BuildContext ctx) =>
+              const ProductFormScreen(),
         },
       ),
     );
