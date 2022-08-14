@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 class TextBox extends StatelessWidget {
   final String caption;
   final String? hint;
+  final String? initalValue;
   final TextInputAction actionButton;
   final TextInputType inputType;
   final Function(String) onChange;
@@ -26,6 +27,7 @@ class TextBox extends StatelessWidget {
     this.controller,
     this.actionButton = TextInputAction.done,
     this.focusNode,
+    this.initalValue,
     this.maxLines = 1,
   });
 
@@ -38,6 +40,8 @@ class TextBox extends StatelessWidget {
         children: <Widget>[
           TextFormField(
             onSaved: onSaved,
+            initialValue: initalValue,
+            cursorColor: Theme.of(context).colorScheme.onPrimary,
             textInputAction: actionButton,
             keyboardType: inputType,
             focusNode: focusNode,

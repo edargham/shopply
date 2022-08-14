@@ -25,6 +25,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _imageUrlTextBoxController =
       TextEditingController();
+
+  Map<String, String> _initValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': '',
+  };
+
+  bool _init = true;
   Product _editedProduct = Product(
     id: '',
     title: '',
@@ -40,6 +49,29 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    if (_init) {
+      final String? productId = (ModalRoute.of(context)?.settings.arguments
+          as Map<String, String?>)['productId'];
+      if (productId != null) {
+        _editedProduct = Provider.of<Products>(context, listen: false)
+            .findProductById(productId);
+
+        _initValues = {
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'price': _editedProduct.price.toString(),
+          'imageUrl': '',
+        };
+
+        _imageUrlTextBoxController.text = _editedProduct.imageUrl;
+      }
+    }
+    _init = false;
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     _imageUrlFocusNode.removeListener(_onFocusChanged);
     _priceFocusNode.dispose();
@@ -51,22 +83,35 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   void _saveForm(BuildContext context) {
-    FocusManager.instance.primaryFocus?.unfocus();
     bool isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState?.save();
 
-      Product newProduct = Product(
-        id: 'p${DateTime.now()}',
-        description: _editedProduct.description,
-        title: _editedProduct.title,
-        price: _editedProduct.price,
-        imageUrl: _editedProduct.imageUrl,
-      );
+      if (_editedProduct.id.isEmpty) {
+        Product newProduct = Product(
+          id: 'p${DateTime.now()}',
+          description: _editedProduct.description,
+          title: _editedProduct.title,
+          price: _editedProduct.price,
+          imageUrl: _editedProduct.imageUrl,
+        );
 
-      Provider.of<Products>(context, listen: false).addProduct(newProduct);
+        Provider.of<Products>(context, listen: false).addProduct(newProduct);
+      } else {
+        Product newProduct = Product(
+          id: _editedProduct.id,
+          description: _editedProduct.description,
+          title: _editedProduct.title,
+          price: _editedProduct.price,
+          imageUrl: _editedProduct.imageUrl,
+        );
+
+        Provider.of<Products>(context, listen: false).updateProduct(newProduct);
+      }
+
       Navigator.of(context).pop();
     }
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   void _onFocusChanged() {
@@ -120,6 +165,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 caption: 'Title',
                 actionButton: TextInputAction.next,
                 focusNode: _textFocusNode,
+                initalValue: _initValues['title'],
                 onChange: (_) {},
                 onSubmit: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
@@ -138,6 +184,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     description: _editedProduct.description,
                     imageUrl: _editedProduct.imageUrl,
                     price: _editedProduct.price,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
@@ -146,6 +193,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
               ),
               TextBox(
                 caption: 'Price',
+                initalValue: _initValues['price'],
                 actionButton: TextInputAction.next,
                 inputType: TextInputType.number,
                 focusNode: _priceFocusNode,
@@ -171,11 +219,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     description: _editedProduct.description,
                     imageUrl: _editedProduct.imageUrl,
                     price: double.parse(value!),
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
               TextBox(
                 caption: 'Description',
+                initalValue: _initValues['description'],
                 actionButton: TextInputAction.newline,
                 inputType: TextInputType.multiline,
                 focusNode: _descriptionFocusNode,
@@ -198,6 +248,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     description: value!,
                     imageUrl: _editedProduct.imageUrl,
                     price: _editedProduct.price,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
@@ -233,6 +284,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     description: _editedProduct.description,
                     imageUrl: value!,
                     price: _editedProduct.price,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
                 validator: (String? value) {
