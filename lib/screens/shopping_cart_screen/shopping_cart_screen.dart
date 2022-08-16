@@ -5,6 +5,7 @@ import '../../models/cart.dart';
 import '../../models/order.dart';
 
 import '../widgets/item_banner.dart';
+import '../widgets/item_button.dart';
 import '../widgets/main_button.dart';
 import './widgets/total_banner.dart';
 
@@ -94,15 +95,43 @@ class ShoppingCartScreen extends StatelessWidget {
                   ),
                 ),
                 MainButton(
-                  onPressed: () {
-                    Provider.of<Order>(
-                      context,
-                      listen: false,
-                    ).addOrder(
-                      cart.cart.values.toList(),
-                      cart.totalPrice,
-                    );
-                    cart.clear();
+                  onPressed: () async {
+                    try {
+                      await Provider.of<Order>(
+                        context,
+                        listen: false,
+                      ).addOrder(
+                        cart.cart.values.toList(),
+                        cart.totalPrice,
+                      );
+                      cart.clear();
+                    } catch (_) {
+                      // TODO - Make this global.
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext ctx) {
+                          return AlertDialog(
+                            title: const Text(
+                              'Shopply',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            content: const Text(
+                                'We encountered an error while processing your request.'
+                                '\nPlease try again later.'),
+                            actions: [
+                              ItemButton(
+                                icon: Icons.check,
+                                onPressed: () {
+                                  Navigator.of(ctx).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
                   },
                   title: 'Checkout',
                   icon: Icons.shopping_cart_checkout_outlined,
