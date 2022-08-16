@@ -6,40 +6,7 @@ import '../models/product.dart';
 import '../services/product_service.dart';
 
 class Products with ChangeNotifier {
-  final List<Product> _items = <Product>[
-    Product(
-      id: 'p1',
-      title: 'Red Shirt',
-      description: 'A red shirt - it is pretty red!',
-      price: 29.99,
-      imageUrl:
-          'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
-    ),
-    Product(
-      id: 'p2',
-      title: 'Trousers',
-      description: 'A nice pair of trousers.',
-      price: 59.99,
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
-    ),
-    Product(
-      id: 'p3',
-      title: 'Yellow Scarf',
-      description: 'Warm and cozy - exactly what you need for the winter.',
-      price: 19.99,
-      imageUrl:
-          'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
-    ),
-    Product(
-      id: 'p4',
-      title: 'A Pan',
-      description: 'Prepare any meal you want.',
-      price: 49.99,
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
-  ];
+  List<Product> _items = <Product>[];
 
   List<Product> get items {
     return [..._items];
@@ -56,6 +23,25 @@ class Products with ChangeNotifier {
         isFavorite: newItem.isFavorite,
       );
       _items.add(savedItem);
+      notifyListeners();
+    });
+  }
+
+  Future<void> getProducts() {
+    return ProductService.getProducts().then((Response res) {
+      final Map<String, dynamic> data = json.decode(res.body);
+      final List<Product> loadedItems = [];
+      data.forEach((itemId, itemDetails) {
+        loadedItems.add(Product(
+          id: itemId,
+          title: itemDetails['title'],
+          description: itemDetails['description'],
+          imageUrl: itemDetails['itemUrl'],
+          price: itemDetails['price'],
+          isFavorite: itemDetails['isFavorite'],
+        ));
+      });
+      _items = loadedItems;
       notifyListeners();
     });
   }

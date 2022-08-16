@@ -20,4 +20,8 @@ class ProductService {
       }),
     );
   }
+
+  static Future<http.Response> getProducts() {
+    return http.get(Uri.https(baseUrl, _productsUrl));
+  }
 }

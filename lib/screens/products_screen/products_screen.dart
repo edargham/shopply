@@ -5,7 +5,7 @@ import '../../models/product.dart';
 import './widgets/product_item.dart';
 import '../../providers/products.dart';
 
-class ProductsScreen extends StatelessWidget {
+class ProductsScreen extends StatefulWidget {
   final bool filterFavorites;
   const ProductsScreen({
     Key? key,
@@ -13,13 +13,50 @@ class ProductsScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ProductsScreen> createState() => _ProductsScreenState();
+}
+
+class _ProductsScreenState extends State<ProductsScreen> {
+  bool _init = true;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_init) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).getProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+      _init = false;
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final Products productsProvider = Provider.of<Products>(context);
-    final List<Product> products = filterFavorites
+    final List<Product> products = widget.filterFavorites
         ? productsProvider.items
             .where((Product item) => item.isFavorite)
             .toList()
         : productsProvider.items;
+
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(
+          color: Theme.of(context).colorScheme.background,
+        ),
+      );
+    }
 
     if (products.isNotEmpty) {
       return Padding(
