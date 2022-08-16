@@ -4,10 +4,18 @@ import '../../../models/cart.dart';
 import '../../product_details_screen/product_details_screen.dart';
 import '../../../models/product.dart';
 import '../../widgets/item_button.dart';
+import './favorite_loading_indicator.dart';
 
-class ProductItem extends StatelessWidget {
-  final double _radius = 8.0;
+class ProductItem extends StatefulWidget {
   const ProductItem({super.key});
+
+  @override
+  State<ProductItem> createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
+  final double _radius = 8.0;
+  bool _isLoading = false;
 
   void _onProductPressed(BuildContext context, Product item) {
     Navigator.of(context).pushNamed(
@@ -37,6 +45,36 @@ class ProductItem extends StatelessWidget {
     // }
   }
 
+  Widget _showFavoriteButton() {
+    if (!_isLoading) {
+      return Expanded(
+        child: Consumer<Product>(
+          builder: (BuildContext context, Product item, Widget? child) =>
+              ItemButton(
+            onPressed: () {
+              setState(() {
+                _isLoading = true;
+              });
+              item.setFavorite(item.id, !item.isFavorite).then((_) {
+                setState(() {
+                  _isLoading = false;
+                });
+              }).catchError((_) {
+                return;
+              });
+            },
+            icon: item.isFavorite ? Icons.favorite : Icons.favorite_outline,
+            color: Colors.red,
+          ),
+        ),
+      );
+    } else {
+      return const Expanded(
+        child: FavoriteLoadingIndicator(),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData deviceDisplay = MediaQuery.of(context);
@@ -60,8 +98,8 @@ class ProductItem extends StatelessWidget {
           ),
           gradient: LinearGradient(
             colors: [
-              Colors.teal.withOpacity(0.64),
-              Colors.teal,
+              Theme.of(context).colorScheme.background.withOpacity(0.64),
+              Theme.of(context).colorScheme.background,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -108,21 +146,7 @@ class ProductItem extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Expanded(
-                            child: Consumer<Product>(
-                              builder: (BuildContext context, Product item,
-                                      Widget? child) =>
-                                  ItemButton(
-                                onPressed: () {
-                                  item.setFavorite();
-                                },
-                                icon: item.isFavorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_outline,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
+                          _showFavoriteButton(),
                           Expanded(
                             child: ItemButton(
                               onPressed: () {

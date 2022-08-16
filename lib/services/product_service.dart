@@ -43,4 +43,13 @@ class ProductService {
       Uri.https(baseUrl, '$_productsRoute/${item.id}.json'),
     );
   }
+
+  static Future<http.Response> setFavorite(String id, bool isFavorite) {
+    return http.patch(
+      Uri.https(baseUrl, '$_productsRoute/$id.json'),
+      body: json.encode({
+        'isFavorite': isFavorite,
+      }),
+    );
+  }
 }

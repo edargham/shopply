@@ -1,4 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
+
+import '../errors/http_exception.dart';
+import '../services/product_service.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,8 +21,19 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void setFavorite() {
-    isFavorite = !isFavorite;
-    notifyListeners();
+  Future<void> setFavorite(String id, bool isFavorite) {
+    bool thisIsFavorite = this.isFavorite;
+
+    return ProductService.setFavorite(id, isFavorite).then((Response res) {
+      if (res.statusCode >= 400) {
+        throw HttpException('Could not update product $id.');
+      }
+      this.isFavorite = isFavorite;
+      notifyListeners();
+    }).catchError((error) {
+      this.isFavorite = thisIsFavorite;
+      notifyListeners();
+      throw error;
+    });
   }
 }
