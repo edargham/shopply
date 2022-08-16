@@ -20,6 +20,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
   bool _init = true;
   bool _isLoading = false;
 
+  Future<void> _refreshItems(BuildContext context) async {
+    return await Provider.of<Products>(context, listen: false).getProducts();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -59,20 +63,24 @@ class _ProductsScreenState extends State<ProductsScreen> {
     }
 
     if (products.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: GridView.builder(
-          itemCount: products.length,
-          itemBuilder: (BuildContext ctx, int i) =>
-              ChangeNotifierProvider.value(
-            value: products[i],
-            child: const ProductItem(),
-          ),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 512,
-            childAspectRatio: 3 / 2,
-            crossAxisSpacing: 2.0,
-            mainAxisSpacing: 2.0,
+      return RefreshIndicator(
+        onRefresh: () => _refreshItems(context),
+        color: Theme.of(context).colorScheme.background,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: GridView.builder(
+            itemCount: products.length,
+            itemBuilder: (BuildContext ctx, int i) =>
+                ChangeNotifierProvider.value(
+              value: products[i],
+              child: const ProductItem(),
+            ),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 512,
+              childAspectRatio: 3 / 2,
+              crossAxisSpacing: 2.0,
+              mainAxisSpacing: 2.0,
+            ),
           ),
         ),
       );

@@ -5,9 +5,14 @@ import '../../../providers/products.dart';
 import '../../product_form_screen/product_form_screen.dart';
 import '../../widgets/item_button.dart';
 
-class ManageProductItem extends StatelessWidget {
+class ManageProductItem extends StatefulWidget {
   const ManageProductItem({super.key});
 
+  @override
+  State<ManageProductItem> createState() => _ManageProductItemState();
+}
+
+class _ManageProductItemState extends State<ManageProductItem> {
   Widget _showImage(Product item) {
     // try {
     return Expanded(
@@ -30,27 +35,58 @@ class ManageProductItem extends StatelessWidget {
   void _showAlert(BuildContext context, Product item) async {
     await showDialog(
       context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Shopply'),
-        content: const Text('Are you sure you want to remove this item?'),
-        actions: <Widget>[
-          ItemButton(
-            onPressed: () {
-              Provider.of<Products>(context, listen: false).deleteProduct(item);
-              Navigator.pop(context);
-            },
-            icon: Icons.check,
-            color: Theme.of(context).colorScheme.background,
-          ),
-          ItemButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icons.close,
-            color: Theme.of(context).colorScheme.error,
-          ),
-        ],
-      ),
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Shopply'),
+          content: const Text('Are you sure you want to remove this item?'),
+          actions: <Widget>[
+            ItemButton(
+              onPressed: () async {
+                try {
+                  await Provider.of<Products>(context, listen: false)
+                      .deleteProduct(item);
+                } catch (_) {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext ctx) {
+                      return AlertDialog(
+                        title: const Text(
+                          'Shopply',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: const Text(
+                            'We encountered an error while processing your request.'
+                            '\nPlease try again later.'),
+                        actions: [
+                          ItemButton(
+                            icon: Icons.check,
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+                if (!mounted) return;
+                Navigator.pop(context);
+              },
+              icon: Icons.check,
+              color: Theme.of(context).colorScheme.background,
+            ),
+            ItemButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icons.close,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ],
+        );
+      },
     );
   }
 

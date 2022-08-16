@@ -14,25 +14,33 @@ class ManageProductsScreen extends StatelessWidget {
   static const String routeName = '/manage';
   const ManageProductsScreen({super.key});
 
+  Future<void> _refreshItems(BuildContext context) async {
+    return await Provider.of<Products>(context, listen: false).getProducts();
+  }
+
   Widget _showBody(BuildContext context) {
     final Products productsProvider = Provider.of<Products>(context);
     final List<Product> products = productsProvider.items;
 
     if (products.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: GridView.builder(
-          itemCount: products.length,
-          itemBuilder: (BuildContext ctx, int i) =>
-              ChangeNotifierProvider.value(
-            value: products[i],
-            child: const ManageProductItem(),
-          ),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 512,
-            childAspectRatio: 3 / 2,
-            crossAxisSpacing: 2.0,
-            mainAxisSpacing: 2.0,
+      return RefreshIndicator(
+        onRefresh: () => _refreshItems(context),
+        color: Theme.of(context).colorScheme.background,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: GridView.builder(
+            itemCount: products.length,
+            itemBuilder: (BuildContext ctx, int i) =>
+                ChangeNotifierProvider.value(
+              value: products[i],
+              child: const ManageProductItem(),
+            ),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 512,
+              childAspectRatio: 3 / 2,
+              crossAxisSpacing: 2.0,
+              mainAxisSpacing: 2.0,
+            ),
           ),
         ),
       );

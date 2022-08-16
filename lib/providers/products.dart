@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
+import '../errors/http_exception.dart';
 import '../models/product.dart';
 import '../services/product_service.dart';
 
@@ -46,15 +47,29 @@ class Products with ChangeNotifier {
     });
   }
 
-  void updateProduct(Product item) {
-    int index = _items.indexWhere((Product itm) => item.id == itm.id);
-    _items[index] = item;
-    notifyListeners();
+  Future<void> updateProduct(Product item) {
+    return ProductService.updateProduct(item).then((_) {
+      int index = _items.indexWhere((Product itm) => item.id == itm.id);
+      _items[index] = item;
+      notifyListeners();
+    });
   }
 
-  void deleteProduct(Product item) {
-    _items.removeWhere((Product itm) => item.id == itm.id);
-    notifyListeners();
+  Future<void> deleteProduct(Product item) {
+    final int itemIdx = _items.indexWhere((Product p) => item.id == p.id);
+    Product? itemToRemove = _items[itemIdx];
+    _items.removeAt(itemIdx);
+    return ProductService.deleteProduct(item).then((Response res) {
+      if (res.statusCode >= 400) {
+        throw HttpException('Delete failed.');
+      }
+      notifyListeners();
+      itemToRemove = null;
+    }).catchError((error) {
+      _items.insert(itemIdx, itemToRemove!);
+      notifyListeners();
+      throw error;
+    });
   }
 
   Product findProductById(String productId) {

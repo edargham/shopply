@@ -134,6 +134,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           Navigator.of(context).pop();
         }
       } else {
+        setState(() {
+          _isloading = true;
+        });
         Product newProduct = Product(
           id: _editedProduct.id,
           description: _editedProduct.description,
@@ -141,10 +144,39 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           price: _editedProduct.price,
           imageUrl: _editedProduct.imageUrl,
         );
-
-        Provider.of<Products>(context, listen: false).updateProduct(newProduct);
-
-        Navigator.of(context).pop();
+        try {
+          await Provider.of<Products>(context, listen: false)
+              .updateProduct(newProduct);
+          if (!mounted) return;
+          Navigator.of(context).pop();
+        } catch (_) {
+          await showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: const Text(
+                  'Shopply',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: const Text(
+                    'We encountered an error while processing your request.'
+                    '\nPlease try again later.'),
+                actions: [
+                  ItemButton(
+                    icon: Icons.check,
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+          if (!mounted) return;
+          Navigator.of(context).pop();
+        }
       }
     }
     FocusManager.instance.primaryFocus?.unfocus();

@@ -95,7 +95,7 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
         ),
       },
       {
-        'title': 'Favorites',
+        'title': 'Search',
         'actions': <Widget>[],
         'screen': const Scaffold(),
       },
@@ -147,12 +147,12 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(
-                Icons.favorite_outline,
+                Icons.search_outlined,
               ),
               activeIcon: Icon(
-                Icons.favorite,
+                Icons.search,
               ),
-              label: 'Favorites',
+              label: 'Search',
             ),
           ],
         ),
