@@ -121,7 +121,7 @@ class ManageProductItem extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Flexible(
+                        Expanded(
                           child: Consumer<Product>(
                             builder: (BuildContext context, Product item,
                                     Widget? child) =>
@@ -134,7 +134,7 @@ class ManageProductItem extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Flexible(
+                        Expanded(
                           child: ItemButton(
                             onPressed: () {
                               Navigator.of(context).pushNamed(

@@ -108,7 +108,7 @@ class ProductItem extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Flexible(
+                          Expanded(
                             child: Consumer<Product>(
                               builder: (BuildContext context, Product item,
                                       Widget? child) =>
@@ -123,7 +123,7 @@ class ProductItem extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Flexible(
+                          Expanded(
                             child: ItemButton(
                               onPressed: () {
                                 cart.addItem(item.id, item.price, item.title);

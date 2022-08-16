@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
 
 import '../models/product.dart';
+import '../services/product_service.dart';
 
 class Products with ChangeNotifier {
   final List<Product> _items = <Product>[
@@ -42,9 +45,19 @@ class Products with ChangeNotifier {
     return [..._items];
   }
 
-  void addProduct(Product newItem) {
-    _items.add(newItem);
-    notifyListeners();
+  Future<void> addProduct(Product newItem) {
+    return ProductService.addProduct(newItem).then((Response res) {
+      Product savedItem = Product(
+        id: json.decode(res.body)['name'],
+        title: newItem.title,
+        description: newItem.description,
+        price: newItem.price,
+        imageUrl: newItem.imageUrl,
+        isFavorite: newItem.isFavorite,
+      );
+      _items.add(savedItem);
+      notifyListeners();
+    });
   }
 
   void updateProduct(Product item) {

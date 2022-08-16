@@ -34,6 +34,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   };
 
   bool _init = true;
+  bool _isloading = false;
+
   Product _editedProduct = Product(
     id: '',
     title: '',
@@ -82,12 +84,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     super.dispose();
   }
 
-  void _saveForm(BuildContext context) {
+  void _saveForm(BuildContext context) async {
     bool isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState?.save();
 
       if (_editedProduct.id.isEmpty) {
+        setState(() {
+          _isloading = true;
+        });
         Product newProduct = Product(
           id: 'p${DateTime.now()}',
           description: _editedProduct.description,
@@ -95,8 +100,39 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           price: _editedProduct.price,
           imageUrl: _editedProduct.imageUrl,
         );
-
-        Provider.of<Products>(context, listen: false).addProduct(newProduct);
+        try {
+          await Provider.of<Products>(context, listen: false)
+              .addProduct(newProduct);
+          if (!mounted) return;
+          Navigator.of(context).pop();
+        } catch (_) {
+          await showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: const Text(
+                  'Shopply',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: const Text(
+                    'We encountered an error while processing your request.'
+                    '\nPlease try again later.'),
+                actions: [
+                  ItemButton(
+                    icon: Icons.check,
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+          if (!mounted) return;
+          Navigator.of(context).pop();
+        }
       } else {
         Product newProduct = Product(
           id: _editedProduct.id,
@@ -107,9 +143,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         );
 
         Provider.of<Products>(context, listen: false).updateProduct(newProduct);
-      }
 
-      Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      }
     }
     FocusManager.instance.primaryFocus?.unfocus();
   }
@@ -127,34 +163,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         : FittedBox(child: Image.network(_imageUrlTextBoxController.text));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Add/Edit Product',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+  Widget _showBody(BuildContext context) {
+    if (_isloading) {
+      return Center(
+        child: CircularProgressIndicator(
+          color: Theme.of(context).colorScheme.background,
         ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 2.0,
-              vertical: 1.0,
-            ),
-            child: ItemButton(
-              onPressed: () {
-                _saveForm(context);
-              },
-              icon: Icons.save,
-            ),
-          )
-        ],
-        centerTitle: false,
-        elevation: 0,
-      ),
-      body: Padding(
+      );
+    } else {
+      return Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Form(
           key: _formKey,
@@ -306,7 +323,38 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
             ],
           ),
         ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Add/Edit Product',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 2.0,
+              vertical: 1.0,
+            ),
+            child: ItemButton(
+              onPressed: () {
+                _saveForm(context);
+              },
+              icon: Icons.save,
+            ),
+          )
+        ],
+        centerTitle: false,
+        elevation: 0,
       ),
+      body: _showBody(context),
     );
   }
 }

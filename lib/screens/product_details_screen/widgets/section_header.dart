@@ -30,7 +30,7 @@ class SectionHeader extends StatelessWidget {
           const SizedBox(
             width: 8.0,
           ),
-          Flexible(
+          Expanded(
             child: Text(
               title,
               style: const TextStyle(

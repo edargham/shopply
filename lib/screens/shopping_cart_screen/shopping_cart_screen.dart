@@ -29,7 +29,7 @@ class ShoppingCartScreen extends StatelessWidget {
               const SizedBox(height: 16.0),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Flexible(
+                child: Expanded(
                   child: Text(
                     'Wow! Such Empty... Perhaps wanna go shopping?',
                     textAlign: TextAlign.center,

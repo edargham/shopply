@@ -97,7 +97,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(indentation),
                           child: Align(
                             alignment: Alignment.topLeft,
-                            child: Flexible(
+                            child: Expanded(
                               child: Text(item.description),
                             ),
                           ),
