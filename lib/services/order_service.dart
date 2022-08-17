@@ -29,4 +29,8 @@ class OrderService {
       }),
     );
   }
+
+  static Future<http.Response> getOrders() {
+    return http.get(Uri.https(baseUrl, _ordersUrl));
+  }
 }

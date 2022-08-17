@@ -7,9 +7,37 @@ import './widgets/order_banner.dart';
 
 import '../tab_navigation_screen/widgets/main_drawer.dart';
 
-class OrderHistoryScreen extends StatelessWidget {
+class OrderHistoryScreen extends StatefulWidget {
   static const String routeName = '/order_history';
   const OrderHistoryScreen({super.key});
+
+  @override
+  State<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
+}
+
+class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
+  bool _isLoading = false;
+  bool _init = true;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_init) {
+      Provider.of<Order>(context, listen: false).getOrders().then((_) {
+        setState(() {
+          _isLoading = true;
+        });
+        _init = false;
+      }).catchError((_) {
+        // TODO - Display error.
+      });
+    }
+
+    super.didChangeDependencies();
+  }
 
   Widget _showOrders(BuildContext context, Order order) {
     if (order.orders.isEmpty) {
