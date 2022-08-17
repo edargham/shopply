@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
+import '../errors/http_exception.dart';
 import './cart.dart';
 import '../services/order_service.dart';
 
@@ -50,32 +51,23 @@ class Order with ChangeNotifier {
       final Map<String, dynamic> data = json.decode(res.body);
       final List<OrderItem> loadedOrders = [];
 
-      List<CartItem> parseCartItems(List<Map<dynamic, dynamic>> value) {
-        List<CartItem> loadedCartItems = [];
-
-        for (Map<dynamic, dynamic> item in value) {
-          loadedCartItems.add(CartItem(
-            id: item['id'],
-            title: item['title'],
-            quantity: item['quantity'],
-          ));
-        }
-
-        return loadedCartItems;
-      }
-
       data.forEach((key, value) {
-        final products = value['products'];
         loadedOrders.add(OrderItem(
           id: key,
           amount: value['amount'],
-          products: parseCartItems(
-              (value['products'] as List<Map<dynamic, dynamic>>)),
-          dateOrdered: DateTime.now(),
+          dateOrdered: DateTime.parse(value['dateOrdered']),
+          products: (value['products'] as List<dynamic>)
+              .map((item) => CartItem(
+                    id: item['id'],
+                    title: item['title'],
+                    quantity: item['quantity'],
+                    price: item['price'],
+                  ))
+              .toList(),
         ));
       });
 
-      _orders = loadedOrders;
+      _orders = loadedOrders.reversed.toList();
       notifyListeners();
     }).catchError((error) {
       _orders = [];
@@ -83,9 +75,21 @@ class Order with ChangeNotifier {
     });
   }
 
-  void deleteOder(String orderId) {
-    _orders.removeWhere((OrderItem order) => order.id == orderId);
-    notifyListeners();
+  Future<void> deleteOder(String orderId) {
+    final int itemIdx = _orders.indexWhere((OrderItem o) => orderId == o.id);
+    OrderItem? itemToRemove = _orders[itemIdx];
+    _orders.removeAt(itemIdx);
+    return OrderService.deleteOrder(orderId).then((Response res) {
+      if (res.statusCode >= 400) {
+        throw HttpException('Delete failed.');
+      }
+      notifyListeners();
+      itemToRemove = null;
+    }).catchError((error) {
+      _orders.insert(itemIdx, itemToRemove!);
+      notifyListeners();
+      throw error;
+    });
   }
 
   void clear() {

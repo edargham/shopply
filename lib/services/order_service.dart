@@ -33,4 +33,8 @@ class OrderService {
   static Future<http.Response> getOrders() {
     return http.get(Uri.https(baseUrl, _ordersUrl));
   }
+
+  static Future<http.Response> deleteOrder(String id) {
+    return http.delete(Uri.http(baseUrl, '$_ordersRoute/$id.json'));
+  }
 }

@@ -26,9 +26,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   @override
   void didChangeDependencies() {
     if (_init) {
+      setState(() {
+        _isLoading = true;
+      });
       Provider.of<Order>(context, listen: false).getOrders().then((_) {
         setState(() {
-          _isLoading = true;
+          _isLoading = false;
         });
         _init = false;
       }).catchError((_) {
@@ -40,6 +43,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   }
 
   Widget _showOrders(BuildContext context, Order order) {
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(
+          color: Theme.of(context).colorScheme.background,
+        ),
+      );
+    }
+
     if (order.orders.isEmpty) {
       return Align(
         alignment: Alignment.center,
