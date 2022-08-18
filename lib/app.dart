@@ -7,6 +7,7 @@ import './screens/shopping_cart_screen/shopping_cart_screen.dart';
 import './screens/order_history_screen/order_history_screen.dart';
 import './screens/manage_products_screen/manage_products_screen.dart';
 import './screens/product_form_screen/product_form_screen.dart';
+import './screens/auth_screen/auth_screen.dart';
 
 import './providers/products.dart';
 
@@ -73,22 +74,23 @@ class App extends StatelessWidget {
             brightness: Brightness.light,
           ),
         ),
-        initialRoute: '/',
+        initialRoute: AuthScreen.routeName,
         routes: {
-          '/': (BuildContext ctx) => TabNavigationScreen(
-                backgroundColor: Theme.of(ctx).colorScheme.background,
-                onPrimaryColor: Theme.of(ctx).colorScheme.onPrimary,
-              ),
-          ProductDetailsScreen.routeName: (BuildContext ctx) =>
-              const ProductDetailsScreen(),
-          ShoppingCartScreen.routeName: (BuildContext ctx) =>
-              const ShoppingCartScreen(),
-          OrderHistoryScreen.routeName: (BuildContext ctx) =>
-              const OrderHistoryScreen(),
-          ManageProductsScreen.routeName: (BuildContext ctx) =>
-              const ManageProductsScreen(),
-          ProductFormScreen.routeName: (BuildContext ctx) =>
-              const ProductFormScreen(),
+          // '/': (BuildContext ctx) => TabNavigationScreen(
+          //       backgroundColor: Theme.of(ctx).colorScheme.background,
+          //       onPrimaryColor: Theme.of(ctx).colorScheme.onPrimary,
+          //     ),
+          AuthScreen.routeName: (BuildContext ctx) => const AuthScreen(),
+          // ProductDetailsScreen.routeName: (BuildContext ctx) =>
+          //     const ProductDetailsScreen(),
+          // ShoppingCartScreen.routeName: (BuildContext ctx) =>
+          //     const ShoppingCartScreen(),
+          // OrderHistoryScreen.routeName: (BuildContext ctx) =>
+          //     const OrderHistoryScreen(),
+          // ManageProductsScreen.routeName: (BuildContext ctx) =>
+          //     const ManageProductsScreen(),
+          // ProductFormScreen.routeName: (BuildContext ctx) =>
+          //     const ProductFormScreen(),
         },
       ),
     );
