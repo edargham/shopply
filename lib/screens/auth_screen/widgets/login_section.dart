@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/item_button.dart';
+import '../../widgets/main_button.dart';
 import '../../widgets/text_box.dart';
 
 class _LoginViewModel {
@@ -26,12 +28,7 @@ class _LoginSectionState extends State<LoginSection> {
 
   bool _isloading = false;
 
-  Map<String, String> _initValues = {
-    'username': '',
-    'passoword': '',
-  };
-
-  _LoginViewModel _loginViewModel = _LoginViewModel(
+  _LoginViewModel _loginViewModel = const _LoginViewModel(
     username: '',
     password: '',
   );
@@ -43,8 +40,52 @@ class _LoginSectionState extends State<LoginSection> {
     super.dispose();
   }
 
-  void _onFocusChanged() {
-    setState(() {});
+  void _saveForm(BuildContext context) async {
+    bool isValid = _formKey.currentState!.validate();
+    if (isValid) {
+      _formKey.currentState?.save();
+
+      setState(() {
+        _isloading = true;
+      });
+
+      try {
+        // await Provider.of<Products>(context, listen: false)
+        //     .updateProduct(newProduct);
+        if (!mounted) return;
+        Navigator.of(context).pop();
+      } catch (_) {
+        await showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return AlertDialog(
+              title: const Text(
+                'Shopply',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
+                ),
+              ),
+              content: const Text(
+                  'We encountered an error while processing your request.'
+                  '\nPlease try again later.'),
+              actions: [
+                ItemButton(
+                  icon: Icons.check,
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        if (!mounted) return;
+        Navigator.of(context).pop();
+      }
+    }
+
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   Widget _showBody(BuildContext context) {
@@ -59,14 +100,24 @@ class _LoginSectionState extends State<LoginSection> {
         padding: const EdgeInsets.only(top: 8.0),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
             children: <Widget>[
-              const SizedBox(height: 8.0),
+              const Padding(
+                padding: EdgeInsets.all(32.0),
+                child: Flexible(
+                  child: Text(
+                    'Enter your credentials below to login to Shopply.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
               TextBox(
                 caption: 'Username',
                 actionButton: TextInputAction.next,
                 focusNode: _usernameFocusNode,
-                initalValue: _initValues['username'],
+                initalValue: '',
                 onChange: (_) {},
                 onSubmit: (_) {
                   FocusScope.of(context).requestFocus(_passwordFocusNode);
@@ -89,115 +140,32 @@ class _LoginSectionState extends State<LoginSection> {
                 height: 8.0,
               ),
               TextBox(
-                caption: 'Price',
-                initalValue: _initValues['price'],
-                actionButton: TextInputAction.next,
-                inputType: TextInputType.number,
-                focusNode: _priceFocusNode,
-                onChange: (_) {},
-                onSubmit: (_) {
-                  FocusScope.of(context).requestFocus(_descriptionFocusNode);
-                },
-                validator: (String? value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a price for your product.';
-                  } else if (double.tryParse(value) == null) {
-                    return 'Please enter a valid number for the price.';
-                  } else if (double.parse(value) <= 0) {
-                    return 'Please enter a strictly positve price for your product.';
-                  } else {
-                    return null;
-                  }
-                },
-                onSaved: (String? value) {
-                  _editedProduct = Product(
-                    id: _editedProduct.id,
-                    title: _editedProduct.title,
-                    description: _editedProduct.description,
-                    imageUrl: _editedProduct.imageUrl,
-                    price: double.parse(value!),
-                    isFavorite: _editedProduct.isFavorite,
-                  );
-                },
-              ),
-              TextBox(
-                caption: 'Description',
-                initalValue: _initValues['description'],
-                actionButton: TextInputAction.newline,
-                inputType: TextInputType.multiline,
-                focusNode: _descriptionFocusNode,
-                maxLines: 3,
-                onChange: (_) {},
-                onSubmit: (_) {
-                  FocusScope.of(context).requestFocus(_imageUrlFocusNode);
-                },
-                validator: (String? value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter a valid description.';
-                  } else {
-                    return null;
-                  }
-                },
-                onSaved: (String? value) {
-                  _editedProduct = Product(
-                    id: _editedProduct.id,
-                    title: _editedProduct.title,
-                    description: value!,
-                    imageUrl: _editedProduct.imageUrl,
-                    price: _editedProduct.price,
-                    isFavorite: _editedProduct.isFavorite,
-                  );
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(
-                  height: 256,
-                  margin: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 16.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    border: Border.all(
-                      width: 2,
-                      color: Theme.of(context).colorScheme.background,
-                    ),
-                  ),
-                  child: _showImage(),
-                ),
-              ),
-              TextBox(
-                caption: 'Image URL',
+                caption: 'Password',
+                initalValue: '',
                 actionButton: TextInputAction.done,
-                inputType: TextInputType.url,
-                focusNode: _imageUrlFocusNode,
-                controller: _imageUrlTextBoxController,
+                focusNode: _passwordFocusNode,
                 onChange: (_) {},
-                onSubmit: (_) {
-                  _showImage();
-                },
-                onSaved: (String? value) {
-                  _editedProduct = Product(
-                    id: _editedProduct.id,
-                    title: _editedProduct.title,
-                    description: _editedProduct.description,
-                    imageUrl: value!,
-                    price: _editedProduct.price,
-                    isFavorite: _editedProduct.isFavorite,
-                  );
-                },
+                onSubmit: (_) {},
                 validator: (String? value) {
                   if (value!.isEmpty) {
-                    return 'Please enter a valid image link your product.';
+                    return 'You must enter a password to login.';
                   } else {
                     return null;
                   }
+                },
+                onSaved: (String? value) {
+                  _loginViewModel = _LoginViewModel(
+                    username: _loginViewModel.username,
+                    password: value!,
+                  );
                 },
               ),
               Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: MainButton(
                   onPressed: () => _saveForm(context),
-                  title: 'SAVE',
-                  icon: Icons.save,
+                  title: 'LOGIN',
+                  icon: Icons.login,
                 ),
               ),
             ],
@@ -209,6 +177,8 @@ class _LoginSectionState extends State<LoginSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: _showBody(context),
+    );
   }
 }

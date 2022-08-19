@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import './widgets/login_section.dart';
+import './widgets/register_section.dart';
+
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
   const AuthScreen({super.key});
@@ -49,8 +52,8 @@ class AuthScreen extends StatelessWidget {
                 length: 2,
                 child: Expanded(
                   child: Column(
-                    children: <Widget>[
-                      const TabBar(
+                    children: const <Widget>[
+                      TabBar(
                         tabs: [
                           Tab(
                             text: 'Login',
@@ -65,16 +68,8 @@ class AuthScreen extends StatelessWidget {
                       Expanded(
                         child: TabBarView(
                           children: <Widget>[
-                            Container(
-                              child: const Center(
-                                child: Text('Login'),
-                              ),
-                            ),
-                            Container(
-                              child: const Center(
-                                child: Text('Register'),
-                              ),
-                            ),
+                            LoginSection(),
+                            RegisterSection(),
                           ],
                         ),
                       ),
