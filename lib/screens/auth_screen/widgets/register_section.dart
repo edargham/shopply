@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../providers/authentication.dart';
 import '../../widgets/item_button.dart';
 import '../../widgets/main_button.dart';
 import '../../widgets/text_box.dart';
@@ -25,7 +27,13 @@ class _RegisterViewModel {
 }
 
 class RegisterSection extends StatefulWidget {
-  const RegisterSection({Key? key}) : super(key: key);
+  final VoidCallback onEnterEditMode;
+  final VoidCallback onExitEditMode;
+  const RegisterSection({
+    Key? key,
+    required this.onEnterEditMode,
+    required this.onExitEditMode,
+  }) : super(key: key);
 
   @override
   State<RegisterSection> createState() => _RegisterSectionState();
@@ -76,11 +84,12 @@ class _RegisterSectionState extends State<RegisterSection> {
       });
 
       try {
-        // await Provider.of<Products>(context, listen: false)
-        //     .updateProduct(newProduct);
+        await Provider.of<Authentication>(context, listen: false).registerUser(
+            _registerViewModel.email, _registerViewModel.password);
         if (!mounted) return;
         Navigator.of(context).pop();
-      } catch (_) {
+      } catch (ex) {
+        print(ex);
         await showDialog(
           context: context,
           builder: (BuildContext ctx) {
@@ -105,8 +114,10 @@ class _RegisterSectionState extends State<RegisterSection> {
             );
           },
         );
-        if (!mounted) return;
-        Navigator.of(context).pop();
+
+        setState(() {
+          _isloading = false;
+        });
       }
     }
 
@@ -128,26 +139,25 @@ class _RegisterSectionState extends State<RegisterSection> {
           child: ListView(
             children: <Widget>[
               const Padding(
-                padding: EdgeInsets.all(32.0),
-                child: Flexible(
-                  child: Text(
-                    'Enter the  required information below to register if you want to access the features provided by Shopply.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
-                    ),
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Enter the required information below to register if you want to access the features provided by Shopply.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12.0,
                   ),
                 ),
               ),
               TextBox(
                 caption: 'Username',
                 actionButton: TextInputAction.next,
+                onTap: widget.onEnterEditMode,
                 focusNode: _usernameFocusNode,
-                initalValue: '',
+                initalValue: _registerViewModel.username,
                 onChange: (_) {},
                 onSubmit: (_) {
-                  FocusScope.of(context).requestFocus(_passwordFocusNode);
+                  FocusScope.of(context).requestFocus(_firstNameFocusNode);
                 },
                 validator: (String? value) {
                   // TODO - check if unique
@@ -175,11 +185,12 @@ class _RegisterSectionState extends State<RegisterSection> {
               TextBox(
                 caption: 'First Name',
                 actionButton: TextInputAction.next,
+                onTap: widget.onEnterEditMode,
                 focusNode: _firstNameFocusNode,
-                initalValue: '',
+                initalValue: _registerViewModel.firstName,
                 onChange: (_) {},
                 onSubmit: (_) {
-                  FocusScope.of(context).requestFocus(_passwordFocusNode);
+                  FocusScope.of(context).requestFocus(_lastNameFocusNode);
                 },
                 validator: (String? value) {
                   if (value!.isEmpty) {
@@ -206,11 +217,12 @@ class _RegisterSectionState extends State<RegisterSection> {
               TextBox(
                 caption: 'Last Name',
                 actionButton: TextInputAction.next,
+                onTap: widget.onEnterEditMode,
                 focusNode: _lastNameFocusNode,
-                initalValue: '',
+                initalValue: _registerViewModel.lastName,
                 onChange: (_) {},
                 onSubmit: (_) {
-                  FocusScope.of(context).requestFocus(_passwordFocusNode);
+                  FocusScope.of(context).requestFocus(_phoneNumberFocusNode);
                 },
                 validator: (String? value) {
                   if (value!.isEmpty) {
@@ -237,18 +249,19 @@ class _RegisterSectionState extends State<RegisterSection> {
               TextBox(
                 caption: 'Phone Number',
                 actionButton: TextInputAction.next,
+                onTap: widget.onEnterEditMode,
                 inputType: TextInputType.phone,
                 focusNode: _phoneNumberFocusNode,
-                initalValue: '',
+                initalValue: _registerViewModel.phoneNumber,
                 onChange: (_) {},
                 onSubmit: (_) {
-                  FocusScope.of(context).requestFocus(_passwordFocusNode);
+                  FocusScope.of(context).requestFocus(_emailFocusNode);
                 },
                 validator: (String? value) {
                   // TODO - check if unique
                   if (value!.isEmpty) {
                     return 'You have to provide your phone number.';
-                  } else if (int.tryParse(value) != null) {
+                  } else if (int.tryParse(value) == null) {
                     return 'Your number must not contain alphabetic characters.';
                   } else {
                     return null;
@@ -272,9 +285,10 @@ class _RegisterSectionState extends State<RegisterSection> {
               TextBox(
                 caption: 'Email',
                 actionButton: TextInputAction.next,
+                onTap: widget.onEnterEditMode,
                 inputType: TextInputType.emailAddress,
                 focusNode: _emailFocusNode,
-                initalValue: '',
+                initalValue: _registerViewModel.email,
                 onChange: (_) {},
                 onSubmit: (_) {
                   FocusScope.of(context).requestFocus(_passwordFocusNode);
@@ -304,16 +318,28 @@ class _RegisterSectionState extends State<RegisterSection> {
               ),
               TextBox(
                 caption: 'Password',
-                initalValue: '',
-                actionButton: TextInputAction.done,
+                initalValue: _registerViewModel.password,
+                actionButton: TextInputAction.next,
+                onTap: widget.onEnterEditMode,
                 focusNode: _passwordFocusNode,
-                onChange: (_) {},
-                onSubmit: (_) {},
+                onChange: (String value) {
+                  _registerViewModel = _RegisterViewModel(
+                    username: _registerViewModel.username,
+                    firstName: _registerViewModel.firstName,
+                    lastName: _registerViewModel.lastName,
+                    email: _registerViewModel.email,
+                    phoneNumber: _registerViewModel.phoneNumber,
+                    password: value,
+                    confirmPassword: _registerViewModel.confirmPassword,
+                  );
+                },
+                onSubmit: (_) {
+                  FocusScope.of(context)
+                      .requestFocus(_confirmPasswordFocusNode);
+                },
                 validator: (String? value) {
                   if (value!.isEmpty) {
                     return 'You must provide a password.';
-                  } else if (value != _registerViewModel.confirmPassword) {
-                    return 'Passwords do not match.';
                   } else {
                     return null;
                   }
@@ -335,10 +361,21 @@ class _RegisterSectionState extends State<RegisterSection> {
               ),
               TextBox(
                 caption: 'Confirm Password',
-                initalValue: '',
+                initalValue: _registerViewModel.confirmPassword,
                 actionButton: TextInputAction.done,
+                onTap: widget.onEnterEditMode,
                 focusNode: _confirmPasswordFocusNode,
-                onChange: (_) {},
+                onChange: (String value) {
+                  _registerViewModel = _RegisterViewModel(
+                    username: _registerViewModel.username,
+                    firstName: _registerViewModel.firstName,
+                    lastName: _registerViewModel.lastName,
+                    email: _registerViewModel.email,
+                    phoneNumber: _registerViewModel.phoneNumber,
+                    password: _registerViewModel.password,
+                    confirmPassword: value,
+                  );
+                },
                 onSubmit: (_) {},
                 validator: (String? value) {
                   if (value!.isEmpty) {

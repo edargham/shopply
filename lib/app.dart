@@ -10,6 +10,7 @@ import './screens/product_form_screen/product_form_screen.dart';
 import './screens/auth_screen/auth_screen.dart';
 
 import './providers/products.dart';
+import './providers/authentication.dart';
 
 import './models/cart.dart';
 import './models/order.dart';
@@ -21,6 +22,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (BuildContext ctx) => Authentication(),
+        ),
         ChangeNotifierProvider(
           create: (BuildContext ctx) => Products(),
         ),

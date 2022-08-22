@@ -15,7 +15,13 @@ class _LoginViewModel {
 }
 
 class LoginSection extends StatefulWidget {
-  const LoginSection({Key? key}) : super(key: key);
+  final VoidCallback onEnterEditMode;
+  final VoidCallback onExitEditMode;
+  const LoginSection({
+    Key? key,
+    required this.onEnterEditMode,
+    required this.onExitEditMode,
+  }) : super(key: key);
 
   @override
   State<LoginSection> createState() => _LoginSectionState();
@@ -103,18 +109,19 @@ class _LoginSectionState extends State<LoginSection> {
           child: Column(
             children: <Widget>[
               const Padding(
-                padding: EdgeInsets.all(32.0),
-                child: Flexible(
-                  child: Text(
-                    'Enter your credentials below to login to Shopply.',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Enter your credentials below to login to Shopply.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12.0,
                   ),
                 ),
               ),
               TextBox(
                 caption: 'Username',
+                onTap: widget.onEnterEditMode,
                 actionButton: TextInputAction.next,
                 focusNode: _usernameFocusNode,
                 initalValue: '',
@@ -142,6 +149,7 @@ class _LoginSectionState extends State<LoginSection> {
               TextBox(
                 caption: 'Password',
                 initalValue: '',
+                onTap: widget.onEnterEditMode,
                 actionButton: TextInputAction.done,
                 focusNode: _passwordFocusNode,
                 onChange: (_) {},

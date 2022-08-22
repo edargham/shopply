@@ -10,6 +10,7 @@ class TextBox extends StatelessWidget {
   final Function(String) onChange;
   final Function(String)? onSubmit;
   final Function(String?)? onSaved;
+  final VoidCallback? onTap;
   final String? Function(String? value)? validator;
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -28,6 +29,7 @@ class TextBox extends StatelessWidget {
     this.actionButton = TextInputAction.done,
     this.focusNode,
     this.initalValue,
+    this.onTap,
     this.maxLines = 1,
   });
 
@@ -40,6 +42,7 @@ class TextBox extends StatelessWidget {
         children: <Widget>[
           TextFormField(
             onSaved: onSaved,
+            onTap: onTap,
             initialValue: initalValue,
             cursorColor: Theme.of(context).colorScheme.onPrimary,
             textInputAction: actionButton,
