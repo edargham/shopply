@@ -85,14 +85,14 @@ class _RegisterSectionState extends State<RegisterSection> {
 
       try {
         await Provider.of<Authentication>(context, listen: false).registerUser(
-            _registerViewModel.email,
-            _registerViewModel.firstName,
-            _registerViewModel.lastName,
-            _registerViewModel.password);
+          _registerViewModel.email,
+          _registerViewModel.firstName,
+          _registerViewModel.lastName,
+          _registerViewModel.password,
+        );
         if (!mounted) return;
         Navigator.of(context).pop();
-      } catch (ex) {
-        print(ex);
+      } catch (_) {
         await showDialog(
           context: context,
           builder: (BuildContext ctx) {

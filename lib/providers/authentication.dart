@@ -21,4 +21,10 @@ class Authentication with ChangeNotifier {
       });
     }));
   }
+
+  Future<void> login(String email, String password) async {
+    return await AuthService.login(email, password).then((Response res) {
+      print(json.decode(res.body));
+    });
+  }
 }

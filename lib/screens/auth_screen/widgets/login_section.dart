@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../providers/authentication.dart';
 
 import '../../widgets/item_button.dart';
 import '../../widgets/main_button.dart';
@@ -56,8 +59,8 @@ class _LoginSectionState extends State<LoginSection> {
       });
 
       try {
-        // await Provider.of<Products>(context, listen: false)
-        //     .updateProduct(newProduct);
+        await Provider.of<Authentication>(context, listen: false)
+            .login(_loginViewModel.username, _loginViewModel.password);
         if (!mounted) return;
         Navigator.of(context).pop();
       } catch (_) {
@@ -86,8 +89,10 @@ class _LoginSectionState extends State<LoginSection> {
             );
           },
         );
-        if (!mounted) return;
-        Navigator.of(context).pop();
+
+        setState(() {
+          _isloading = false;
+        });
       }
     }
 

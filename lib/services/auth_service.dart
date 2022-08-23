@@ -37,4 +37,20 @@ class AuthService {
       }),
     );
   }
+
+  static Future<http.Response> login(String email, String password) {
+    return http.post(
+      Uri(
+        scheme: 'https',
+        host: 'identitytoolkit.googleapis.com',
+        path: '/v1/accounts:signInWithPassword',
+        query: 'key=$apiKey',
+      ),
+      body: json.encode({
+        'email': email,
+        'password': password,
+        'returnSecureToken': true,
+      }),
+    );
+  }
 }
