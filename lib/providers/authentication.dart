@@ -9,10 +9,16 @@ class Authentication with ChangeNotifier {
   // DateTime _expiryDate;
   // String _userId;
 
-  Future<void> registerUser(String email, String password) async {
+  Future<void> registerUser(
+      String email, String firstName, String lastName, String password) async {
     return await AuthService.registerUser(email, password)
         .then(((Response res) {
-      print(json.decode(res.body));
+      final response = json.decode(res.body);
+      return AuthService.updateDetails(
+              response['idToken'], '$firstName $lastName')
+          .then((_) {
+        print(json.decode(res.body));
+      });
     }));
   }
 }
