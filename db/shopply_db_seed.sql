@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS "shopply"."products" (
   "id" VARCHAR(128) NOT NULL,
   "title" VARCHAR(128) NOT NULL,
   "description" VARCHAR(4096) NULL,
-  "image_url" VARCHAR(256) NULL,
+  "image_url" VARCHAR(512) NULL,
   "price" FLOAT NOT NULL,
   "stock" INT NOT NULL,
   PRIMARY KEY ("id"));
@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS "shopply"."user" (
   "password" VARCHAR(512) NOT NULL,
   "stamp" VARCHAR(128) NOT NULL,
   "date_joined" TIMESTAMP NOT NULL,
+  "profile_photo_url" VARCHAR(512) NULL,
   PRIMARY KEY ("username"));
 
 

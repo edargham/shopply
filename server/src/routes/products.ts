@@ -1,8 +1,12 @@
 import { Router, Request, Response } from 'express';
+import multer, { Multer, StorageEngine, FileFilterCallback } from 'multer';
 import { Model } from 'sequelize';
 import { v4 } from 'uuid';
+import { mkdirSync, existsSync } from 'fs-extra';
 
 import { ProductModel, IProduct } from '../models/product';
+
+import { DestinationCallback, FileNameCallback, limits } from '../config/multer.config';
 
 import StatusCodes from '../utils/status_codes';
 
@@ -10,6 +14,38 @@ import ProductValidator from '../validators/products';
 import { checkValidationResult } from '../validators/validation_result';
 
 const router: Router = Router();
+
+const storageStrat: StorageEngine = multer.diskStorage({
+  destination: (req: Request, file: Express.Multer.File, next: DestinationCallback) => {
+    const uploadPath: string = './dist/uploads';
+
+    if (!existsSync(uploadPath)) {
+      mkdirSync(uploadPath);
+    }
+    
+    next(null, uploadPath);
+  },
+  filename: (req: Request, file: Express.Multer.File, next: FileNameCallback) => {
+    next(null, `product_${ v4() }_${file.originalname}`);
+  }
+});
+
+const fileTypeFilterStrat = (req: Request, file: Express.Multer.File, next: FileFilterCallback) => {
+  if (limits.allowedFiles.includes(file.mimetype)) {
+    next(null, true);
+  } else {
+    next(null, false);
+  }
+}
+
+const uploads: Multer = multer({
+  storage: storageStrat, 
+  limits: {
+    fileSize: 1024*1024 * limits.maxFileSizeMB,
+    fieldNameSize: 64
+  },
+  fileFilter: fileTypeFilterStrat
+});
 
 export const productsRouteName: string = '/api/products';
 
@@ -54,7 +90,7 @@ router.get(
  *    requestBody:
  *      required: true
  *      content:
- *        application/json:
+ *        multipart/form-data:
  *          schema:
  *            type: object
  *            properties:
@@ -66,6 +102,9 @@ router.get(
  *                type: double
  *              stock:
  *                type: integer
+ *              image:
+ *                type: string
+ *                format: base64
  *            required:
  *              - title
  *              - price
@@ -87,6 +126,7 @@ router.get(
  */
 router.post(
   '/',
+  uploads.single('image'),
   ProductValidator.validateCreateProduct(),
   checkValidationResult,
   async (req: Request, res: Response) => {
@@ -95,7 +135,7 @@ router.post(
         id: v4(),
         title: req.body.title,
         description: req.body.description,
-        imageUrl: null,
+        imageUrl: req.file?.path.replace('dist/', ''),
         price: req.body.price,
         stock: req.body.stock
       }); 
