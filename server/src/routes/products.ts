@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import multer, { Multer, StorageEngine, FileFilterCallback } from 'multer';
 import { Model } from 'sequelize';
 import { v4 } from 'uuid';
-import { mkdirSync, existsSync } from 'fs-extra';
+import { mkdirSync, existsSync, removeSync } from 'fs-extra';
 
 import { ProductModel, IProduct } from '../models/product';
 
@@ -116,11 +116,11 @@ router.get(
  *            stock: 100
  *    responses:
  *      201:
- *        description: The offer was successfuly created.
+ *        description: The product was successfuly created.
  *      400:
  *        description: The request failed validation.
  *      500:
- *        description: An internal error occured while creating the offer in the database.
+ *        description: An internal error occured while creating the product in the database.
  *    tags:
  *      - Products
  */
@@ -153,7 +153,199 @@ router.post(
       return res.json({
         status: statusCode,
         msg: 'Failed to add the spcified product to the database.',
-        route: `GET ${ productsRouteName }/`
+        route: `POST ${ productsRouteName }/`
+      });
+    }
+  }
+);
+
+/**
+ * @openapi
+ * /api/products/{id}:
+ *  patch:
+ *    description: Updates the selected product in the database.
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The ID of the product to update.
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              description:
+ *                type: string
+ *              price:
+ *                type: double
+ *              stock:
+ *                type: integer
+ *            required:
+ *              - price
+ *              - stock
+ *          example:
+ *            description: This is a test product for the shopply API, currently unavailable.
+ *            price: 14.99
+ *            stock: 150
+ *    responses:
+ *      200:
+ *        description: The product was successfuly updated.
+ *      400:
+ *        description: The request failed validation, or the image failed to uplaod.
+ *      404:
+ *        description: The selected product was not found.
+ *      500:
+ *        description: An internal error occured while updating the product in the database.
+ *    tags:
+ *      - Products
+ */
+router.patch(
+  '/:id',
+  ProductValidator.validateUpdateProduct(),
+  checkValidationResult,
+  async (req: Request, res: Response) => {
+    const productId: string = req.params.id;
+    try {
+      const product: ProductModel | null = await ProductModel.findOne({
+        where: {
+          id: productId
+        }
+      });
+
+      if (product) {
+        await product.update({
+          description: req.body.description,
+          price: req.body.price,
+          stock: req.body.stock
+        });
+
+        return res.json({ 
+          status: StatusCodes.SUCCESS_CODE,
+          message: `Succesfuly updated product with id ${ req.params.id }.`,
+          product: product.get()
+        });
+      } else {
+        const statusCode: number = StatusCodes.NOT_FOUND;
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          msg: `No product with id ${ req.params.id } was found in the database.`,
+          route: `PATCH ${ productsRouteName }/${ productId }`
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        msg: `Failed to update product with id ${ req.params.id } in the database.`,
+        route: `PATCH ${ productsRouteName }/${ productId }`
+      });
+    }
+  }
+)
+
+/**
+ * @openapi
+ * /api/products/update-photo/{id}:
+ *  patch:
+ *    description: Updates the specified product's thumbnail in the database.
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The ID of the product that will have its thumbnail updated.
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              image:
+ *                type: string
+ *                format: base64
+ *            required:
+ *              - image
+ *          example:
+ *            title: Test
+ *            description: This is a test product for the shopply API, currently unavailable.
+ *            price: 9.99
+ *            stock: 100
+ *    responses:
+ *      200:
+ *        description: The product was successfuly updated.
+ *      400:
+ *        description: The request failed validation, or the image failed to uplaod.
+ *      404:
+ *        description: The selected product was not found.
+ *      500:
+ *        description: An internal error occured while updating the product in the database.
+ *    tags:
+ *      - Products
+ */
+router.patch(
+  '/update-photo/:id',
+  uploads.single('image'),
+  ProductValidator.validateUpdateImage(),
+  checkValidationResult,
+  async (req: Request, res: Response) => {
+    const productId: string = req.params.id;
+    try {
+      if(req.file) {
+        const product: ProductModel | null = await ProductModel.findOne({
+          where: {
+            id: productId
+          }
+        });
+
+        if (product) {
+          const oldImagePath: string = `./dist/${ product.get().imageUrl }`;
+
+          await product.update({
+            imageUrl: req.file.path.replace('dist/', ''),
+          });
+
+          removeSync(oldImagePath);
+
+          return res.json({ 
+            status: StatusCodes.SUCCESS_CODE,
+            message: `Succesfuly updated product's thumbnail with id ${ req.params.id }.`,
+            product: product.get()
+          });
+        } else {
+          const statusCode: number = StatusCodes.NOT_FOUND;
+          res.status(statusCode);
+          return res.json({
+            status: statusCode,
+            msg: `No product with id ${ req.params.id } was found.`,
+            route: `PATCH ${ productsRouteName }/update-photo/${ productId }`
+          });
+        }
+      } else {
+        const statusCode: number = StatusCodes.BAD_REQUEST;
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          msg: 'Failed to upload the selected image to the database.',
+          route: `PATCH ${ productsRouteName }/update-photo/${ productId }`
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        msg: 'Failed to upload the selected image to the database.',
+        route: `PATCH ${ productsRouteName }/update-photo/${ productId }`
       });
     }
   }
