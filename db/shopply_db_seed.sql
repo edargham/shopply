@@ -31,6 +31,8 @@ CREATE TABLE IF NOT EXISTS "shopply"."user" (
   "stamp" VARCHAR(128) NOT NULL,
   "date_joined" TIMESTAMP NOT NULL,
   "profile_photo_url" VARCHAR(512) NULL,
+  "is_verified" BOOLEAN NOT NULL,
+  "verification_hash" VARCHAR(128) NOT NULL,
   PRIMARY KEY ("username"));
 
 
@@ -46,7 +48,7 @@ CREATE TABLE IF NOT EXISTS "shopply"."order" (
   CONSTRAINT "fk_order_user1"
     FOREIGN KEY ("username")
     REFERENCES "shopply"."user" ("username")
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION);
 
 
@@ -64,17 +66,17 @@ CREATE TABLE IF NOT EXISTS "shopply"."cart_item" (
   CONSTRAINT "fk_user_has_products_user"
     FOREIGN KEY ("username")
     REFERENCES "shopply"."user" ("username")
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT "fk_user_has_products_products1"
     FOREIGN KEY ("product_id")
     REFERENCES "shopply"."products" ("id")
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT "fk_cart_item_order_item1"
     FOREIGN KEY ("order_id")
     REFERENCES "shopply"."order" ("id")
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION);
 
 
@@ -89,12 +91,12 @@ CREATE TABLE IF NOT EXISTS "shopply"."user_likes_products" (
   CONSTRAINT "fk_user_has_products_user1"
     FOREIGN KEY ("username")
     REFERENCES "shopply"."user" ("username")
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT "fk_user_has_products_products2"
     FOREIGN KEY ("product_id")
     REFERENCES "shopply"."products" ("id")
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION);
 
 
@@ -124,5 +126,5 @@ CREATE TABLE IF NOT EXISTS "shopply"."rating" (
   CONSTRAINT "fk_rating_products1"
     FOREIGN KEY ("product_id")
     REFERENCES "shopply"."products" ("id")
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION);
