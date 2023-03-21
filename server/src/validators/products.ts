@@ -54,6 +54,14 @@ export default class ProductValidator {
     ]
   }
 
+  public static validateDelete(): ValidationChain[] {
+    return [
+      param('id')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('id'))
+    ]
+  }
+  
   public static validateUpdateImage(): ValidationChain[] {
     return [
       param('id')

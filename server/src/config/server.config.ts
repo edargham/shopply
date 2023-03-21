@@ -1,0 +1,1 @@
+export const physicalRootDir: string = './dist/';
