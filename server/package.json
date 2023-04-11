@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/edargham/shopply#readme",
   "dependencies": {
-    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
+    "crypto": "^1.0.1",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "express-validator": "^6.14.3",
