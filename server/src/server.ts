@@ -4,6 +4,7 @@ import dbConnectionConfiguration from './config/database.config';
 import swaggerDocs from './config/swagger.config';
 
 import productRoutes, { productsRouteName } from './routes/products';
+import userRoutes, { usersRouteName } from './routes/users';
 
 const app: Express = express();
 const port: number = 3000;
@@ -21,6 +22,7 @@ app.use('/uploads', express.static('./dist/uploads'))
 
 // Register Routes
 app.use(productsRouteName, productRoutes);
+app.use(usersRouteName, userRoutes);
 
 // Listen for requests.
 app.listen(port, () => {

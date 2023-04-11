@@ -7,6 +7,7 @@ import { mkdirSync, existsSync, removeSync } from 'fs-extra';
 import { ProductModel, IProduct } from '../models/product';
 
 import { physicalRootDir } from '../config/server.config';
+import { authToken, authenticateToken, AuthenticatedRequest } from '../config/auth.config';
 import { DestinationCallback, FileNameCallback, limits } from '../config/multer.config';
 
 import StatusCodes from '../utils/status_codes';

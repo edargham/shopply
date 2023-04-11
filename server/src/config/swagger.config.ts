@@ -10,7 +10,10 @@ const swaggerOptions: swaggerJSDoc.Options = {
       version: '0.1.0'
     }
   },
-  apis: ['./src/routes/products.ts']
+  apis: [
+    './src/routes/products.ts',
+    './src/routes/users.ts'
+  ]
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);

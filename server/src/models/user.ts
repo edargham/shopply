@@ -96,6 +96,6 @@ UserModel.init(
     sequelize: dbConnectionConfiguration,
     schema: 'shopply',
     tableName: 'user',
-    timestamps: false
+    timestamps: false,
   }
 );
