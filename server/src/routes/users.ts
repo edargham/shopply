@@ -8,7 +8,7 @@ import { createHash } from 'crypto';
 
 import { physicalRootDir } from '../config/server.config';
 import { DestinationCallback, FileNameCallback, limits } from '../config/multer.config';
-import { authToken, generateAccessToken } from '../config/auth.config';
+import { authToken, generateAccessToken, authenticateToken, AuthenticatedRequest } from '../config/auth.config';
 
 import { UserModel, IUser } from '../models/user';
 
@@ -200,8 +200,6 @@ router.post(
 
       if (authenticatingUser) {
         const password: string = createHash('sha512').update(`${ req.body.password }${ authenticatingUser.get().stamp }`).digest('hex');
-        console.log(authToken);
-        console.log(authToken);
         if (password == authenticatingUser.get().password) {
           res.status(statusCode);
           return res.json({
@@ -224,6 +222,8 @@ router.post(
       }
     } catch (error) {
       const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      console.error(error);
+      res.status(statusCode);
       return res.json({
         status: statusCode,
         message: 'Failed to authenticate user due to a server error. Please try again later.',
@@ -234,7 +234,78 @@ router.post(
 );
 
 
-router.get('/:username');
+// TODO - SANITIZE USER !!
+
+/**
+ * @openapi
+ * /api/users/{username}:
+ *  get:
+ *    description: Returns the user with the specified username from the database.
+ *    security:
+ *      - bearerAuth: []
+ *    parameters:
+ *      - in: path
+ *        name: username
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The username of the user that will be returned.
+ *    responses:
+ *      200:
+ *        description: The user was successfuly returned.
+ *      400:
+ *        description: The request failed validation.
+ *      401:
+ *        description: The user must be logged in to perform this operation.
+ *      403:
+ *        description: The user credentials are invalid.
+ *      404:
+ *        description: The user was not found.
+ *      500:
+ *        description: An internal error has occured while pulling the specified user from the database.
+ *    tags:
+ *      - Users
+ */
+router.get(
+  '/:username',
+  authenticateToken,
+  UsersValidator.validateGetSingleUser(),
+  checkValidationResult,
+  async (req: AuthenticatedRequest, res: Response) => {
+    const paramsUsername: string = req.params.username;
+    try {
+      const requestedUser: UserModel | null = await UserModel.findOne({
+        where: {
+          username: paramsUsername
+        }
+      });
+
+      if (!requestedUser) {
+        const statusCode: number = StatusCodes.NOT_FOUND;
+        
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          msg: `No user with username ${ paramsUsername } was found.`,
+          route: `GET ${ usersRouteName }/${ paramsUsername }`
+        });
+      }
+
+      res.status(StatusCodes.SUCCESS_CODE);
+
+      return res.json(requestedUser);
+    } catch (error) {
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      console.error(error);
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        message: 'Failed to fetch the requested user.',
+        route: `GET ${ usersRouteName }/${ paramsUsername }`
+      });
+    }
+  }
+);
 
 
 router.patch('/:username');

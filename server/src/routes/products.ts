@@ -7,7 +7,7 @@ import { mkdirSync, existsSync, removeSync } from 'fs-extra';
 import { ProductModel, IProduct } from '../models/product';
 
 import { physicalRootDir } from '../config/server.config';
-import { authToken, authenticateToken, AuthenticatedRequest } from '../config/auth.config';
+import { authenticateToken, AuthenticatedRequest } from '../config/auth.config';
 import { DestinationCallback, FileNameCallback, limits } from '../config/multer.config';
 
 import StatusCodes from '../utils/status_codes';
@@ -83,10 +83,77 @@ router.get(
   }
 );
 
+// TODO - Get product details with favorite info.
+
+/**
+ * @openapi
+ * /api/products/{id}:
+ *  get:
+ *    description: Returns the product with the specified ID from the database.
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The ID of the product that will be returned.
+ *    responses:
+ *      200:
+ *        description: The product was successfuly returned.
+ *      400:
+ *        description: The request failed validation.
+ *      404:
+ *        description: The product was not found.
+ *      500:
+ *        description: An internal error has occured while pulling the specified product from the database.
+ *    tags:
+ *      - Products
+ */
+router.get(
+  '/:id',
+  ProductValidator.validateGetSingleProduct(),
+  checkValidationResult,
+  async (req: Request, res: Response) => {
+    try {
+      const paramId: string = req.params.id;
+      const product: ProductModel | null = await ProductModel.findOne({
+        where: {
+          id: paramId
+        }
+      });
+
+      if (!product) {
+        const statusCode: number = StatusCodes.NOT_FOUND;
+        
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          msg: `No product with id ${ paramId } was found.`,
+          route: `GET ${ productsRouteName }/${ paramId }`
+        });
+      }
+
+      res.status(StatusCodes.SUCCESS_CODE);
+      return res.json(product);
+    } catch (error) {
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        msg: 'Failed to read products from the database.',
+        route: `GET ${ productsRouteName }/`
+      });
+    }
+  }
+);
+
 /**
  * @openapi
  * /api/products:
  *  post:
+ *    security:
+ *      - bearerAuth: []
  *    description: Inserts a new product into the database.
  *    requestBody:
  *      required: true
@@ -100,7 +167,7 @@ router.get(
  *              description:
  *                type: string
  *              price:
- *                type: double
+ *                type: number
  *              stock:
  *                type: integer
  *              image:
@@ -120,6 +187,10 @@ router.get(
  *        description: The product was successfuly created.
  *      400:
  *        description: The request failed validation.
+ *      401:
+ *        description: The user must be logged in to perform this operation.
+ *      403:
+ *        description: The user credentials are invalid.
  *      500:
  *        description: An internal error occured while creating the product in the database.
  *    tags:
@@ -127,10 +198,11 @@ router.get(
  */
 router.post(
   '/',
+  authenticateToken,
   uploads.single('image'),
   ProductValidator.validateCreateProduct(),
   checkValidationResult,
-  async (req: Request, res: Response) => {
+  async (req: AuthenticatedRequest, res: Response) => {
     try {
       const rec: Model<IProduct> = await ProductModel.create({
         id: v4(),
@@ -164,6 +236,8 @@ router.post(
  * @openapi
  * /api/products/{id}:
  *  patch:
+ *    security:
+ *      - bearerAuth: []
  *    description: Updates the selected product in the database.
  *    parameters:
  *      - in: path
@@ -182,7 +256,7 @@ router.post(
  *              description:
  *                type: string
  *              price:
- *                type: double
+ *                type: number
  *              stock:
  *                type: integer
  *            required:
@@ -197,6 +271,10 @@ router.post(
  *        description: The product was successfuly updated.
  *      400:
  *        description: The request failed validation.
+ *      401:
+ *        description: The user must be logged in to perform this operation.
+ *      403:
+ *        description: The user credentials are invalid.
  *      404:
  *        description: The selected product was not found.
  *      500:
@@ -206,9 +284,10 @@ router.post(
  */
 router.patch(
   '/:id',
+  authenticateToken,
   ProductValidator.validateUpdateProduct(),
   checkValidationResult,
-  async (req: Request, res: Response) => {
+  async (req: AuthenticatedRequest, res: Response) => {
     const productId: string = req.params.id;
     try {
       const product: ProductModel | null = await ProductModel.findOne({
@@ -255,6 +334,8 @@ router.patch(
  * @openapi
  * /api/products/{id}:
  *  delete:
+ *    security:
+ *      - bearerAuth: []
  *    description: Removes the specified product's reference from the database.
  *    parameters:
  *      - in: path
@@ -268,6 +349,10 @@ router.patch(
  *        description: The product was successfuly deleted.
  *      400:
  *        description: The request failed validation.
+ *      401:
+ *        description: The user must be logged in to perform this operation.
+ *      403:
+ *        description: The user credentials are invalid.
  *      404:
  *        description: The selected product was not found.
  *      500:
@@ -277,9 +362,10 @@ router.patch(
  */
 router.delete(
   '/:id',
+  authenticateToken,
   ProductValidator.validateDelete(),
   checkValidationResult,
-  async (req: Request, res: Response) => {
+  async (req: AuthenticatedRequest, res: Response) => {
     const productId: string = req.params.id;
     let statusCode: number = StatusCodes.SUCCESS_CODE;
     try {
@@ -313,7 +399,7 @@ router.delete(
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR);
       return res.json({
         status: statusCode,
@@ -328,6 +414,8 @@ router.delete(
  * @openapi
  * /api/products/update-photo/{id}:
  *  patch:
+ *    security:
+ *      - bearerAuth: []
  *    description: Updates the specified product's thumbnail in the database.
  *    parameters:
  *      - in: path
@@ -358,6 +446,10 @@ router.delete(
  *        description: The product was successfuly updated.
  *      400:
  *        description: The request failed validation, or the image failed to uplaod.
+ *      401:
+ *        description: The user must be logged in to perform this operation.
+ *      403:
+ *        description: The user credentials are invalid.
  *      404:
  *        description: The selected product was not found.
  *      500:
@@ -367,10 +459,11 @@ router.delete(
 */
 router.patch(
   '/update-photo/:id',
+  authenticateToken,
   uploads.single('image'),
   ProductValidator.validateUpdateImage(),
   checkValidationResult,
-  async (req: Request, res: Response) => {
+  async (req: AuthenticatedRequest, res: Response) => {
     const productId: string = req.params.id;
     try {
       if(req.file) {

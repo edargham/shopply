@@ -2,6 +2,16 @@ import { ValidationChain, body, param } from 'express-validator';
 import ValidatorTemplateMessages from '../utils/validator_template_messages';
 
 export default class UsersValidator {
+  // TODO - Size Guard all params.
+  
+  public static validateGetSingleUser(): ValidationChain[] {
+    return [
+      param('username')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username')),
+    ];
+  }
+
   public static validateUserSignup(): ValidationChain[] {
     return [
       body('username')

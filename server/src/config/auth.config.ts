@@ -6,7 +6,7 @@ import { IUser } from '../models/user';
 import StatusCodes from '../utils/status_codes';
 
 export interface AuthenticatedRequest extends Request {
-  user: any
+  user?: any
 }
 
 export const authToken: string = randomBytes(64).toString('hex');

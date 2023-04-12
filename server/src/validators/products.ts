@@ -2,6 +2,16 @@ import { ValidationChain, body, param } from 'express-validator';
 import ValidatorTemplateMessages from '../utils/validator_template_messages';
 
 export default class ProductValidator {
+  // TODO - Size Guard all params.
+
+  public static validateGetSingleProduct(): ValidationChain[] {
+    return [
+      param('id')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('id')),
+    ];
+  }
+  
   public static validateCreateProduct(): ValidationChain[] {
     return [
       body('title')

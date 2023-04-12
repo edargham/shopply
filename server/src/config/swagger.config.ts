@@ -6,8 +6,18 @@ const swaggerOptions: swaggerJSDoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'SaverBuddy REST API Docs',
+      title: 'Shopply REST API Docs',
       version: '0.1.0'
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Use the token you generated with the login route.'
+        }
+      }
     }
   },
   apis: [
