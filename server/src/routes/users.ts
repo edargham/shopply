@@ -30,16 +30,16 @@ const router: Router = Router();
 
 const storageStrat: StorageEngine = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, next: DestinationCallback) => {
-    const uploadPath: string = `${ physicalRootDir }uploads`;
+    const uploadPath: string = `${ physicalRootDir }uploads/users`;
 
     if (!existsSync(uploadPath)) {
-      mkdirSync(uploadPath);
+      mkdirSync(uploadPath, { recursive: true });
     }
     
     next(null, uploadPath);
   },
   filename: (req: Request, file: Express.Multer.File, next: FileNameCallback) => {
-    next(null, `product_${ v4() }_${file.originalname}`);
+    next(null, `user_${ v4() }_${file.originalname}`);
   }
 });
 
@@ -148,7 +148,7 @@ router.post(
       return res.json({ 
         status: StatusCodes.CREATED_CODE,
         message: 'Succesfuly created new user.',
-        product: rec
+        user: rec
       });
     } catch (error) {
       console.error(error);
@@ -282,19 +282,13 @@ router.get(
         where: {
           username: paramsUsername
         },
-        attributes: [
-          'username',
-          'first_name',
-          'middle_name',
-          'last_name',
-          'date_of_birth',
-          'sex',
-          'email',
-          'phone_number',
-          'date_joined',
-          'profile_photo_url',
-          'is_verified'
-        ]
+        attributes: {
+          exclude: [
+            'password',
+            'stamp',
+            'verificationHash'
+          ]
+        }
       });
 
       if (!requestedUser) {
@@ -390,9 +384,9 @@ router.patch(
         },
         attributes: [
           'username',
-          'first_name',
-          'middle_name',
-          'last_name'
+          'firstName',
+          'middleName',
+          'lastName'
         ]
       });
 
@@ -457,7 +451,7 @@ router.delete(
   '/:username',
   authenticateToken,
   authorizeSelf,
-  UsersValidator.validateGetSingleUser(),
+  UsersValidator.validateUserDelete(),
   checkValidationResult,
   async (req: AuthenticatedRequest, res: Response) => {
     const paramsUsername: string = req.params.username;
@@ -467,11 +461,21 @@ router.delete(
       const user: UserModel | null = await UserModel.findOne({
         where: {
           username: paramsUsername
+        },
+        attributes: {
+          exclude: [
+            'password',
+            'stamp',
+            'verificationHash'
+          ]
         }
       });
 
       if (user) {
         await user.destroy();
+
+        const imagePath: string = `${ physicalRootDir }${ user.get().profilePhotoUrl }`;
+        removeSync(imagePath);   
 
         res.status(statusCode);
         return res.json({ 
@@ -495,8 +499,106 @@ router.delete(
   }
 );
 
-
-router.patch('/change-photo/:username');
+/**
+ * @openapi
+ * /api/users/change-photo/{username}:
+ *  patch:
+ *    security:
+ *      - bearerAuth: []
+ *    description: Updates the specified user's thumbnail in the database.
+ *    parameters:
+ *      - in: path
+ *        name: username
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The username of the user that will have their thumbnail updated.
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              image:
+ *                type: string
+ *                format: base64
+ *            required:
+ *              - image
+ *    responses:
+ *      200:
+ *        description: The user was successfuly updated.
+ *      400:
+ *        description: The request failed validation, or the image failed to uplaod.
+ *      401:
+ *        description: The user must be logged in to perform this operation.
+ *      403:
+ *        description: The user credentials are invalid.
+ *      500:
+ *        description: An internal error occured while updating the user in the database.
+ *    tags:
+ *      - Users
+*/
+router.patch(
+  '/change-photo/:username',
+  authenticateToken,
+  authorizeSelf,
+  uploads.single('image'),
+  UsersValidator.validateUserChangePhoto(),
+  checkValidationResult,
+  async (req: AuthenticatedRequest, res: Response) => {
+    const paramsUsername = req.params.username;
+    try {
+      if(req.file) {
+        const user: UserModel | null = await UserModel.findOne({
+          where: {
+            username: paramsUsername
+          },
+          attributes: [
+            'username',
+            'profilePhotoUrl'
+          ]
+        });
+        
+        if (user) {
+          const oldImagePath: string = `${ physicalRootDir }${ user.get().profilePhotoUrl }`;
+          
+          await user.update({
+            profilePhotoUrl: req.file.path.replaceAll('\\', '/').replace('dist/', ''),
+          });
+          
+          console.log(oldImagePath)
+          removeSync(oldImagePath);
+          
+          return res.json({ 
+            status: StatusCodes.SUCCESS_CODE,
+            msg: `Succesfuly updated user's thumbnail with id ${ req.params.id }.`,
+            user: user.get()
+          });
+        } else {
+          throw new Error(`Attempted to modify non-existant user ${ paramsUsername }.`);
+        }
+      } else {
+        const statusCode: number = StatusCodes.BAD_REQUEST;
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          msg: 'Failed to upload the selected image to the database.',
+          route: `PATCH ${ usersRouteName }/change-photo/${ paramsUsername }`
+        });
+      }
+    } catch (error) { 
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        msg: 'Failed to upload the selected image to the database.',
+        route: `PATCH ${ usersRouteName }/change-photo/${ paramsUsername }`
+      });
+    }
+  }
+);
 
 
 router.patch('/change-email/:username');

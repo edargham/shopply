@@ -20,10 +20,10 @@ const router: Router = Router();
 
 const storageStrat: StorageEngine = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, next: DestinationCallback) => {
-    const uploadPath: string = `${ physicalRootDir }uploads`;
+    const uploadPath: string = `${ physicalRootDir }uploads/products`;
 
     if (!existsSync(uploadPath)) {
-      mkdirSync(uploadPath);
+      mkdirSync(uploadPath, { recursive: true });
     }
     
     next(null, uploadPath);
@@ -436,11 +436,6 @@ router.delete(
  *                format: base64
  *            required:
  *              - image
- *          example:
- *            title: Test
- *            description: This is a test product for the shopply API, currently unavailable.
- *            price: 9.99
- *            stock: 100
  *    responses:
  *      200:
  *        description: The product was successfuly updated.
@@ -477,7 +472,7 @@ router.patch(
           const oldImagePath: string = `${ physicalRootDir }${ product.get().imageUrl }`;
           
           await product.update({
-            imageUrl: req.file.path.replace('dist/', ''),
+            imageUrl: req.file.path.replaceAll('\\', '/').replace('dist/', ''),
           });
           
           removeSync(oldImagePath);

@@ -18,7 +18,7 @@ try {
 
 // Middleware
 app.use(express.json());
-app.use('/uploads', express.static('./dist/uploads'))
+app.use('/uploads', express.static('./dist/uploads'));
 
 // Register Routes
 app.use(productsRouteName, productRoutes);

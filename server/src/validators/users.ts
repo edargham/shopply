@@ -108,4 +108,20 @@ export default class UsersValidator {
       .withMessage(ValidatorTemplateMessages.typeMismatchSetting('lastName', 'alphabetic')),
     ];
   }
+
+  public static validateUserDelete(): ValidationChain[] {
+    return [
+      param('username')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username')),
+    ];
+  }
+
+  public static validateUserChangePhoto(): ValidationChain[] {
+    return [
+      param('username')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username')),
+    ];
+  }
 }
