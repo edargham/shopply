@@ -48,9 +48,34 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
           message: `FORBIDDEN\n${ error }`
         });
       } else {
-        req.user = user;
+        req.user = {
+          username: user.username,
+          firstName: user.firstName,
+          middleName: user.middleName,
+          lastName: user.lastName,
+          dateOfBirth: user.dateOfBirth,
+          sex: user.sex,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          profilePhotoUrl: user.profilePhotoUrl,
+          isVerified: user.isVerified
+        };
         next();
       }
     });
+  }
+}
+
+export const authorizeSelf = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  if (req.user && req.user.username != req.params.username) {
+    const statusCode: number = StatusCodes.FORBIDDEN;
+    res.status(statusCode);
+
+    return res.json({
+      status: statusCode,
+      message: 'You are not allowed to access this content.'
+    });
+  } else {
+    next();
   }
 }

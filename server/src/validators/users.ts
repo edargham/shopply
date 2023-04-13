@@ -76,4 +76,36 @@ export default class UsersValidator {
       .withMessage(ValidatorTemplateMessages.MIN_LENGTH_MESSAGE)
     ];
   }
+
+  public static validateUpdateUser(): ValidationChain[] {
+    return [
+      param('username')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username')),
+      
+      body('firstName')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('firstName'))
+      .isLength({ min: 3, max: 16 })
+      .withMessage(ValidatorTemplateMessages.OUT_OF_RANGE_MESSAGE)
+      .isAlpha()
+      .withMessage(ValidatorTemplateMessages.typeMismatchSetting('firstName', 'alphabetic')),
+
+      body('middleName')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('middleName'))
+      .isLength({ max: 16 })
+      .withMessage(ValidatorTemplateMessages.MAX_LENGTH_MESSAGE)
+      .isAlpha()
+      .withMessage(ValidatorTemplateMessages.typeMismatchSetting('middleName', 'alphabetic')),
+      
+      body('lastName')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('lastName'))
+      .isLength({ min: 3, max: 16 })
+      .withMessage(ValidatorTemplateMessages.OUT_OF_RANGE_MESSAGE)
+      .isAlpha()
+      .withMessage(ValidatorTemplateMessages.typeMismatchSetting('lastName', 'alphabetic')),
+    ];
+  }
 }
