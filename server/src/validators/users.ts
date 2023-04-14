@@ -77,6 +77,32 @@ export default class UsersValidator {
     ];
   }
 
+  public static validateUserLogin(): ValidationChain[] {
+    return [
+      body('username')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username'))
+      .isLength({ min: 3, max: 16 })
+      .withMessage(ValidatorTemplateMessages.OUT_OF_RANGE_MESSAGE)
+      .isAlphanumeric()
+      .withMessage(ValidatorTemplateMessages.typeMismatchSetting('username', 'alphanumeric')),
+
+      body('password')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('password'))
+      .isLength({ min: 8 })
+      .withMessage(ValidatorTemplateMessages.MIN_LENGTH_MESSAGE)
+    ];
+  }
+
+  public static validateUserVerify(): ValidationChain[] {
+    return [
+      param('verificationHash')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('verificationHash'))
+    ];
+  }
+
   public static validateUpdateUser(): ValidationChain[] {
     return [
       param('username')
@@ -105,7 +131,7 @@ export default class UsersValidator {
       .isLength({ min: 3, max: 16 })
       .withMessage(ValidatorTemplateMessages.OUT_OF_RANGE_MESSAGE)
       .isAlpha()
-      .withMessage(ValidatorTemplateMessages.typeMismatchSetting('lastName', 'alphabetic')),
+      .withMessage(ValidatorTemplateMessages.typeMismatchSetting('lastName', 'alphabetic'))
     ];
   }
 
@@ -114,6 +140,12 @@ export default class UsersValidator {
       param('username')
       .notEmpty()
       .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username')),
+
+      body('password')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('password'))
+      .isLength({ min: 8 })
+      .withMessage(ValidatorTemplateMessages.MIN_LENGTH_MESSAGE)
     ];
   }
 
@@ -121,7 +153,35 @@ export default class UsersValidator {
     return [
       param('username')
       .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username'))
+    ];
+  }
+
+  public static validateUserChangeEmail(): ValidationChain[] {
+    return [
+      param('username')
+      .notEmpty()
       .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username')),
+
+      body('email')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('email'))
+      .isEmail()
+      .withMessage(ValidatorTemplateMessages.typeMismatchSetting('email', 'email'))
+    ];
+  }
+
+  public static validateUserChangePassword(): ValidationChain[] {
+    return [
+      param('username')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username')),
+
+      body('password')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('password'))
+      .isLength({ min: 8 })
+      .withMessage(ValidatorTemplateMessages.MIN_LENGTH_MESSAGE)
     ];
   }
 }

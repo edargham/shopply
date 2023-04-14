@@ -16,7 +16,7 @@ import {
   AuthenticatedRequest 
 } from '../config/auth.config';
 
-import { UserModel, IUser } from '../models/user';
+import { UserModel } from '../models/user';
 
 import StatusCodes from '../utils/status_codes';
 
@@ -127,7 +127,23 @@ router.post(
       const stamp: string = v4();
       const password: string =  createHash('sha512').update(`${ req.body.password }${ stamp }`).digest('hex');
       
-      const rec: Model<IUser> = await UserModel.create({
+      const user: number = await UserModel.count({
+        where: {
+          username: req.body.username
+        }
+      });
+
+      if (user > 0) {
+        const statusCode: number = StatusCodes.BAD_REQUEST;
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          msg: `User with username "${ req.body.username }" already exists.`,
+          route: `POST ${ usersRouteName }/signup`
+        });
+      }
+
+      await UserModel.create({
         username: req.body.username,
         firstName: req.body.firstName,
         middleName: req.body.middleName,
@@ -148,7 +164,6 @@ router.post(
       return res.json({ 
         status: StatusCodes.CREATED_CODE,
         message: 'Succesfuly created new user.',
-        user: rec
       });
     } catch (error) {
       console.error(error);
@@ -188,6 +203,8 @@ router.post(
  *    responses:
  *      200:
  *        description: The authentication process completed.
+ *      400:
+ *        description: The request failed validation.
  *      500:
  *        description: An internal error occured authenticating the user.
  *    tags:
@@ -195,6 +212,8 @@ router.post(
  */
 router.post(
   '/login',
+  UsersValidator.validateUserLogin(),
+  checkValidationResult,
   async (req: Request, res: Response) => {
     try {
       const statusCode: number = StatusCodes.SUCCESS_CODE;
@@ -238,6 +257,80 @@ router.post(
     } 
   }
 );
+
+/**
+ * @openapi
+ * /api/users/verify/{verificationHash}:
+ *  patch:
+ *    description: Verifies the user with the specified hash in the database.
+ *    parameters:
+ *      - in: path
+ *        name: verificationHash
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The hash of the user that was generated for verification.
+ *    responses:
+ *      200:
+ *        description: The user was successfuly returned.
+ *      400:
+ *        description: The request failed validation.
+ *      500:
+ *        description: An internal error has occured while pulling the specified user from the database.
+ *    tags:
+ *      - Users
+ */
+router.patch(
+  '/verify/:verificationHash',
+  UsersValidator.validateUserVerify(),
+  checkValidationResult,
+  async (req: Request, res: Response) => {
+    const paramsHash: string = req.params.verificationHash;
+
+    try {
+      const user: UserModel | null = await UserModel.findOne({
+        where: {
+          verificationHash: paramsHash
+        },
+        attributes: {
+          exclude: [
+            'password',
+            'stamp'
+          ]
+        }
+      });
+
+      if (user && !user.get().isVerified) {
+        await user.update({
+          isVerified: true,
+        });
+
+        res.status(StatusCodes.SUCCESS_CODE);
+        return res.json({ 
+          status: StatusCodes.SUCCESS_CODE,
+          message: 'Succesfuly verified user.',
+        });
+      } else if (user && user.get().isVerified) {
+        res.status(StatusCodes.SUCCESS_CODE);
+        return res.json({ 
+          status: StatusCodes.SUCCESS_CODE,
+          message: 'User has already been verified.',
+        });
+      } else {
+        throw new Error(`Attempted to modify non-existant user.`);
+      }
+    } catch(error) {
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        msg: 'Failed to verify user.',
+        route: `PATCH ${ usersRouteName }/verify/${ paramsHash }`
+      });
+    }
+  }
+)
 
 /**
  * @openapi
@@ -322,7 +415,7 @@ router.get(
  * @openapi
  * /api/users/{username}:
  *  patch:
- *    description: Updates the user with the specified username from the database.
+ *    description: Updates the user with the specified username in the database.
  *    security:
  *      - bearerAuth: []
  *    parameters:
@@ -433,6 +526,19 @@ router.patch(
  *          type: string
  *        required: true
  *        description: The username of the user that will be returned.
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              password:
+ *                type: string
+ *            required:
+ *              - password
+ *          example:
+ *            password: Admin@1234
  *    responses:
  *      200:
  *        description: The user was successfuly deleted.
@@ -461,17 +567,20 @@ router.delete(
       const user: UserModel | null = await UserModel.findOne({
         where: {
           username: paramsUsername
-        },
-        attributes: {
-          exclude: [
-            'password',
-            'stamp',
-            'verificationHash'
-          ]
         }
       });
 
       if (user) {
+        const password: string = createHash('sha512').update(`${ req.body.password }${ user.get().stamp }`).digest('hex');
+
+        if (password != user.get().password) {
+          res.status(statusCode);
+          return res.json({
+            status: statusCode,
+            message: 'Incorrect username or password.'
+          });
+        }
+
         await user.destroy();
 
         const imagePath: string = `${ physicalRootDir }${ user.get().profilePhotoUrl }`;
@@ -601,13 +710,185 @@ router.patch(
 );
 
 
-router.patch('/change-email/:username');
+/**
+ * @openapi
+ * /api/users/change-email/{username}:
+ *  patch:
+ *    description: Updates the user with the specified username's email in the database.
+ *    security:
+ *      - bearerAuth: []
+ *    parameters:
+ *      - in: path
+ *        name: username
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The username of the user that will be returned.
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *            required:
+ *              - email
+ *          example:
+ *            email: tiesto.dj@test.com
+ *    responses:
+ *      200:
+ *        description: The user was successfuly updated.
+ *      400:
+ *        description: The request failed validation.
+ *      401:
+ *        description: The user must be logged in to perform this operation.
+ *      403:
+ *        description: The user credentials are invalid.
+ *      500:
+ *        description: An internal error has occured while pulling the specified user from the database.
+ *    tags:
+ *      - Users
+ */
+router.patch(
+  '/change-email/:username',
+  authenticateToken,
+  authorizeSelf,
+  UsersValidator.validateUserChangeEmail(),
+  checkValidationResult,
+  async (req: AuthenticatedRequest, res: Response) => {
+    const paramsUsername: string = req.params.username;
+
+    try {
+      const user: UserModel | null = await UserModel.findOne({
+        where: {
+          username: paramsUsername
+        },
+        attributes: {
+          exclude: [
+            'password',
+            'stamp'
+          ]
+        }
+      });
+
+      if (user) {
+        await user.update({
+          email: req.body.email,
+          isVerified: false,
+          verificationHash: v4()
+        });
+
+        res.status(StatusCodes.SUCCESS_CODE);
+        return res.json({ 
+          status: StatusCodes.SUCCESS_CODE,
+          message: 'Succesfuly updated user email.',
+        });
+      } else {
+        throw new Error(`Attempted to modify non-existant user ${ paramsUsername }.`);
+      }
+    } catch(error) {
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        msg: 'Failed to update the user email.',
+        route: `PATCH ${ usersRouteName }/change-email/${ paramsUsername }`
+      });
+    }
+  }
+);
+
+/**
+ * @openapi
+ * /api/users/change-password/{username}:
+ *  patch:
+ *    description: Updates the user with the specified username's password in the database.
+ *    security:
+ *      - bearerAuth: []
+ *    parameters:
+ *      - in: path
+ *        name: username
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The username of the user that will be returned.
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              password:
+ *                type: string
+ *            required:
+ *              - password
+ *          example:
+ *            password: Admin@4321
+ *    responses:
+ *      200:
+ *        description: The user was successfuly updated.
+ *      400:
+ *        description: The request failed validation.
+ *      401:
+ *        description: The user must be logged in to perform this operation.
+ *      403:
+ *        description: The user credentials are invalid.
+ *      500:
+ *        description: An internal error has occured while pulling the specified user from the database.
+ *    tags:
+ *      - Users
+ */
+router.patch(
+  '/change-password/:username',
+  authenticateToken,
+  authorizeSelf,
+  UsersValidator.validateUserChangePassword(),
+  checkValidationResult,
+  async (req: AuthenticatedRequest, res: Response) => {
+    const paramsUsername: string = req.params.username;
+    const stamp: string = v4();
+    const password: string =  createHash('sha512').update(`${ req.body.password }${ stamp }`).digest('hex');
+
+    try {
+      const user: UserModel | null = await UserModel.findOne({
+        where: {
+          username: paramsUsername
+        },
+      });
+
+      if (user) {
+        await user.update({
+          password: password,
+          stamp: stamp,
+        });
+
+        res.status(StatusCodes.SUCCESS_CODE);
+        return res.json({ 
+          status: StatusCodes.SUCCESS_CODE,
+          message: 'Succesfuly updated user password.',
+        });
+      } else {
+        throw new Error(`Attempted to modify non-existant user ${ paramsUsername }.`);
+      }
+    } catch(error) {
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        msg: 'Failed to update the user password.',
+        route: `PATCH ${ usersRouteName }/change-password/${ paramsUsername }`
+      });
+    }
+  }
+);
 
 
-router.patch('/change-password/:username');
-
-
-router.patch('/change-phone/:username');
+// router.patch('/change-phone/:username');
 
 
 export default router;
