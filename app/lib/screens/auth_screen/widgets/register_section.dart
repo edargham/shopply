@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utilities/string_utils.dart';
+
 import '../../../providers/authentication.dart';
 import '../../widgets/item_button.dart';
 import '../../widgets/main_button.dart';
@@ -29,10 +31,12 @@ class _RegisterViewModel {
 class RegisterSection extends StatefulWidget {
   final VoidCallback onEnterEditMode;
   final VoidCallback onExitEditMode;
+  final VoidCallback onRegister;
   const RegisterSection({
     Key? key,
     required this.onEnterEditMode,
     required this.onExitEditMode,
+    required this.onRegister,
   }) : super(key: key);
 
   @override
@@ -84,15 +88,87 @@ class _RegisterSectionState extends State<RegisterSection> {
       });
 
       try {
-        await Provider.of<Authentication>(context, listen: false).registerUser(
-          _registerViewModel.email,
+        var res = await Provider.of<Authentication>(context, listen: false)
+            .registerUser(
+          _registerViewModel.username,
           _registerViewModel.firstName,
+          null,
           _registerViewModel.lastName,
+          DateTime.now().toIso8601String(),
+          true,
+          _registerViewModel.email,
+          _registerViewModel.phoneNumber,
           _registerViewModel.password,
         );
-        if (!mounted) return;
-        Navigator.of(context).pop();
-      } catch (_) {
+
+        if (res.status == 201) {
+          await showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: const Text(
+                  'Shopply',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: const Text(
+                  'You have successfuly registered your account with Shopply.\n'
+                  'Please use the username and password you registered with to log in.',
+                ),
+                actions: [
+                  ItemButton(
+                    icon: Icons.check,
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+
+          setState(() {
+            _isloading = false;
+          });
+
+          widget.onRegister();
+        } else {
+          String errors = '';
+          if (res.errors != null) {
+            errors = unwrapList(res.errors!.map((e) => e.msg).toList());
+          } else if (res.message != null) {
+            errors = res.message!;
+          }
+          await showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: const Text(
+                  'Shopply',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: Text(
+                  'We encountered an error while processing your request.\n\n$errors',
+                ),
+                actions: [
+                  ItemButton(
+                    icon: Icons.check,
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+          setState(() {
+            _isloading = false;
+          });
+        }
+      } catch (e) {
         await showDialog(
           context: context,
           builder: (BuildContext ctx) {

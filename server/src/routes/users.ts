@@ -138,7 +138,7 @@ router.post(
         res.status(statusCode);
         return res.json({
           status: statusCode,
-          msg: `User with username "${ req.body.username }" already exists.`,
+          message: `User with username "${ req.body.username }" already exists.`,
           route: `POST ${ usersRouteName }/signup`
         });
       }
@@ -171,7 +171,7 @@ router.post(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: 'Failed to add the spcified user to the database.',
+        message: 'Failed to add the spcified user to the database.',
         route: `POST ${ usersRouteName }/signup`
       });
     }
@@ -325,7 +325,7 @@ router.patch(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: 'Failed to verify user.',
+        message: 'Failed to verify user.',
         route: `PATCH ${ usersRouteName }/verify/${ paramsHash }`
       });
     }
@@ -390,7 +390,7 @@ router.get(
         res.status(statusCode);
         return res.json({
           status: statusCode,
-          msg: `No user with username ${ paramsUsername } was found.`,
+          message: `No user with username ${ paramsUsername } was found.`,
           route: `GET ${ usersRouteName }/${ paramsUsername }`
         });
       }
@@ -493,7 +493,7 @@ router.patch(
         res.status(statusCode);
         return res.json({ 
           status: statusCode,
-          msg: `Succesfuly updated user details.`,
+          message: `Succesfuly updated user details.`,
           user: user.get()
         });
       } else {
@@ -589,7 +589,7 @@ router.delete(
         res.status(statusCode);
         return res.json({ 
           status: statusCode,
-          msg: `Succesfuly deleted user.`,
+          message: `Succesfuly deleted user.`,
           user: user.get()
         });
       } else {
@@ -681,7 +681,7 @@ router.patch(
           
           return res.json({ 
             status: StatusCodes.SUCCESS_CODE,
-            msg: `Succesfuly updated user's thumbnail with id ${ req.params.id }.`,
+            message: `Succesfuly updated user's thumbnail with id ${ req.params.id }.`,
             user: user.get()
           });
         } else {
@@ -692,7 +692,7 @@ router.patch(
         res.status(statusCode);
         return res.json({
           status: statusCode,
-          msg: 'Failed to upload the selected image to the database.',
+          message: 'Failed to upload the selected image to the database.',
           route: `PATCH ${ usersRouteName }/change-photo/${ paramsUsername }`
         });
       }
@@ -702,7 +702,7 @@ router.patch(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: 'Failed to upload the selected image to the database.',
+        message: 'Failed to upload the selected image to the database.',
         route: `PATCH ${ usersRouteName }/change-photo/${ paramsUsername }`
       });
     }
@@ -794,7 +794,7 @@ router.patch(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: 'Failed to update the user email.',
+        message: 'Failed to update the user email.',
         route: `PATCH ${ usersRouteName }/change-email/${ paramsUsername }`
       });
     }
@@ -880,7 +880,7 @@ router.patch(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: 'Failed to update the user password.',
+        message: 'Failed to update the user password.',
         route: `PATCH ${ usersRouteName }/change-password/${ paramsUsername }`
       });
     }

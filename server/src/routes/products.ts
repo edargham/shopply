@@ -76,7 +76,7 @@ router.get(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: 'Failed to read products from the database.',
+        message: 'Failed to read products from the database.',
         route: `GET ${ productsRouteName }/`
       });
     }
@@ -128,7 +128,7 @@ router.get(
         res.status(statusCode);
         return res.json({
           status: statusCode,
-          msg: `No product with id ${ paramId } was found.`,
+          message: `No product with id ${ paramId } was found.`,
           route: `GET ${ productsRouteName }/${ paramId }`
         });
       }
@@ -141,7 +141,7 @@ router.get(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: 'Failed to read products from the database.',
+        message: 'Failed to read products from the database.',
         route: `GET ${ productsRouteName }/`
       });
     }
@@ -225,7 +225,7 @@ router.post(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: 'Failed to add the spcified product to the database.',
+        message: 'Failed to add the spcified product to the database.',
         route: `POST ${ productsRouteName }/`
       });
     }
@@ -305,7 +305,7 @@ router.patch(
 
         return res.json({ 
           status: StatusCodes.SUCCESS_CODE,
-          msg: `Succesfuly updated product with id ${ req.params.id }.`,
+          message: `Succesfuly updated product with id ${ req.params.id }.`,
           product: product.get()
         });
       } else {
@@ -313,7 +313,7 @@ router.patch(
         res.status(statusCode);
         return res.json({
           status: statusCode,
-          msg: `No product with id ${ req.params.id } was found in the database.`,
+          message: `No product with id ${ req.params.id } was found in the database.`,
           route: `PATCH ${ productsRouteName }/${ productId }`
         });
       }
@@ -323,7 +323,7 @@ router.patch(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: `Failed to update product with id ${ req.params.id } in the database.`,
+        message: `Failed to update product with id ${ req.params.id } in the database.`,
         route: `PATCH ${ productsRouteName }/${ productId }`
       });
     }
@@ -385,7 +385,7 @@ router.delete(
         res.status(statusCode);
         return res.json({
           status: statusCode,
-          msg: `Succesfuly deleted product with id ${ productId }.`,
+          message: `Succesfuly deleted product with id ${ productId }.`,
           product: product.get()
         });
       } else {
@@ -394,7 +394,7 @@ router.delete(
         res.status(statusCode);
         return res.json({
           status: statusCode,
-          msg: `No product with id ${ req.params.id } was found.`,
+          message: `No product with id ${ req.params.id } was found.`,
           route: `DELETE ${ productsRouteName }/${ productId }`
         });
       }
@@ -403,7 +403,7 @@ router.delete(
       res.status(StatusCodes.INTERNAL_SERVER_ERROR);
       return res.json({
         status: statusCode,
-        msg: `Failed to delete the specified product with id: ${ productId } from the database.`,
+        message: `Failed to delete the specified product with id: ${ productId } from the database.`,
         route: `DELETE ${ productsRouteName }/${ productId }`
       });
     }
@@ -479,7 +479,7 @@ router.patch(
           
           return res.json({ 
             status: StatusCodes.SUCCESS_CODE,
-            msg: `Succesfuly updated product's thumbnail with id ${ req.params.id }.`,
+            message: `Succesfuly updated product's thumbnail with id ${ req.params.id }.`,
             product: product.get()
           });
         } else {
@@ -487,7 +487,7 @@ router.patch(
           res.status(statusCode);
           return res.json({
             status: statusCode,
-            msg: `No product with id ${ req.params.id } was found.`,
+            message: `No product with id ${ req.params.id } was found.`,
             route: `PATCH ${ productsRouteName }/update-photo/${ productId }`
           });
         }
@@ -496,7 +496,7 @@ router.patch(
         res.status(statusCode);
         return res.json({
           status: statusCode,
-          msg: 'Failed to upload the selected image to the database.',
+          message: 'Failed to upload the selected image to the database.',
           route: `PATCH ${ productsRouteName }/update-photo/${ productId }`
         });
       }
@@ -506,7 +506,7 @@ router.patch(
       res.status(statusCode);
       return res.json({
         status: statusCode,
-        msg: 'Failed to upload the selected image to the database.',
+        message: 'Failed to upload the selected image to the database.',
         route: `PATCH ${ productsRouteName }/update-photo/${ productId }`
       });
     }

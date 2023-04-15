@@ -5,7 +5,7 @@ import { v4 } from 'uuid';
 export interface IUser {
   username: string,
   firstName: string,
-  middleName: string,
+  middleName: string | null,
   lastName: string,
   dateOfBirth: Date,
   sex: boolean,
@@ -35,7 +35,7 @@ UserModel.init(
     },
     middleName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       field: 'middle_name'
     },
     lastName: {

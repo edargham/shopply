@@ -84,7 +84,7 @@ class App extends StatelessWidget {
                 backgroundColor: Theme.of(ctx).colorScheme.background,
                 onPrimaryColor: Theme.of(ctx).colorScheme.onPrimary,
               ),
-          // AuthScreen.routeName: (BuildContext ctx) => const AuthScreen(),
+          AuthScreen.routeName: (BuildContext ctx) => const AuthScreen(),
           ProductDetailsScreen.routeName: (BuildContext ctx) =>
               const ProductDetailsScreen(),
           ShoppingCartScreen.routeName: (BuildContext ctx) =>

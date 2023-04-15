@@ -58,8 +58,8 @@ class TextBox extends StatelessWidget {
             decoration: InputDecoration(
               label: Text(
                 caption,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
               errorBorder: OutlineInputBorder(
@@ -91,7 +91,7 @@ class TextBox extends StatelessWidget {
                 ),
               ),
             ),
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
             onChanged: onChange,
           )
         ],

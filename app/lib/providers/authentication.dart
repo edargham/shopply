@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
-
+import '../models/register_response.dart';
 import '../services/auth_service.dart';
 
 class Authentication with ChangeNotifier {
@@ -9,16 +9,32 @@ class Authentication with ChangeNotifier {
   // DateTime _expiryDate;
   // String _userId;
 
-  Future<void> registerUser(
-      String email, String firstName, String lastName, String password) async {
-    return await AuthService.registerUser(email, password)
-        .then(((Response res) {
-      final response = json.decode(res.body);
-      return AuthService.updateDetails(
-              response['idToken'], '$firstName $lastName')
-          .then((_) {
-        print(json.decode(res.body));
-      });
+  Future<RegisterResponse> registerUser(
+    String username,
+    String firstName,
+    String? middleName,
+    String lastName,
+    String dateOfBirth,
+    bool sex,
+    String email,
+    String phoneNumber,
+    String password,
+  ) async {
+    return await AuthService.registerUser(
+      username,
+      firstName,
+      middleName,
+      lastName,
+      dateOfBirth,
+      sex,
+      email,
+      phoneNumber,
+      password,
+    ).then(((Response res) {
+      final dynamic response = json.decode(res.body);
+      RegisterResponse parsed = RegisterResponse.fromJson(response);
+      print(response);
+      return parsed;
     }));
   }
 

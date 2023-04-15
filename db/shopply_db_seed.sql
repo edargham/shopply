@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS "shopply"."products" (
 CREATE TABLE IF NOT EXISTS "shopply"."user" (
   "username" VARCHAR(16) NOT NULL,
   "first_name" VARCHAR(64) NOT NULL,
-  "middle_name" VARCHAR(64) NOT NULL,
+  "middle_name" VARCHAR(64) NULL,
   "last_name" VARCHAR(64) NOT NULL,
   "date_of_birth" TIMESTAMP NOT NULL,
   "sex" BOOLEAN NOT NULL,

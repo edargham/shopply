@@ -31,8 +31,7 @@ export default class UsersValidator {
       .withMessage(ValidatorTemplateMessages.typeMismatchSetting('firstName', 'alphabetic')),
 
       body('middleName')
-      .notEmpty()
-      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('middleName'))
+      .optional()
       .isLength({ max: 16 })
       .withMessage(ValidatorTemplateMessages.MAX_LENGTH_MESSAGE)
       .isAlpha()
