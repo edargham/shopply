@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/cart.dart';
-import '../../models/order.dart';
+import '../../models/view_models/cart.dart';
+import '../../models/view_models/order.dart';
 
 import '../widgets/item_banner.dart';
 import '../widgets/item_button.dart';

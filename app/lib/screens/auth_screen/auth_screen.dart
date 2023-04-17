@@ -155,7 +155,7 @@ class ControllerBody extends StatelessWidget {
                   onEnterEditMode: onEnterEditMode,
                   onExitEditMode: onExitEditMode,
                   onRegister: () {
-                    DefaultTabController.of(context)?.animateTo(0);
+                    DefaultTabController.of(context).animateTo(0);
                   },
                 ),
               ],

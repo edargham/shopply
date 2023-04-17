@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../models/product.dart';
+import '../../../models/view_models/product.dart';
 import '../../../providers/products.dart';
 import '../../product_form_screen/product_form_screen.dart';
 import '../../widgets/item_button.dart';
@@ -13,24 +13,24 @@ class ManageProductItem extends StatefulWidget {
 }
 
 class _ManageProductItemState extends State<ManageProductItem> {
-  Widget _showImage(Product item) {
-    // try {
-    return Expanded(
-      flex: 2,
-      child: Image.network(
-        item.imageUrl,
-        fit: BoxFit.fill,
-      ),
-    );
-    // } catch (_) {
-    // return const Expanded(
-    //   flex: 2,
-    //   child: Center(
-    //     child: Text('Image not available.'),
-    //   ),
-    // );
-    // }
-  }
+  // Widget _showImage(Product item) {
+  //   // try {
+  //   return Expanded(
+  //     flex: 2,
+  //     child: Image.network(
+  //       item.imageUrl,
+  //       fit: BoxFit.fill,
+  //     ),
+  //   );
+  //   // } catch (_) {
+  //   // return const Expanded(
+  //   //   flex: 2,
+  //   //   child: Center(
+  //   //     child: Text('Image not available.'),
+  //   //   ),
+  //   // );
+  //   // }
+  // }
 
   void _showAlert(BuildContext context, Product item) async {
     await showDialog(
@@ -43,8 +43,8 @@ class _ManageProductItemState extends State<ManageProductItem> {
             ItemButton(
               onPressed: () async {
                 try {
-                  await Provider.of<Products>(context, listen: false)
-                      .deleteProduct(item);
+                  // await Provider.of<Products>(context, listen: false)
+                  //     .deleteProduct(item);
                 } catch (_) {
                   await showDialog(
                     context: context,
@@ -121,7 +121,7 @@ class _ManageProductItemState extends State<ManageProductItem> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _showImage(item),
+          // _showImage(item),
           Expanded(
             flex: 1,
             child: Align(

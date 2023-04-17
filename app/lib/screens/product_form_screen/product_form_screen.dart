@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/product.dart';
+import '../../models/view_models/product.dart';
 import '../../providers/products.dart';
 
 import '../widgets/text_box.dart';
@@ -36,13 +36,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   bool _init = true;
   bool _isloading = false;
 
-  Product _editedProduct = Product(
-    id: '',
-    title: '',
-    description: '',
-    imageUrl: '',
-    price: 0.0,
-  );
+  // Product _editedProduct = Product(
+  //   id: '',
+  //   title: '',
+  //   description: '',
+  //   imageUrl: '',
+  //   price: 0.0,
+  // );
 
   @override
   void initState() {
@@ -56,17 +56,17 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       final String? productId = (ModalRoute.of(context)?.settings.arguments
           as Map<String, String?>)['productId'];
       if (productId != null) {
-        _editedProduct = Provider.of<Products>(context, listen: false)
-            .findProductById(productId);
+        // _editedProduct = Provider.of<Products>(context, listen: false)
+        //     .findProductById(productId);
 
-        _initValues = {
-          'title': _editedProduct.title,
-          'description': _editedProduct.description,
-          'price': _editedProduct.price.toString(),
-          'imageUrl': '',
-        };
+        // _initValues = {
+        //   'title': _editedProduct.title,
+        //   'description': _editedProduct.description,
+        //   'price': _editedProduct.price.toString(),
+        //   'imageUrl': '',
+        // };
 
-        _imageUrlTextBoxController.text = _editedProduct.imageUrl;
+        // _imageUrlTextBoxController.text = _editedProduct.imageUrl;
       }
     }
     _init = false;
@@ -84,103 +84,103 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     super.dispose();
   }
 
-  void _saveForm(BuildContext context) async {
-    bool isValid = _formKey.currentState!.validate();
-    if (isValid) {
-      _formKey.currentState?.save();
+  // void _saveForm(BuildContext context) async {
+  //   bool isValid = _formKey.currentState!.validate();
+  //   if (isValid) {
+  //     _formKey.currentState?.save();
 
-      if (_editedProduct.id.isEmpty) {
-        setState(() {
-          _isloading = true;
-        });
-        Product newProduct = Product(
-          id: 'p${DateTime.now()}',
-          description: _editedProduct.description,
-          title: _editedProduct.title,
-          price: _editedProduct.price,
-          imageUrl: _editedProduct.imageUrl,
-        );
-        try {
-          await Provider.of<Products>(context, listen: false)
-              .addProduct(newProduct);
-          if (!mounted) return;
-          Navigator.of(context).pop();
-        } catch (_) {
-          await showDialog(
-            context: context,
-            builder: (BuildContext ctx) {
-              return AlertDialog(
-                title: const Text(
-                  'Shopply',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                content: const Text(
-                    'We encountered an error while processing your request.'
-                    '\nPlease try again later.'),
-                actions: [
-                  ItemButton(
-                    icon: Icons.check,
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-          if (!mounted) return;
-          Navigator.of(context).pop();
-        }
-      } else {
-        setState(() {
-          _isloading = true;
-        });
-        Product newProduct = Product(
-          id: _editedProduct.id,
-          description: _editedProduct.description,
-          title: _editedProduct.title,
-          price: _editedProduct.price,
-          imageUrl: _editedProduct.imageUrl,
-        );
-        try {
-          await Provider.of<Products>(context, listen: false)
-              .updateProduct(newProduct);
-          if (!mounted) return;
-          Navigator.of(context).pop();
-        } catch (_) {
-          await showDialog(
-            context: context,
-            builder: (BuildContext ctx) {
-              return AlertDialog(
-                title: const Text(
-                  'Shopply',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                content: const Text(
-                    'We encountered an error while processing your request.'
-                    '\nPlease try again later.'),
-                actions: [
-                  ItemButton(
-                    icon: Icons.check,
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-          if (!mounted) return;
-          Navigator.of(context).pop();
-        }
-      }
-    }
-    FocusManager.instance.primaryFocus?.unfocus();
-  }
+  //     if (_editedProduct.id.isEmpty) {
+  //       setState(() {
+  //         _isloading = true;
+  //       });
+  //       Product newProduct = Product(
+  //         id: 'p${DateTime.now()}',
+  //         description: _editedProduct.description,
+  //         title: _editedProduct.title,
+  //         price: _editedProduct.price,
+  //         imageUrl: _editedProduct.imageUrl,
+  //       );
+  //       try {
+  //         await Provider.of<Products>(context, listen: false)
+  //             .addProduct(newProduct);
+  //         if (!mounted) return;
+  //         Navigator.of(context).pop();
+  //       } catch (_) {
+  //         await showDialog(
+  //           context: context,
+  //           builder: (BuildContext ctx) {
+  //             return AlertDialog(
+  //               title: const Text(
+  //                 'Shopply',
+  //                 style: TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //               ),
+  //               content: const Text(
+  //                   'We encountered an error while processing your request.'
+  //                   '\nPlease try again later.'),
+  //               actions: [
+  //                 ItemButton(
+  //                   icon: Icons.check,
+  //                   onPressed: () {
+  //                     Navigator.of(ctx).pop();
+  //                   },
+  //                 ),
+  //               ],
+  //             );
+  //           },
+  //         );
+  //         if (!mounted) return;
+  //         Navigator.of(context).pop();
+  //       }
+  //     } else {
+  //       setState(() {
+  //         _isloading = true;
+  //       });
+  //       // Product newProduct = Product(
+  //       //   id: _editedProduct.id,
+  //       //   description: _editedProduct.description,
+  //       //   title: _editedProduct.title,
+  //       //   price: _editedProduct.price,
+  //       //   imageUrl: _editedProduct.imageUrl,
+  //       // );
+  //       try {
+  //         await Provider.of<Products>(context, listen: false)
+  //             .updateProduct(newProduct);
+  //         if (!mounted) return;
+  //         Navigator.of(context).pop();
+  //       } catch (_) {
+  //         await showDialog(
+  //           context: context,
+  //           builder: (BuildContext ctx) {
+  //             return AlertDialog(
+  //               title: const Text(
+  //                 'Shopply',
+  //                 style: TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //               ),
+  //               content: const Text(
+  //                   'We encountered an error while processing your request.'
+  //                   '\nPlease try again later.'),
+  //               actions: [
+  //                 ItemButton(
+  //                   icon: Icons.check,
+  //                   onPressed: () {
+  //                     Navigator.of(ctx).pop();
+  //                   },
+  //                 ),
+  //               ],
+  //             );
+  //           },
+  //         );
+  //         if (!mounted) return;
+  //         Navigator.of(context).pop();
+  //       }
+  //     }
+  //   }
+  //   FocusManager.instance.primaryFocus?.unfocus();
+  // }
 
   void _onFocusChanged() {
     setState(() {});
@@ -226,16 +226,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     return null;
                   }
                 },
-                onSaved: (String? value) {
-                  _editedProduct = Product(
-                    id: _editedProduct.id,
-                    title: value!,
-                    description: _editedProduct.description,
-                    imageUrl: _editedProduct.imageUrl,
-                    price: _editedProduct.price,
-                    isFavorite: _editedProduct.isFavorite,
-                  );
-                },
+                // onSaved: (String? value) {
+                //   _editedProduct = Product(
+                //     id: _editedProduct.id,
+                //     title: value!,
+                //     description: _editedProduct.description,
+                //     imageUrl: _editedProduct.imageUrl,
+                //     price: _editedProduct.price,
+                //     isFavorite: _editedProduct.isFavorite,
+                //   );
+                // },
               ),
               const SizedBox(
                 height: 8.0,
@@ -261,16 +261,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     return null;
                   }
                 },
-                onSaved: (String? value) {
-                  _editedProduct = Product(
-                    id: _editedProduct.id,
-                    title: _editedProduct.title,
-                    description: _editedProduct.description,
-                    imageUrl: _editedProduct.imageUrl,
-                    price: double.parse(value!),
-                    isFavorite: _editedProduct.isFavorite,
-                  );
-                },
+                // onSaved: (String? value) {
+                //   _editedProduct = Product(
+                //     id: _editedProduct.id,
+                //     title: _editedProduct.title,
+                //     description: _editedProduct.description,
+                //     imageUrl: _editedProduct.imageUrl,
+                //     price: double.parse(value!),
+                //     isFavorite: _editedProduct.isFavorite,
+                //   );
+                // },
               ),
               TextBox(
                 caption: 'Description',
@@ -290,16 +290,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     return null;
                   }
                 },
-                onSaved: (String? value) {
-                  _editedProduct = Product(
-                    id: _editedProduct.id,
-                    title: _editedProduct.title,
-                    description: value!,
-                    imageUrl: _editedProduct.imageUrl,
-                    price: _editedProduct.price,
-                    isFavorite: _editedProduct.isFavorite,
-                  );
-                },
+                // onSaved: (String? value) {
+                //   _editedProduct = Product(
+                //     id: _editedProduct.id,
+                //     title: _editedProduct.title,
+                //     description: value!,
+                //     imageUrl: _editedProduct.imageUrl,
+                //     price: _editedProduct.price,
+                //     isFavorite: _editedProduct.isFavorite,
+                //   );
+                // },
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -326,16 +326,16 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 onSubmit: (_) {
                   _showImage();
                 },
-                onSaved: (String? value) {
-                  _editedProduct = Product(
-                    id: _editedProduct.id,
-                    title: _editedProduct.title,
-                    description: _editedProduct.description,
-                    imageUrl: value!,
-                    price: _editedProduct.price,
-                    isFavorite: _editedProduct.isFavorite,
-                  );
-                },
+                // onSaved: (String? value) {
+                //   _editedProduct = Product(
+                //     id: _editedProduct.id,
+                //     title: _editedProduct.title,
+                //     description: _editedProduct.description,
+                //     imageUrl: value!,
+                //     price: _editedProduct.price,
+                //     isFavorite: _editedProduct.isFavorite,
+                //   );
+                // },
                 validator: (String? value) {
                   if (value!.isEmpty) {
                     return 'Please enter a valid image link your product.';
@@ -347,7 +347,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
               Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: MainButton(
-                  onPressed: () => _saveForm(context),
+                  onPressed: () {}, // => _saveForm(context),
                   title: 'SAVE',
                   icon: Icons.save,
                 ),
@@ -377,7 +377,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
             ),
             child: ItemButton(
               onPressed: () {
-                _saveForm(context);
+                // _saveForm(context);
               },
               icon: Icons.save,
             ),

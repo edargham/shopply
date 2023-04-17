@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../models/cart.dart';
+import '../../../models/view_models/cart.dart';
 import '../../product_details_screen/product_details_screen.dart';
-import '../../../models/product.dart';
+import '../../../models/view_models/product.dart';
 import '../../widgets/item_button.dart';
 import './favorite_loading_indicator.dart';
 
@@ -31,7 +31,7 @@ class _ProductItemState extends State<ProductItem> {
     return Expanded(
       flex: 2,
       child: Image.network(
-        item.imageUrl,
+        item.imageUrl!,
         fit: BoxFit.fill,
       ),
     );
@@ -55,13 +55,17 @@ class _ProductItemState extends State<ProductItem> {
               setState(() {
                 _isLoading = true;
               });
-              item.setFavorite(item.id, !item.isFavorite).then((_) {
+              item.setFavorite(
+                item.id,
+                !item.isFavorite,
+              ) /*.then((_) {
                 setState(() {
                   _isLoading = false;
                 });
               }).catchError((_) {
                 return;
-              });
+              });*/
+                  ;
             },
             icon: item.isFavorite ? Icons.favorite : Icons.favorite_outline,
             color: Colors.red,
@@ -110,7 +114,7 @@ class _ProductItemState extends State<ProductItem> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            _showImage(item),
+            (item.imageUrl != null) ? _showImage(item) : Container(),
             Expanded(
               flex: 1,
               child: Align(

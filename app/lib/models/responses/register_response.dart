@@ -1,4 +1,4 @@
-import 'validation_error.dart';
+import '../view_models/validation_error.dart';
 
 class RegisterResponse {
   int? status;

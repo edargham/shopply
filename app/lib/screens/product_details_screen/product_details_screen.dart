@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../../providers/products.dart';
 
-import '../../models/product.dart';
-import '../../models/cart.dart';
+import '../../models/view_models/product.dart';
+import '../../models/view_models/cart.dart';
 
 import '../widgets/cart_button.dart';
 import '../widgets/main_button.dart';
@@ -18,7 +18,7 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget _showImage(Product item) {
     // try {
     return Image.network(
-      item.imageUrl,
+      item.imageUrl!,
     );
     // } catch (_) {
     // return const Center(
@@ -71,7 +71,7 @@ class ProductDetailsScreen extends StatelessWidget {
               ),
               child: Column(
                 children: <Widget>[
-                  _showImage(item),
+                  (item.imageUrl != null) ? _showImage(item) : Container(),
                   TitleBanner(
                     color: Theme.of(context).primaryColor,
                     title: item.title,
@@ -98,7 +98,9 @@ class ProductDetailsScreen extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Expanded(
-                              child: Text(item.description),
+                              child: Text((item.description != null)
+                                  ? item.description!
+                                  : 'This item as no description.'),
                             ),
                           ),
                         ),

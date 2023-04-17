@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../models/cart.dart';
-import '../models/order.dart';
-
-import './common.dart';
+import '../models/view_models/cart.dart';
+import '../models/view_models/order.dart';
 
 class OrderService {
   static const String _ordersUrl = '/orders.json';
@@ -12,7 +10,7 @@ class OrderService {
 
   static Future<http.Response> addOrder(OrderItem order) {
     return http.post(
-      Uri.https(baseUrl, _ordersUrl),
+      Uri.https('10.0.2.2', _ordersUrl),
       body: json.encode({
         'amount': order.amount,
         'dateOrdered': order.dateOrdered.toIso8601String(),
@@ -31,10 +29,10 @@ class OrderService {
   }
 
   static Future<http.Response> getOrders() {
-    return http.get(Uri.https(baseUrl, _ordersUrl));
+    return http.get(Uri.https('10.0.2.2', _ordersUrl));
   }
 
   static Future<http.Response> deleteOrder(String id) {
-    return http.delete(Uri.http(baseUrl, '$_ordersRoute/$id.json'));
+    return http.delete(Uri.http('10.0.2.2', '$_ordersRoute/$id.json'));
   }
 }

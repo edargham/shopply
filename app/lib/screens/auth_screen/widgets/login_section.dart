@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utilities/string_utils.dart';
+
 import '../../../providers/authentication.dart';
 
 import '../../widgets/item_button.dart';
@@ -59,10 +61,49 @@ class _LoginSectionState extends State<LoginSection> {
       });
 
       try {
-        await Provider.of<Authentication>(context, listen: false)
+        var res = await Provider.of<Authentication>(context, listen: false)
             .login(_loginViewModel.username, _loginViewModel.password);
-        if (!mounted) return;
-        Navigator.of(context).pop();
+        if (res.message != null || res.status != 200) {
+          String errors = '';
+          if (res.errors != null) {
+            errors = unwrapList(res.errors!.map((e) => e.msg).toList());
+          } else if (res.message != null) {
+            errors = res.message!;
+          }
+          await showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                title: const Text(
+                  'Shopply',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: Text(
+                  'We encountered an error while processing your request.\n\n$errors',
+                ),
+                actions: [
+                  ItemButton(
+                    icon: Icons.check,
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+          setState(() {
+            _isloading = false;
+          });
+        } else {
+          // setState(() {
+          //   _isloading = false;
+          // });
+          // if (!mounted) return;
+          // Navigator.of(context).pop();
+        }
       } catch (_) {
         await showDialog(
           context: context,

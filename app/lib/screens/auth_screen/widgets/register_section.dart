@@ -168,7 +168,7 @@ class _RegisterSectionState extends State<RegisterSection> {
             _isloading = false;
           });
         }
-      } catch (e) {
+      } catch (_) {
         await showDialog(
           context: context,
           builder: (BuildContext ctx) {

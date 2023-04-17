@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/product.dart';
+import '../../models/view_models/product.dart';
 import '../../providers/products.dart';
 
 import '../product_form_screen/product_form_screen.dart';

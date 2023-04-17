@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../products_screen/products_screen.dart';
 import './widgets/main_drawer.dart';
+import './widgets/context_menu_button.dart';
 import '../widgets/cart_button.dart';
 
 enum _FilterOptions {
@@ -10,13 +11,7 @@ enum _FilterOptions {
 }
 
 class TabNavigationScreen extends StatefulWidget {
-  final Color onPrimaryColor;
-  final Color backgroundColor;
-  const TabNavigationScreen({
-    super.key,
-    required this.onPrimaryColor,
-    required this.backgroundColor,
-  });
+  const TabNavigationScreen({super.key});
   @override
   State<TabNavigationScreen> createState() => _TabNavigationScreenState();
 }
@@ -34,29 +29,9 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
         'title': 'Products',
         'actions': <Widget>[
           const CartButton(),
-          Container(
-            margin: const EdgeInsets.all(4.0),
-            height: 48,
-            width: 48,
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: widget.onPrimaryColor,
-                width: 1.0,
-                style: BorderStyle.solid,
-              ),
-              borderRadius: BorderRadius.circular(8.0),
-              gradient: LinearGradient(
-                colors: [
-                  widget.backgroundColor.withOpacity(0.64),
-                  widget.backgroundColor,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
+          ContextMenuButton(
             child: PopupMenuButton(
-              onSelected: (_FilterOptions selectedOption) {
+              onSelected: (selectedOption) {
                 setState(() {
                   _filterFavorites =
                       selectedOption == _FilterOptions.showFavorites;

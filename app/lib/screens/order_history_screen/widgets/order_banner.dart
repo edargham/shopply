@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../../widgets/item_banner.dart';
 import '../../widgets/item_button.dart';
 
-import '../../../models/order.dart';
+import '../../../models/view_models/order.dart';
 
 class OrderBanner extends StatefulWidget {
   final OrderItem item;

@@ -69,7 +69,10 @@ router.get(
     try {
       const products: ProductModel[] = await ProductModel.findAll();
       res.status(StatusCodes.SUCCESS_CODE);
-      return res.json(products);
+      return res.json({
+        status: StatusCodes.SUCCESS_CODE,
+        products: products
+      });
     } catch (error) {
       console.error(error);
       const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;

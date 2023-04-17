@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
-import '../errors/http_exception.dart';
-import './cart.dart';
-import '../services/order_service.dart';
+import '../../errors/http_exception.dart';
+import 'cart.dart';
+import '../../services/order_service.dart';
 
 class OrderItem {
   final String id;
