@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/authentication.dart';
 import '../../providers/products.dart';
 
 import '../../models/view_models/product.dart';
 import '../../models/view_models/cart.dart';
 
+import '../auth_screen/auth_screen.dart';
 import '../widgets/cart_button.dart';
 import '../widgets/main_button.dart';
 import './widgets/section_header.dart';
@@ -38,7 +40,10 @@ class ProductDetailsScreen extends StatelessWidget {
       context,
       listen: false,
     ).findProductById(itemId);
+
     final Cart cart = Provider.of<Cart>(context);
+
+    final String? token = Provider.of<Authentication>(context).token;
 
     return Scaffold(
       appBar: AppBar(
@@ -89,6 +94,14 @@ class ProductDetailsScreen extends StatelessWidget {
                         const SizedBox(height: 8.0),
                         SectionHeader(
                           color: Theme.of(context).colorScheme.background,
+                          icon: Icons.inventory_2_outlined,
+                          title: 'Status',
+                          description:
+                              (item.stock > 0) ? 'In stock' : 'Out of stock',
+                        ),
+                        const SizedBox(height: 8.0),
+                        SectionHeader(
+                          color: Theme.of(context).colorScheme.background,
                           icon: Icons.list,
                           title: 'Description',
                         ),
@@ -111,13 +124,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(4.0),
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: MainButton(
-                        onPressed: () {
-                          cart.addItem(item.id, item.price, item.title);
-                        },
-                        title: 'BUY',
-                        icon: Icons.add_shopping_cart,
-                      ),
+                      child: _showProductPrompt(context, token, cart, item),
                     ),
                   )
                 ],
@@ -127,5 +134,37 @@ class ProductDetailsScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Widget _showProductPrompt(
+      BuildContext context, String? token, Cart cart, Product item) {
+    return (token != null)
+        ? MainButton(
+            onPressed: () {
+              cart.addItem(item.id, item.price, item.title);
+            },
+            title: 'BUY',
+            icon: Icons.add_shopping_cart,
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'You must be logged in in order to perform this action.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              MainButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(AuthScreen.routeName);
+                },
+                title: 'LOGIN',
+                icon: Icons.login,
+              )
+            ],
+          );
   }
 }

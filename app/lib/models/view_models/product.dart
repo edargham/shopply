@@ -44,7 +44,7 @@ class Product with ChangeNotifier {
       id: jsonBody['id'],
       title: jsonBody['title'],
       description: jsonBody['description'],
-      imageUrl: jsonBody['imageUrl'],
+      imageUrl: 'http://10.0.2.2:3000/${jsonBody['imageUrl']}',
       price: jsonBody['price'],
       stock: jsonBody['stock'],
     );

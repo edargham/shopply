@@ -98,11 +98,11 @@ class _LoginSectionState extends State<LoginSection> {
             _isloading = false;
           });
         } else {
-          // setState(() {
-          //   _isloading = false;
-          // });
-          // if (!mounted) return;
-          // Navigator.of(context).pop();
+          setState(() {
+            _isloading = false;
+          });
+          if (!mounted) return;
+          Navigator.of(context).pop();
         }
       } catch (_) {
         await showDialog(

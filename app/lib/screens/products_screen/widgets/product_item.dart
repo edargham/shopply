@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/authentication.dart';
+import '../../auth_screen/auth_screen.dart';
 import '../../../models/view_models/cart.dart';
 import '../../product_details_screen/product_details_screen.dart';
 import '../../../models/view_models/product.dart';
@@ -45,27 +47,64 @@ class _ProductItemState extends State<ProductItem> {
     // }
   }
 
-  Widget _showFavoriteButton() {
+  Future<void> _showAuthDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          title: const Text(
+            'Shopply',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text(
+              'You must be logged in in order to perform this action.'),
+          actions: [
+            ItemButton(
+              icon: Icons.close,
+              color: Theme.of(context).colorScheme.error,
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            ),
+            ItemButton(
+              icon: Icons.login,
+              onPressed: () {
+                Navigator.of(ctx).popAndPushNamed(AuthScreen.routeName);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _showFavoriteButton(String? token) {
     if (!_isLoading) {
       return Expanded(
         child: Consumer<Product>(
           builder: (BuildContext context, Product item, Widget? child) =>
               ItemButton(
-            onPressed: () {
-              setState(() {
-                _isLoading = true;
-              });
-              item.setFavorite(
-                item.id,
-                !item.isFavorite,
-              ) /*.then((_) {
+            onPressed: () async {
+              if (token != null) {
+                setState(() {
+                  _isLoading = true;
+                });
+                item.setFavorite(
+                  item.id,
+                  !item.isFavorite,
+                );
+              } else {
+                await _showAuthDialog();
+              } /*.then((_) {
                 setState(() {
                   _isLoading = false;
                 });
               }).catchError((_) {
                 return;
               });*/
-                  ;
+              ;
             },
             icon: item.isFavorite ? Icons.favorite : Icons.favorite_outline,
             color: Colors.red,
@@ -84,6 +123,8 @@ class _ProductItemState extends State<ProductItem> {
     MediaQueryData deviceDisplay = MediaQuery.of(context);
     final Product item = Provider.of<Product>(context, listen: false);
     final Cart cart = Provider.of<Cart>(context, listen: false);
+    final String? token =
+        Provider.of<Authentication>(context, listen: true).token;
 
     const double hScale = 0.32;
     return InkWell(
@@ -144,38 +185,52 @@ class _ProductItemState extends State<ProductItem> {
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 16.0,
                             ),
+                          ),
+                          Text(
+                            (item.stock > 0) ? 'In stock' : 'Out of stock',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontSize: 16.0,
+                              fontStyle: FontStyle.italic,
+                            ),
                           )
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          _showFavoriteButton(),
+                          _showFavoriteButton(token),
                           Expanded(
                             child: ItemButton(
-                              onPressed: () {
-                                cart.addItem(item.id, item.price, item.title);
-                                ScaffoldMessenger.of(context)
-                                    .hideCurrentSnackBar();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content:
-                                        Text('x1 ${item.title} added to cart'),
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.65),
-                                    action: SnackBarAction(
-                                        label: 'UNDO',
-                                        textColor: Theme.of(context)
-                                            .colorScheme
-                                            .background,
-                                        onPressed: () {
-                                          cart.deleteSingleItem(item.id);
-                                        }),
-                                    duration: const Duration(milliseconds: 768),
-                                  ),
-                                );
+                              onPressed: () async {
+                                if (token != null) {
+                                  cart.addItem(item.id, item.price, item.title);
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentSnackBar();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'x1 ${item.title} added to cart'),
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.65),
+                                      action: SnackBarAction(
+                                          label: 'UNDO',
+                                          textColor: Theme.of(context)
+                                              .colorScheme
+                                              .background,
+                                          onPressed: () {
+                                            cart.deleteSingleItem(item.id);
+                                          }),
+                                      duration:
+                                          const Duration(milliseconds: 768),
+                                    ),
+                                  );
+                                } else {
+                                  await _showAuthDialog();
+                                }
                               },
                               color: Colors.amber,
                               icon: Icons.add_shopping_cart,
