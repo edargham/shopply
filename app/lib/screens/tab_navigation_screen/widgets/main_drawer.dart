@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../providers/authentication.dart';
+
+import '../../auth_screen/auth_screen.dart';
 import '../../order_history_screen/order_history_screen.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -30,6 +34,8 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String? token = Provider.of<Authentication>(context).token;
+
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -80,14 +86,21 @@ class MainDrawer extends StatelessWidget {
                   .pushReplacementNamed(OrderHistoryScreen.routeName);
             },
           ),
-          _buildListTile(
-            context: context,
-            icon: Icons.shop_rounded,
-            caption: 'Manage Products',
-            tileTapped: () {
-              Navigator.of(context).pushReplacementNamed('/manage');
-            },
-          ),
+          (token != null)
+              ? _buildListTile(
+                  context: context,
+                  icon: Icons.person_2,
+                  caption: 'User Settings',
+                  tileTapped: () {},
+                )
+              : _buildListTile(
+                  context: context,
+                  icon: Icons.login,
+                  caption: 'Login',
+                  tileTapped: () {
+                    Navigator.of(context).pushNamed(AuthScreen.routeName);
+                  },
+                ),
         ],
       ),
     );
