@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/authentication.dart';
+import '../../providers/user.dart';
 import '../products_screen/products_screen.dart';
-import './widgets/main_drawer.dart';
-import './widgets/context_menu_button.dart';
+
+import '../widgets/main_drawer.dart';
 import '../widgets/cart_button.dart';
+
+import './widgets/context_menu_button.dart';
 
 enum _FilterOptions {
   showFavorites,
@@ -76,6 +81,25 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
       },
     ];
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    String? token = Provider.of<Authentication>(context, listen: false).token;
+    String? username =
+        Provider.of<Authentication>(context, listen: false).username;
+    User user = Provider.of<User>(context, listen: false);
+
+    if (token != null && username != null && user.currentUser == null) {
+      user.getUser(token, username).then((_) {
+        if (user.currentUser == null) {
+          Provider.of<Authentication>(context, listen: false).token = null;
+          Provider.of<Authentication>(context, listen: false).username = null;
+        }
+      });
+    }
+
+    super.didChangeDependencies();
   }
 
   void _selectScreen(int index) {

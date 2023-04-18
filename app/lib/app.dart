@@ -11,9 +11,11 @@ import './screens/auth_screen/auth_screen.dart';
 
 import './providers/products.dart';
 import './providers/authentication.dart';
+import './providers/user.dart';
 
 import './models/view_models/cart.dart';
 import './models/view_models/order.dart';
+import 'screens/user_details_screen/user_details_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -23,16 +25,19 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (BuildContext ctx) => Authentication(),
+          create: (ctx) => Authentication(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext ctx) => Products(),
+          create: (ctx) => Products(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext ctx) => Cart(),
+          create: (ctx) => Cart(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext ctx) => Order(),
+          create: (ctx) => Order(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => User(),
         ),
       ],
       child: MaterialApp(
@@ -91,6 +96,8 @@ class App extends StatelessWidget {
               const ManageProductsScreen(),
           ProductFormScreen.routeName: (BuildContext ctx) =>
               const ProductFormScreen(),
+          UserDetailsScreen.routeName: (BuildContext ctx) =>
+              const UserDetailsScreen(),
         },
       ),
     );

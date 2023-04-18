@@ -5,9 +5,10 @@ import '../../models/view_models/product.dart';
 import '../../providers/products.dart';
 
 import '../product_form_screen/product_form_screen.dart';
-import '../tab_navigation_screen/widgets/main_drawer.dart';
 
 import './widgets/manage_product_item.dart';
+
+import '../widgets/main_drawer.dart';
 import '../widgets/item_button.dart';
 
 class ManageProductsScreen extends StatelessWidget {

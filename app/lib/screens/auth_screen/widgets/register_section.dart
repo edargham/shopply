@@ -4,9 +4,12 @@ import 'package:provider/provider.dart';
 import '../../../utilities/string_utils.dart';
 
 import '../../../providers/authentication.dart';
+
 import '../../widgets/item_button.dart';
 import '../../widgets/main_button.dart';
 import '../../widgets/text_box.dart';
+
+import './dialogs.dart';
 
 class _RegisterViewModel {
   final String username;
@@ -102,6 +105,7 @@ class _RegisterSectionState extends State<RegisterSection> {
         );
 
         if (res.status == 201) {
+          if (!mounted) return;
           await showDialog(
             context: context,
             builder: (BuildContext ctx) {
@@ -140,59 +144,16 @@ class _RegisterSectionState extends State<RegisterSection> {
           } else if (res.message != null) {
             errors = res.message!;
           }
-          await showDialog(
-            context: context,
-            builder: (BuildContext ctx) {
-              return AlertDialog(
-                title: const Text(
-                  'Shopply',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                content: Text(
-                  'We encountered an error while processing your request.\n\n$errors',
-                ),
-                actions: [
-                  ItemButton(
-                    icon: Icons.check,
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
+
+          if (!mounted) return;
+          showValidationErrors(context, errors);
+
           setState(() {
             _isloading = false;
           });
         }
       } catch (_) {
-        await showDialog(
-          context: context,
-          builder: (BuildContext ctx) {
-            return AlertDialog(
-              title: const Text(
-                'Shopply',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              content: const Text(
-                  'We encountered an error while processing your request.'
-                  '\nPlease try again later.'),
-              actions: [
-                ItemButton(
-                  icon: Icons.check,
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        showExceptionDialog(context);
 
         setState(() {
           _isloading = false;

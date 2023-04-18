@@ -9,6 +9,7 @@ import '../services/auth_service.dart';
 
 class Authentication with ChangeNotifier {
   String? _token;
+  String? _username;
   // DateTime _expiryDate;
   // String _userId;
 
@@ -19,6 +20,15 @@ class Authentication with ChangeNotifier {
 
   String? get token {
     return _token;
+  }
+
+  set username(String? username) {
+    _username = username;
+    notifyListeners();
+  }
+
+  String? get username {
+    return _username;
   }
 
   Future<RegisterResponse> registerUser(

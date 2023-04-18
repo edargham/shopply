@@ -5,7 +5,7 @@ import '../../models/view_models/order.dart';
 
 import './widgets/order_banner.dart';
 
-import '../tab_navigation_screen/widgets/main_drawer.dart';
+import '../widgets/main_drawer.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
   static const String routeName = '/order_history';

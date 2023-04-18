@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/user.dart';
 import '../../../utilities/string_utils.dart';
 
 import '../../../providers/authentication.dart';
 
-import '../../widgets/item_button.dart';
 import '../../widgets/main_button.dart';
 import '../../widgets/text_box.dart';
+
+import './dialogs.dart';
 
 class _LoginViewModel {
   final String username;
@@ -70,30 +72,10 @@ class _LoginSectionState extends State<LoginSection> {
           } else if (res.message != null) {
             errors = res.message!;
           }
-          await showDialog(
-            context: context,
-            builder: (BuildContext ctx) {
-              return AlertDialog(
-                title: const Text(
-                  'Shopply',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                content: Text(
-                  'We encountered an error while processing your request.\n\n$errors',
-                ),
-                actions: [
-                  ItemButton(
-                    icon: Icons.check,
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
+
+          if (!mounted) return;
+          showValidationErrors(context, errors);
+
           setState(() {
             _isloading = false;
           });
@@ -101,36 +83,23 @@ class _LoginSectionState extends State<LoginSection> {
           setState(() {
             _isloading = false;
           });
+
+          if (!mounted) return;
+
+          Authentication authHandler =
+              Provider.of<Authentication>(context, listen: false);
+
+          authHandler.username = _loginViewModel.username;
+
+          User userHandler = Provider.of<User>(context, listen: false);
+
+          await userHandler.getUser(authHandler.token!, authHandler.username!);
+
           if (!mounted) return;
           Navigator.of(context).pop();
         }
       } catch (_) {
-        await showDialog(
-          context: context,
-          builder: (BuildContext ctx) {
-            return AlertDialog(
-              title: const Text(
-                'Shopply',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0,
-                ),
-              ),
-              content: const Text(
-                  'We encountered an error while processing your request.'
-                  '\nPlease try again later.'),
-              actions: [
-                ItemButton(
-                  icon: Icons.check,
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-
+        showExceptionDialog(context);
         setState(() {
           _isloading = false;
         });
