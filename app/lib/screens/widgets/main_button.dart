@@ -54,12 +54,7 @@ class MainButton extends StatelessWidget {
       onTap: onPressed,
       borderRadius: BorderRadius.circular(radius),
       child: Container(
-        padding: const EdgeInsets.fromLTRB(
-          0,
-          0,
-          8.0,
-          0,
-        ),
+        padding: const EdgeInsets.fromLTRB(0, 0, 8.0, 0),
         margin: const EdgeInsets.all(4.0),
         height: deviceDisplay.size.height * hScale,
         clipBehavior: Clip.hardEdge,
@@ -78,6 +73,14 @@ class MainButton extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.32),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: const Offset(2, 4),
+            ),
+          ],
         ),
         child: Align(
           alignment: Alignment.center,

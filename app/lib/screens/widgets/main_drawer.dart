@@ -41,7 +41,7 @@ class MainDrawer extends StatelessWidget {
           child: Align(
             alignment: Alignment.bottomLeft,
             child: Text(
-              'Welcome ${user.username}!',
+              'Welcome @${user.username}!',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
@@ -53,7 +53,8 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String? token = Provider.of<Authentication>(context).token;
+    final String? token =
+        Provider.of<Authentication>(context, listen: false).token;
     final model.User? currentUser = Provider.of<User>(context).currentUser;
     return Drawer(
       child: Column(
@@ -72,6 +73,15 @@ class MainDrawer extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color:
+                      Theme.of(context).colorScheme.onPrimary.withOpacity(0.32),
+                  spreadRadius: 1,
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,

@@ -8,10 +8,12 @@ import '../../models/view_models/product.dart';
 import '../../models/view_models/cart.dart';
 
 import '../auth_screen/auth_screen.dart';
+
+import './widgets/title_banner.dart';
+
 import '../widgets/cart_button.dart';
 import '../widgets/main_button.dart';
-import './widgets/section_header.dart';
-import './widgets/title_banner.dart';
+import '../widgets/section_header.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   static const String routeName = '/product_details';

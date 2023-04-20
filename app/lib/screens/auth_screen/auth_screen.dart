@@ -35,7 +35,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
   Widget _showForm(BuildContext context) {
     return Container(
       key: _screenKey,
-      padding: const EdgeInsets.all(32.0),
+      padding: const EdgeInsets.all(48.0),
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
@@ -144,7 +144,7 @@ class ControllerBody extends StatelessWidget {
             unselectedLabelColor: Theme.of(context).colorScheme.onPrimary,
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height - 290,
+            height: MediaQuery.of(context).size.height - 320,
             child: TabBarView(
               children: <Widget>[
                 LoginSection(

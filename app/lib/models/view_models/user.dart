@@ -38,7 +38,9 @@ class User {
       email: jsonBody['email'],
       phoneNumber: jsonBody['phoneNumber'],
       dateJoined: DateTime.parse(jsonBody['dateJoined']),
-      profilePhotoUrl: 'http://10.0.2.2:3000/${jsonBody['profilePhotoUrl']}',
+      profilePhotoUrl: (jsonBody['profilePhotoUrl'] != null)
+          ? 'http://10.0.2.2:3000/${jsonBody['profilePhotoUrl']}'
+          : null,
       isVerified: jsonBody['isVerified'],
     );
   }

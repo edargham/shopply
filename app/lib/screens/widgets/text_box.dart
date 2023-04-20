@@ -40,59 +40,62 @@ class TextBox extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          TextFormField(
-            onSaved: onSaved,
-            onTap: onTap,
-            initialValue: initalValue,
-            cursorColor: Theme.of(context).colorScheme.onPrimary,
-            textInputAction: actionButton,
-            keyboardType: inputType,
-            focusNode: focusNode,
-            controller: controller,
-            onFieldSubmitted: onSubmit,
-            maxLines: maxLines,
-            validator: validator,
-            inputFormatters: (inputType == TextInputType.number)
-                ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
-                : null,
-            decoration: InputDecoration(
-              label: Text(
-                caption,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
+          Material(
+            elevation: 4,
+            child: TextFormField(
+              onSaved: onSaved,
+              onTap: onTap,
+              initialValue: initalValue,
+              cursorColor: Theme.of(context).colorScheme.onPrimary,
+              textInputAction: actionButton,
+              keyboardType: inputType,
+              focusNode: focusNode,
+              controller: controller,
+              onFieldSubmitted: onSubmit,
+              maxLines: maxLines,
+              validator: validator,
+              inputFormatters: (inputType == TextInputType.number)
+                  ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+                  : null,
+              decoration: InputDecoration(
+                label: Text(
+                  caption,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 2.0,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 2.0,
+                    color: Theme.of(context).colorScheme.background,
+                  ),
+                ),
+                hintText: hint,
+                hintStyle: const TextStyle(
+                  color: Color.fromARGB(100, 255, 255, 255),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 2.0,
+                    color: Theme.of(context).colorScheme.background,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 2.0,
+                    color: Theme.of(context).colorScheme.background,
+                  ),
                 ),
               ),
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2.0,
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              ),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2.0,
-                  color: Theme.of(context).colorScheme.background,
-                ),
-              ),
-              hintText: hint,
-              hintStyle: const TextStyle(
-                color: Color.fromARGB(100, 255, 255, 255),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2.0,
-                  color: Theme.of(context).colorScheme.background,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2.0,
-                  color: Theme.of(context).colorScheme.background,
-                ),
-              ),
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              onChanged: onChange,
             ),
-            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-            onChanged: onChange,
           )
         ],
       ),

@@ -38,6 +38,14 @@ class ItemButton extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.32),
+              spreadRadius: 1,
+              blurRadius: 4,
+              offset: const Offset(1, 2),
+            ),
+          ],
         ),
         child: Center(
           child: Icon(

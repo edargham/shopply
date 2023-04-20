@@ -141,6 +141,14 @@ class _ProductItemState extends State<ProductItem> {
             width: 1.0,
             style: BorderStyle.solid,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.32),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: const Offset(2, 4),
+            ),
+          ],
           gradient: LinearGradient(
             colors: [
               Theme.of(context).colorScheme.background.withOpacity(0.64),
