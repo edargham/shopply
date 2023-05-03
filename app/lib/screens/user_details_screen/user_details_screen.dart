@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../models/view_models/user.dart' as model;
 import '../../providers/user.dart';
 
+import '../profile_settings_screen/profile_settings_screen.dart';
+
 import './widgets/user_banner_card.dart';
 
 import '../widgets/item_button.dart';
@@ -12,7 +14,9 @@ import '../widgets/section_header.dart';
 
 class UserDetailsScreen extends StatelessWidget {
   static const String routeName = '/user-profile';
+
   const UserDetailsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final model.User? currentUser = Provider.of<User>(context).currentUser;
@@ -31,7 +35,9 @@ class UserDetailsScreen extends StatelessWidget {
               vertical: 1.0,
             ),
             child: ItemButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, ProfileSettingsScreen.routeName);
+              },
               icon: Icons.edit_outlined,
             ),
           ),
