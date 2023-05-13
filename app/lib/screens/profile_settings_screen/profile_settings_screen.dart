@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../change_information_screen/change_information_screen.dart';
+
 class ProfileSettingsScreen extends StatelessWidget {
   static const String routeName = '/profile-settings';
 
@@ -45,7 +47,9 @@ class ProfileSettingsScreen extends StatelessWidget {
         children: [
           _buildListItemTile(
             context,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, ChangeInformationScreen.routeName);
+            },
             icon: Icons.person,
             title: 'Change Information',
           ),

@@ -10,6 +10,7 @@ import './screens/product_form_screen/product_form_screen.dart';
 import './screens/auth_screen/auth_screen.dart';
 import './screens/user_details_screen/user_details_screen.dart';
 import './screens/profile_settings_screen/profile_settings_screen.dart';
+import './screens/change_information_screen/change_information_screen.dart';
 
 import './providers/products.dart';
 import './providers/authentication.dart';
@@ -95,6 +96,8 @@ class App extends StatelessWidget {
           UserDetailsScreen.routeName: (ctx) => const UserDetailsScreen(),
           ProfileSettingsScreen.routeName: (ctx) =>
               const ProfileSettingsScreen(),
+          ChangeInformationScreen.routeName: (ctx) =>
+              const ChangeInformationScreen(),
         },
       ),
     );
