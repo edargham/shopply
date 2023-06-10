@@ -783,7 +783,7 @@ router.patch(
         res.status(StatusCodes.SUCCESS_CODE);
         return res.json({ 
           status: StatusCodes.SUCCESS_CODE,
-          message: 'Succesfuly updated user email.',
+          message: 'Your email was updated successfuly.\nAn email has been sent to you to verify your new email.',
         });
       } else {
         throw new Error(`Attempted to modify non-existant user ${ paramsUsername }.`);

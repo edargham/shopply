@@ -14,12 +14,40 @@ void showValidationErrors(BuildContext context, String errors) async {
           ),
         ),
         content: Text(
-          'We encountered an error while processing your request.\n\n$errors',
+          'We encountered one or multiple errors while processing your request.\n\n$errors',
         ),
         actions: [
           ItemButton(
             icon: Icons.check,
             onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showServerMessage(BuildContext context, String message) async {
+  await showDialog(
+    context: context,
+    builder: (BuildContext ctx) {
+      return AlertDialog(
+        title: const Text(
+          'Shopply',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          message,
+        ),
+        actions: [
+          ItemButton(
+            icon: Icons.check,
+            onPressed: () {
+              Navigator.of(ctx).pop();
               Navigator.of(ctx).pop();
             },
           ),

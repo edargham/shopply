@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
+import '../models/responses/update_email_response.dart';
 import '../services/user_service.dart';
 
 import '../models/responses/update_user_response.dart';
@@ -49,6 +50,27 @@ class User extends ChangeNotifier {
       }
 
       return UpdateUserResponse.fromJson(json.decode(res.body), _currentUser!);
+    });
+  }
+
+  Future<UpdateEmailResponse> updateEmail(
+    String token,
+    String username,
+    String email,
+  ) async {
+    return await UserService.updateEmail(
+      token,
+      username,
+      email,
+    ).then((res) {
+      if (res.statusCode == 200) {
+        _currentUser!.email = email;
+        _currentUser!.isVerified = false;
+
+        notifyListeners();
+      }
+
+      return UpdateEmailResponse.fromJson(jsonDecode(res.body));
     });
   }
 }

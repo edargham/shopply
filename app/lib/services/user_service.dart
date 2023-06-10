@@ -55,4 +55,21 @@ class UserService {
           }));
     }
   }
+
+  static Future<http.Response> updateEmail(
+    String token,
+    String username,
+    String email,
+  ) {
+    return http.patch(
+        Uri(
+            scheme: 'http',
+            host: '10.0.2.2',
+            port: 3000,
+            path: '/api/users/change-email/$username'),
+        headers: _generateHeader(token),
+        body: json.encode({
+          'email': email,
+        }));
+  }
 }

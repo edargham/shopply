@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../change_email_screen/change_email_screen.dart';
 import '../change_information_screen/change_information_screen.dart';
 
 class ProfileSettingsScreen extends StatelessWidget {
@@ -55,7 +56,9 @@ class ProfileSettingsScreen extends StatelessWidget {
           ),
           _buildListItemTile(
             context,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, ChangeEmailScreen.routeName);
+            },
             icon: Icons.email,
             title: 'Change Email',
           ),
