@@ -9,7 +9,7 @@ import '../../../providers/authentication.dart';
 import '../../widgets/main_button.dart';
 import '../../widgets/text_box.dart';
 
-import './dialogs.dart';
+import '../../widgets/dialogs.dart';
 
 class _LoginViewModel {
   final String username;

@@ -211,7 +211,7 @@ router.post(
         id: v4(),
         title: req.body.title,
         description: req.body.description,
-        imageUrl: req.file?.path.replace('dist/', ''),
+        imageUrl: req.file?.path.replaceAll('\\', '/').replace('dist/', ''),
         price: req.body.price,
         stock: req.body.stock
       }); 

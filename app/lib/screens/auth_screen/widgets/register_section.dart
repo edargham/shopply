@@ -9,7 +9,7 @@ import '../../widgets/item_button.dart';
 import '../../widgets/main_button.dart';
 import '../../widgets/text_box.dart';
 
-import './dialogs.dart';
+import '../../widgets/dialogs.dart';
 
 class _RegisterViewModel {
   final String username;

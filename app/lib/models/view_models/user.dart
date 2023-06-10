@@ -44,4 +44,20 @@ class User {
       isVerified: jsonBody['isVerified'],
     );
   }
+
+  static User patchJson(dynamic jsonBody, User user) {
+    return User(
+      username: jsonBody['username'],
+      firstName: jsonBody['firstName'],
+      middleName: jsonBody['middleName'],
+      lastName: jsonBody['lastName'],
+      dateOfBirth: user.dateOfBirth,
+      sex: user.sex,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      dateJoined: user.dateJoined,
+      profilePhotoUrl: user.profilePhotoUrl,
+      isVerified: user.isVerified,
+    );
+  }
 }

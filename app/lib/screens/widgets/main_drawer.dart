@@ -107,7 +107,7 @@ class MainDrawer extends StatelessWidget {
           (token != null)
               ? _buildListTile(
                   context: context,
-                  icon: Icons.person_2,
+                  icon: Icons.person,
                   caption:
                       '${currentUser!.firstName}\'${(currentUser.firstName.lastIndexOf('s') == (currentUser.firstName.length - 1)) ? '' : 's'} Profile',
                   tileTapped: () {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/item_button.dart';
+import 'item_button.dart';
 
 void showValidationErrors(BuildContext context, String errors) async {
   await showDialog(
