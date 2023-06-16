@@ -175,6 +175,12 @@ export default class UsersValidator {
       .notEmpty()
       .withMessage(ValidatorTemplateMessages.missingRequirementMessage('username')),
 
+      body('oldPassword')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('Password'))
+      .isLength({ min: 8 })
+      .withMessage(ValidatorTemplateMessages.MIN_LENGTH_MESSAGE),
+
       body('password')
       .notEmpty()
       .withMessage(ValidatorTemplateMessages.missingRequirementMessage('password'))

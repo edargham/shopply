@@ -824,9 +824,13 @@ router.patch(
  *            properties:
  *              password:
  *                type: string
+ *              oldPassword:
+ *                type: string
  *            required:
  *              - password
+ *              - oldPassword
  *          example:
+ *            oldPassword: Admin@1234
  *            password: Admin@4321
  *    responses:
  *      200:
@@ -850,27 +854,39 @@ router.patch(
   checkValidationResult,
   async (req: AuthenticatedRequest, res: Response) => {
     const paramsUsername: string = req.params.username;
+    
     const stamp: string = v4();
+    
     const password: string =  createHash('sha512').update(`${ req.body.password }${ stamp }`).digest('hex');
-
     try {
       const user: UserModel | null = await UserModel.findOne({
         where: {
           username: paramsUsername
         },
       });
-
+      
       if (user) {
-        await user.update({
-          password: password,
-          stamp: stamp,
-        });
+        const oldPassword: string = req.body.oldPassword;
+        const hashedOldPassword: string = createHash('sha512').update(`${ oldPassword }${ user.get().stamp }`).digest('hex');
+        if (user.get().password == hashedOldPassword) {
+          await user.update({
+            password: password,
+            stamp: stamp,
+          });
 
-        res.status(StatusCodes.SUCCESS_CODE);
-        return res.json({ 
-          status: StatusCodes.SUCCESS_CODE,
-          message: 'Succesfuly updated user password.',
-        });
+          res.status(StatusCodes.SUCCESS_CODE);
+          return res.json({ 
+            status: StatusCodes.SUCCESS_CODE,
+            message: 'Succesfuly updated your password.',
+          });
+        } else {
+          const statusCode : number = StatusCodes.UNAUTHORIZED;
+          res.status(statusCode);
+          return res.json({
+            status: statusCode,
+            message: 'Incorrect password.'
+          });
+        }
       } else {
         throw new Error(`Attempted to modify non-existant user ${ paramsUsername }.`);
       }

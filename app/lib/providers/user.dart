@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shopply/models/responses/update_password_response.dart';
 
 import '../models/responses/update_email_response.dart';
 import '../services/user_service.dart';
@@ -71,6 +72,22 @@ class User extends ChangeNotifier {
       }
 
       return UpdateEmailResponse.fromJson(jsonDecode(res.body));
+    });
+  }
+
+  Future<UpdatePasswordResponse> updatePassword(
+    String token,
+    String username,
+    String oldPassword,
+    String newPassword,
+  ) async {
+    return await UserService.updatePassword(
+      token,
+      username,
+      oldPassword,
+      newPassword,
+    ).then((res) {
+      return UpdatePasswordResponse.fromJson(jsonDecode(res.body));
     });
   }
 }

@@ -31,10 +31,11 @@ class UserService {
     if (middleName == null) {
       return http.patch(
           Uri(
-              scheme: 'http',
-              host: '10.0.2.2',
-              port: 3000,
-              path: '/api/users/$username'),
+            scheme: 'http',
+            host: '10.0.2.2',
+            port: 3000,
+            path: '/api/users/$username',
+          ),
           headers: _generateHeader(token),
           body: json.encode({
             'firstName': firstName,
@@ -43,10 +44,11 @@ class UserService {
     } else {
       return http.patch(
           Uri(
-              scheme: 'http',
-              host: '10.0.2.2',
-              port: 3000,
-              path: '/api/users/$username'),
+            scheme: 'http',
+            host: '10.0.2.2',
+            port: 3000,
+            path: '/api/users/$username',
+          ),
           headers: _generateHeader(token),
           body: json.encode({
             'firstName': firstName,
@@ -63,13 +65,34 @@ class UserService {
   ) {
     return http.patch(
         Uri(
-            scheme: 'http',
-            host: '10.0.2.2',
-            port: 3000,
-            path: '/api/users/change-email/$username'),
+          scheme: 'http',
+          host: '10.0.2.2',
+          port: 3000,
+          path: '/api/users/change-email/$username',
+        ),
         headers: _generateHeader(token),
         body: json.encode({
           'email': email,
+        }));
+  }
+
+  static Future<http.Response> updatePassword(
+    String token,
+    String username,
+    String oldPassword,
+    String password,
+  ) {
+    return http.patch(
+        Uri(
+          scheme: 'http',
+          host: '10.0.2.2',
+          port: 3000,
+          path: '/api/users/change-password/$username',
+        ),
+        headers: _generateHeader(token),
+        body: json.encode({
+          'oldPassword': oldPassword,
+          'password': password,
         }));
   }
 }

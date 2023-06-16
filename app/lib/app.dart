@@ -12,6 +12,7 @@ import './screens/user_details_screen/user_details_screen.dart';
 import './screens/profile_settings_screen/profile_settings_screen.dart';
 import './screens/change_information_screen/change_information_screen.dart';
 import './screens/change_email_screen/change_email_screen.dart';
+import './screens/change_password_screen/change_password_screen.dart';
 
 import './providers/products.dart';
 import './providers/authentication.dart';
@@ -100,6 +101,7 @@ class App extends StatelessWidget {
           ChangeInformationScreen.routeName: (ctx) =>
               const ChangeInformationScreen(),
           ChangeEmailScreen.routeName: (ctx) => const ChangeEmailScreen(),
+          ChangePasswordScreen.routeName: (ctx) => const ChangePasswordScreen(),
         },
       ),
     );

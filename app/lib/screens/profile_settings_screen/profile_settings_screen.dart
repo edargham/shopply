@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../change_email_screen/change_email_screen.dart';
 import '../change_information_screen/change_information_screen.dart';
+import '../change_password_screen/change_password_screen.dart';
 
 class ProfileSettingsScreen extends StatelessWidget {
   static const String routeName = '/profile-settings';
@@ -64,7 +65,9 @@ class ProfileSettingsScreen extends StatelessWidget {
           ),
           _buildListItemTile(
             context,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, ChangePasswordScreen.routeName);
+            },
             icon: Icons.password,
             title: 'Change Password',
           ),
