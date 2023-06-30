@@ -35,6 +35,13 @@ CREATE TABLE IF NOT EXISTS "shopply"."user" (
   "verification_hash" VARCHAR(128) NOT NULL,
   PRIMARY KEY ("username"));
 
+-- -----------------------------------------------------
+-- Table "shopply"."order_status"
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS "shopply"."order_status" (
+  "id" INT NOT NULL,
+  "status" VARCHAR(64) NOT NULL,
+  PRIMARY KEY ("id"));
 
 -- -----------------------------------------------------
 -- Table "shopply"."order"
@@ -44,10 +51,16 @@ CREATE TABLE IF NOT EXISTS "shopply"."order" (
   "amount_paid" FLOAT NOT NULL,
   "date_ordered" TIMESTAMP NOT NULL,
   "username" VARCHAR(16) NOT NULL,
+  "status_id" INT NOT NULL,
   PRIMARY KEY ("id"),
   CONSTRAINT "fk_order_user1"
     FOREIGN KEY ("username")
     REFERENCES "shopply"."user" ("username")
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+  CONSTRAINT "fk_order_order_status1"
+    FOREIGN KEY ("status_id")
+    REFERENCES "shopply"."order_status" ("id")
     ON DELETE CASCADE
     ON UPDATE NO ACTION);
 

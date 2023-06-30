@@ -5,6 +5,7 @@ import swaggerDocs from './config/swagger.config';
 
 import productRoutes, { productsRouteName } from './routes/products';
 import userRoutes, { usersRouteName } from './routes/users';
+import orderRoutes, { ordersRouteName } from './routes/orders';
 
 const app: Express = express();
 const port: number = 3000;
@@ -23,7 +24,7 @@ app.use('/uploads', express.static('./dist/uploads'));
 // Register Routes
 app.use(productsRouteName, productRoutes);
 app.use(usersRouteName, userRoutes);
-
+app.use(ordersRouteName, orderRoutes)
 // Listen for requests.
 app.listen(port, () => {
   console.log(`API serivce started successfuly and is listening for requests on port ${ port }.`);
