@@ -17,9 +17,8 @@ import './screens/change_password_screen/change_password_screen.dart';
 import './providers/products.dart';
 import './providers/authentication.dart';
 import './providers/user.dart';
-
-import './models/view_models/cart.dart';
-import './models/view_models/order.dart';
+import './providers/cart.dart';
+import './providers/order.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

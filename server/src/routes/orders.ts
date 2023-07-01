@@ -5,7 +5,12 @@ import { v4 } from 'uuid';
 import db from '../config/database.config';
 
 import { OrderModel, OrderStatus, IOrder } from '../models/order';
-import { CartItemModel, ICartItem } from '../models/cart_item';
+import { 
+  CartItemModel, 
+  ICartItem, 
+  VwCartItemModel,
+  IVwCartItem
+} from '../models/cart_item';
 
 import OrderViewModel from '../models/view_models/order_view';
 
@@ -22,13 +27,13 @@ const router: Router = Router();
 const buildOrderResponse = async (orders: OrderModel[]): Promise<OrderViewModel[]> => {
   let orderViews: OrderViewModel[] = [];
   for (let i: number = 0; i < orders.length; i++) {
-    const cartItems: CartItemModel[] = await CartItemModel.findAll({
+    const cartItems: VwCartItemModel[] = await VwCartItemModel.findAll({
       where: {
         orderId: orders[i].get().id
       }
     });
 
-    let items: ICartItem[] = [];
+    let items: IVwCartItem[] = [];
     for (let j: number = 0; i < cartItems.length; i++) {
       items.push({
         id: cartItems[j].get().id,
@@ -36,7 +41,8 @@ const buildOrderResponse = async (orders: OrderModel[]): Promise<OrderViewModel[
         productId: cartItems[j].get().productId,
         price: cartItems[j].get().price,
         quantity: cartItems[j].get().quantity,
-        username: cartItems[j].get().username
+        username: cartItems[j].get().username,
+        title: cartItems[j].get().title,
       });
     }
 
@@ -188,7 +194,7 @@ router.post(
         username: req.user.username
       }, { transaction: transaction }); 
 
-      const cartItems: ICartItem[] = req.body.cartItems;
+      const cartItems: IVwCartItem[] = req.body.cartItems;
 
       for (let i: number = 0; i < cartItems.length; i++) {
         const cartItemId: string = v4();

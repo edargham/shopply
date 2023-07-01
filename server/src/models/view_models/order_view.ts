@@ -1,4 +1,4 @@
-import { ICartItem } from "../cart_item";
+import { IVwCartItem } from "../cart_item";
 import { IOrder, OrderStatus } from "../order";
 
 export default class OrderViewModel implements IOrder {
@@ -7,7 +7,7 @@ export default class OrderViewModel implements IOrder {
   _dateOrdered:          Date;
   _username:           string;
   _statusId:           number;
-  _items:  ICartItem[] | null;
+  _items:  IVwCartItem[] | null;
 
   //#region Constructors
   constructor(
@@ -16,7 +16,7 @@ export default class OrderViewModel implements IOrder {
     dateOrdered:          Date,
     username:           string,
     statusId:           number,
-    items:  ICartItem[] | null=null
+    items:  IVwCartItem[] | null=null
   ) {
     this._id          = id;
     this._amountPaid  = amountPaid;
@@ -52,7 +52,7 @@ export default class OrderViewModel implements IOrder {
     return this._statusId;
   }
   
-  public get items(): ICartItem[] | null {
+  public get items(): IVwCartItem[] | null {
     return this._items;
   }
   //#endregion
@@ -78,7 +78,7 @@ export default class OrderViewModel implements IOrder {
     this._statusId = orderStatus;
   }
   
-  public set items(cartItems: ICartItem[] | null) {
+  public set items(cartItems: IVwCartItem[] | null) {
     this._items = cartItems;
   }
   //#endregion

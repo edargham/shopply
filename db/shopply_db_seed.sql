@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS "shopply"."order" (
     FOREIGN KEY ("username")
     REFERENCES "shopply"."user" ("username")
     ON DELETE CASCADE
-    ON UPDATE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT "fk_order_order_status1"
     FOREIGN KEY ("status_id")
     REFERENCES "shopply"."order_status" ("id")
@@ -141,3 +141,19 @@ CREATE TABLE IF NOT EXISTS "shopply"."rating" (
     REFERENCES "shopply"."products" ("id")
     ON DELETE CASCADE
     ON UPDATE NO ACTION);
+
+-- View: shopply.vw_cart_item
+
+-- DROP VIEW shopply.vw_cart_item;
+
+CREATE OR REPLACE VIEW shopply.vw_cart_item
+ AS
+ SELECT cart_item.id,
+    cart_item.username,
+    cart_item.product_id,
+    cart_item.quantity,
+    cart_item.price,
+    cart_item.order_id,
+    products.title
+   FROM shopply.cart_item
+     JOIN shopply.products ON cart_item.product_id::text = products.id::text;

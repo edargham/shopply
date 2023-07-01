@@ -47,13 +47,6 @@ export default class OrdersValidator {
       .withMessage(ValidatorTemplateMessages.missingRequirementMessage('cartItems'))
       .isArray()
       .withMessage(ValidatorTemplateMessages.typeMismatchSetting('amountPaid', 'numeric')),
-      // .custom((a: any) => {
-      //   return a.every((e: any) => {
-      //     return [
-      //       check(e.productId)
-      //     ];
-      //   });
-      // }),
 
       body('cartItems.*.productId')
       .notEmpty()
@@ -70,6 +63,9 @@ export default class OrdersValidator {
       .withMessage(ValidatorTemplateMessages.missingRequirementMessage('price'))
       .isNumeric()
       .withMessage(ValidatorTemplateMessages.typeMismatchSetting('price', 'numeric')),
+
+      body('cartItems.*.title')
+      .optional(),
     ];
   }
 }
