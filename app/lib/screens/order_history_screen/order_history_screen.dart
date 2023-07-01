@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/view_models/order.dart';
+import '../../models/view_models/user.dart' as model;
+
+import '../../providers/authentication.dart';
+import '../../providers/user.dart';
+import '../../providers/order.dart';
 
 import './widgets/order_banner.dart';
 
@@ -29,12 +33,18 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Order>(context, listen: false).getOrders().then((_) {
+      final model.User? currentUser = Provider.of<User>(context).currentUser;
+      final String? token = Provider.of<Authentication>(context).token;
+
+      Provider.of<Order>(context, listen: false)
+          .getOrders(token!, currentUser!.username)
+          .then((_) {
         setState(() {
           _isLoading = false;
         });
         _init = false;
-      }).catchError((_) {
+      }).catchError((e) {
+        throw e;
         // TODO - Display error.
       });
     }

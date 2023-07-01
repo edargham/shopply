@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 
+import './utils/common.dart';
 // import '../models/view_models/product.dart';
 
 class ProductService {
@@ -21,9 +22,9 @@ class ProductService {
   static Future<http.Response> getProducts() {
     return http.get(
       Uri(
-        scheme: 'http',
-        host: '10.0.2.2',
-        port: 3000,
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
         path: baseUrl,
       ),
     );

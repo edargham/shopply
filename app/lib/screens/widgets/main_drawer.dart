@@ -131,15 +131,17 @@ class MainDrawer extends StatelessWidget {
               Navigator.of(context).pushReplacementNamed('/');
             },
           ),
-          _buildListTile(
-            context: context,
-            icon: Icons.history,
-            caption: 'Orders',
-            tileTapped: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(OrderHistoryScreen.routeName);
-            },
-          ),
+          (token != null)
+              ? _buildListTile(
+                  context: context,
+                  icon: Icons.history,
+                  caption: 'Orders',
+                  tileTapped: () {
+                    Navigator.of(context)
+                        .pushReplacementNamed(OrderHistoryScreen.routeName);
+                  },
+                )
+              : Container(),
         ],
       ),
     );

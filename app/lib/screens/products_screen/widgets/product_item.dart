@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/authentication.dart';
 import '../../auth_screen/auth_screen.dart';
-import '../../../models/view_models/cart.dart';
+import '../../../providers/cart.dart';
 import '../../product_details_screen/product_details_screen.dart';
 import '../../../models/view_models/product.dart';
 import '../../widgets/item_button.dart';

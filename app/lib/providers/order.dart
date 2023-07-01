@@ -8,77 +8,73 @@ import '../../errors/http_exception.dart';
 import '../models/view_models/cart.dart';
 import '../models/view_models/order.dart';
 
+import '../models/responses/get_orders_response.dart';
+import '../models/responses/submit_order_response.dart';
+
 import '../../services/order_service.dart';
 
 class Order with ChangeNotifier {
   List<OrderItem> _orders = [];
   List<OrderItem> get orders => [..._orders];
 
-  Future<void> addOrder(List<CartItem> cart, double total) {
+  Future<void> addOrder(List<CartItem> cart, double total, String token) {
     OrderItem orderToAdd = OrderItem(
-      id: 'o${DateTime.now().toString()}',
       amount: total,
       products: cart,
-      dateOrdered: DateTime.now(),
     );
-    return OrderService.addOrder(orderToAdd).then((Response res) {
-      _orders.insert(
-        0,
-        OrderItem(
-          id: json.decode(res.body)['name'],
-          amount: total,
-          products: cart,
-          dateOrdered: DateTime.now(),
-        ),
-      );
-      notifyListeners();
+    return OrderService.addOrder(orderToAdd, token).then((Response res) {
+      SubmitOrderResponse orderRes =
+          SubmitOrderResponse.fromJson(jsonDecode(res.body));
+      if (res.statusCode == 201 && orderRes.order != null) {
+        _orders.insert(
+          0,
+          orderRes.order!,
+        );
+        notifyListeners();
+      } else {
+        throw orderRes;
+      }
     });
   }
 
-  Future<void> getOrders() {
-    return OrderService.getOrders().then((Response res) {
-      final Map<String, dynamic> data = json.decode(res.body);
-      final List<OrderItem> loadedOrders = [];
+  Future<void> getOrders(String token, String username, {OrderStatus? status}) {
+    return OrderService.getOrders(
+      token,
+      username,
+      status: status,
+    ).then((Response res) {
+      GetOrdersResponse data =
+          GetOrdersResponse.fromJson(json.decode(res.body));
+      if (res.statusCode == 200 && data.orders != null) {
+        final List<OrderItem> loadedOrders = data.orders!;
 
-      data.forEach((key, value) {
-        loadedOrders.add(OrderItem(
-          id: key,
-          amount: value['amountPaid'],
-          dateOrdered: DateTime.parse(value['dateOrdered']),
-          products: (value['products'] as List<dynamic>)
-              .map((item) => CartItem(
-                    id: item['id'],
-                    title: item['title'],
-                    quantity: item['quantity'],
-                    price: item['price'],
-                  ))
-              .toList(),
-        ));
-      });
-
-      _orders = loadedOrders.reversed.toList();
-      notifyListeners();
+        _orders = loadedOrders;
+        notifyListeners();
+      } else {
+        _orders = [];
+        throw data;
+      }
     }).catchError((error) {
       _orders = [];
       throw error;
     });
   }
 
-  Future<void> deleteOder(String orderId) {
-    final int itemIdx = _orders.indexWhere((OrderItem o) => orderId == o.id);
-    OrderItem? itemToRemove = _orders[itemIdx];
-    _orders.removeAt(itemIdx);
-    return OrderService.deleteOrder(orderId).then((Response res) {
-      if (res.statusCode >= 400) {
-        throw HttpException('Delete failed.');
-      }
-      notifyListeners();
-      itemToRemove = null;
-    }).catchError((error) {
-      _orders.insert(itemIdx, itemToRemove!);
-      notifyListeners();
-      throw error;
-    });
+  /*Future<void>*/ void deleteOder(String orderId) {
+    // final int itemIdx = _orders.indexWhere((OrderItem o) => orderId == o.id);
+    // OrderItem? itemToRemove = _orders[itemIdx];
+    // _orders.removeAt(itemIdx);
+    // return OrderService.deleteOrder(orderId).then((Response res) {
+    //   if (res.statusCode >= 400) {
+    //     throw HttpException('Delete failed.');
+    //   }
+    //   notifyListeners();
+    //   itemToRemove = null;
+    // }).catchError((error) {
+    //   _orders.insert(itemIdx, itemToRemove!);
+    //   notifyListeners();
+    //   throw error;
+    // });
   }
 
   void clear() {

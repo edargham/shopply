@@ -2,11 +2,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-class AuthService {
-  static const Map<String, String> _header = {
-    'Content-Type': 'application/json'
-  };
+import './utils/common.dart';
 
+class AuthService {
+  static const String _baseUrl = '/api/users';
   static Future<http.Response> registerUser(
     String username,
     String firstName,
@@ -20,12 +19,12 @@ class AuthService {
   ) {
     return http.post(
       Uri(
-        scheme: 'http',
-        host: '10.0.2.2',
-        port: 3000,
-        path: '/api/users/signup',
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: '$_baseUrl/signup',
       ),
-      headers: _header,
+      headers: generateHeader(),
       // Uri.https(registerUrl, ''),
       body: (middleName != null)
           ? json.encode({
@@ -55,12 +54,12 @@ class AuthService {
   static Future<http.Response> login(String username, String password) {
     return http.post(
       Uri(
-        scheme: 'http',
-        host: '10.0.2.2',
-        port: 3000,
-        path: '/api/users/login',
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: '$_baseUrl/login',
       ),
-      headers: _header,
+      headers: generateHeader(),
       body: json.encode({
         'username': username,
         'password': password,

@@ -23,17 +23,17 @@ class OrderItem {
   });
 
   static OrderItem fromJson(dynamic jsonBody) {
-    Iterable jProducts = jsonBody['cartItems'];
+    Iterable jProducts = jsonBody['_items'];
     List<CartItem> products = List<CartItem>.from(
       jProducts.map((ci) => CartItem.fromJson(ci)),
     );
 
     return OrderItem(
-      id: jsonBody['id'],
-      amount: jsonBody['amountPaid'],
+      id: jsonBody['_id'],
+      amount: jsonBody['_amountPaid'],
       products: products,
-      dateOrdered: DateTime.parse(jsonBody['dateOrdered']),
-      status: jsonBody['status'],
+      dateOrdered: DateTime.parse(jsonBody['_dateOrdered']),
+      status: jsonBody['_status'],
     );
   }
 }

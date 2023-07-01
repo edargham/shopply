@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/view_models/cart.dart';
-import '../../models/view_models/order.dart';
+import '../../providers/authentication.dart';
+import '../../providers/cart.dart';
+import '../../providers/order.dart';
 
+import '../auth_screen/auth_screen.dart';
 import '../widgets/item_banner.dart';
 import '../widgets/item_button.dart';
 import '../widgets/main_button.dart';
@@ -64,9 +66,74 @@ class ShoppingCartScreen extends StatelessWidget {
     }
   }
 
+  Widget _showOrderPrompt(BuildContext context, Cart cart, String? token) {
+    return (token != null)
+        ? MainButton(
+            onPressed: () async {
+              try {
+                await Provider.of<Order>(
+                  context,
+                  listen: false,
+                ).addOrder(cart.cart.values.toList(), cart.totalPrice, token);
+                cart.clear();
+              } catch (_) {
+                // TODO - Make this global.
+                await showDialog(
+                  context: context,
+                  builder: (BuildContext ctx) {
+                    return AlertDialog(
+                      title: const Text(
+                        'Shopply',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      content: const Text(
+                          'We encountered an error while processing your request.'
+                          '\nPlease try again later.'),
+                      actions: [
+                        ItemButton(
+                          icon: Icons.check,
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            title: 'Checkout',
+            icon: Icons.shopping_cart_checkout_outlined,
+            color: Colors.amber,
+          )
+        : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'You must be logged in in order to perform this action.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              MainButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(AuthScreen.routeName);
+                },
+                title: 'LOGIN',
+                icon: Icons.login,
+              )
+            ],
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Cart cart = Provider.of<Cart>(context);
+    final String? token = Provider.of<Authentication>(context).token;
 
     return Scaffold(
       appBar: AppBar(
@@ -94,49 +161,7 @@ class ShoppingCartScreen extends StatelessWidget {
                     totalPrice: cart.totalPrice,
                   ),
                 ),
-                MainButton(
-                  onPressed: () async {
-                    try {
-                      await Provider.of<Order>(
-                        context,
-                        listen: false,
-                      ).addOrder(
-                        cart.cart.values.toList(),
-                        cart.totalPrice,
-                      );
-                      cart.clear();
-                    } catch (_) {
-                      // TODO - Make this global.
-                      await showDialog(
-                        context: context,
-                        builder: (BuildContext ctx) {
-                          return AlertDialog(
-                            title: const Text(
-                              'Shopply',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            content: const Text(
-                                'We encountered an error while processing your request.'
-                                '\nPlease try again later.'),
-                            actions: [
-                              ItemButton(
-                                icon: Icons.check,
-                                onPressed: () {
-                                  Navigator.of(ctx).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  },
-                  title: 'Checkout',
-                  icon: Icons.shopping_cart_checkout_outlined,
-                  color: Colors.amber,
-                ),
+                _showOrderPrompt(context, cart, token),
               ],
             ),
           ),

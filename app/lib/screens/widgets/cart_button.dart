@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../shopping_cart_screen/shopping_cart_screen.dart';
 
-import '../../models/view_models/cart.dart';
+import '../../providers/cart.dart';
 
 class CartButton extends StatelessWidget {
   const CartButton({

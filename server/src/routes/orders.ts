@@ -34,7 +34,7 @@ const buildOrderResponse = async (orders: OrderModel[]): Promise<OrderViewModel[
     });
 
     let items: IVwCartItem[] = [];
-    for (let j: number = 0; i < cartItems.length; i++) {
+    for (let j: number = 0; j < cartItems.length; j++) {
       items.push({
         id: cartItems[j].get().id,
         orderId: cartItems[j].get().orderId,
@@ -183,14 +183,14 @@ router.post(
   OrdersValidator.validateSubmitOrder(),
   checkValidationResult,
   async (req: AuthenticatedRequest, res: Response) => {
-    const transaction: Transaction = await db.transaction();
+    let transaction: Transaction = await db.transaction();
     try {
       const orderId: string = v4();
       const rec: Model<IOrder> = await OrderModel.create({
         id: orderId,
         amountPaid: req.body.amountPaid,
         dateOrdered: new Date(),
-        statusId: OrderStatus.Pending,
+        statusId: OrderStatus.Pending as number,
         username: req.user.username
       }, { transaction: transaction }); 
 

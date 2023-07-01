@@ -4,21 +4,27 @@ import 'package:http/http.dart' as http;
 import '../models/view_models/cart.dart';
 import '../models/view_models/order.dart';
 
-class OrderService {
-  static const String _ordersUrl = '/orders.json';
-  static const String _ordersRoute = '/orders';
+import './utils/common.dart';
 
-  static Future<http.Response> addOrder(OrderItem order) {
+class OrderService {
+  static const String _baseUrl = '/api/orders';
+
+  static Future<http.Response> addOrder(OrderItem order, String token) {
     return http.post(
-      Uri.https('10.0.2.2', _ordersUrl),
+      Uri(
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: _baseUrl,
+      ),
+      headers: generateHeader(token: token),
       body: json.encode({
-        'amount': order.amount,
-        'dateOrdered': order.dateOrdered.toIso8601String(),
-        'products': order.products
+        'amountPaid': order.amount,
+        'status': OrderStatus.Pending.index,
+        'cartItems': order.products
             .map(
               (CartItem item) => {
-                'id': item.id,
-                'title': item.title,
+                'productId': item.productId,
                 'price': item.price,
                 'quantity': item.quantity
               },
@@ -28,11 +34,28 @@ class OrderService {
     );
   }
 
-  static Future<http.Response> getOrders() {
-    return http.get(Uri.https('10.0.2.2', _ordersUrl));
-  }
-
-  static Future<http.Response> deleteOrder(String id) {
-    return http.delete(Uri.http('10.0.2.2', '$_ordersRoute/$id.json'));
+  static Future<http.Response> getOrders(String token, String username,
+      {OrderStatus? status}) {
+    if (status != null) {
+      return http.get(
+        Uri(
+            scheme: serverConfig['scheme'],
+            host: serverConfig['host'],
+            port: serverConfig['port'],
+            path: '$_baseUrl/$username',
+            queryParameters: {'status': status.index}),
+        headers: generateHeader(token: token),
+      );
+    } else {
+      return http.get(
+        Uri(
+          scheme: serverConfig['scheme'],
+          host: serverConfig['host'],
+          port: serverConfig['port'],
+          path: '$_baseUrl/$username',
+        ),
+        headers: generateHeader(token: token),
+      );
+    }
   }
 }

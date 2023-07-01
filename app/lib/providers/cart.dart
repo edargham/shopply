@@ -27,6 +27,7 @@ class Cart with ChangeNotifier {
         productId,
         (CartItem existingValue) => CartItem(
           id: existingValue.id,
+          productId: existingValue.productId,
           title: existingValue.title,
           quantity: existingValue.quantity + 1,
           price: (existingValue.quantity + 1) * price,
@@ -37,6 +38,7 @@ class Cart with ChangeNotifier {
         productId,
         () => CartItem(
           id: DateTime.now().toString(),
+          productId: productId,
           title: title,
           quantity: 1,
           price: price,
@@ -63,6 +65,7 @@ class Cart with ChangeNotifier {
         productId,
         (CartItem value) => CartItem(
           id: value.id,
+          productId: productId,
           title: value.title,
           quantity: value.quantity - 1,
         ),

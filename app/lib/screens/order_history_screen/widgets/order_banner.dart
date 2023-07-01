@@ -6,6 +6,7 @@ import '../../widgets/item_banner.dart';
 import '../../widgets/item_button.dart';
 
 import '../../../models/view_models/order.dart';
+import '../../../providers/order.dart';
 
 class OrderBanner extends StatefulWidget {
   final OrderItem item;
@@ -31,7 +32,7 @@ class _OrderBannerState extends State<OrderBanner> {
           ItemButton(
             onPressed: () {
               final Order order = Provider.of<Order>(context, listen: false);
-              order.deleteOder(widget.item.id);
+              order.deleteOder(widget.item.id!);
               Navigator.pop(context);
             },
             icon: Icons.check,
@@ -198,7 +199,7 @@ class _OrderBannerState extends State<OrderBanner> {
                     Row(
                       children: [
                         Text(DateFormat('dd/MM/yyyy hh:mm')
-                            .format(widget.item.dateOrdered)),
+                            .format(widget.item.dateOrdered!)),
                         !expanded
                             ? const Icon(
                                 Icons.expand_more,

@@ -5,7 +5,7 @@ import '../../providers/authentication.dart';
 import '../../providers/products.dart';
 
 import '../../models/view_models/product.dart';
-import '../../models/view_models/cart.dart';
+import '../../providers/cart.dart';
 
 import '../auth_screen/auth_screen.dart';
 

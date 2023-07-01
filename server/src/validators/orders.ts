@@ -40,7 +40,7 @@ export default class OrdersValidator {
       .notEmpty()
       .withMessage(ValidatorTemplateMessages.missingRequirementMessage('status'))
       .isNumeric()
-      .withMessage(ValidatorTemplateMessages.typeMismatchSetting('amountPaid', 'numeric')),
+      .withMessage(ValidatorTemplateMessages.typeMismatchSetting('status', 'numeric')),
 
       body('cartItems')
       .notEmpty()

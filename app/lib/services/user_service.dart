@@ -1,23 +1,21 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import './utils/common.dart';
 
 class UserService {
-  static Map<String, String> _generateHeader(String token) => {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      };
+  static const String _baseUrl = '/api/users';
 
   static Future<http.Response> getUserInformation(
       String token, String username) {
     return http.get(
       Uri(
-        scheme: 'http',
-        host: '10.0.2.2',
-        port: 3000,
-        path: '/api/users/$username',
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: '$_baseUrl/$username',
       ),
-      headers: _generateHeader(token),
+      headers: generateHeader(token: token),
     );
   }
 
@@ -31,12 +29,12 @@ class UserService {
     if (middleName == null) {
       return http.patch(
           Uri(
-            scheme: 'http',
-            host: '10.0.2.2',
-            port: 3000,
-            path: '/api/users/$username',
+            scheme: serverConfig['scheme'],
+            host: serverConfig['host'],
+            port: serverConfig['port'],
+            path: '$_baseUrl/$username',
           ),
-          headers: _generateHeader(token),
+          headers: generateHeader(token: token),
           body: json.encode({
             'firstName': firstName,
             'lastName': lastName,
@@ -44,12 +42,12 @@ class UserService {
     } else {
       return http.patch(
           Uri(
-            scheme: 'http',
-            host: '10.0.2.2',
-            port: 3000,
-            path: '/api/users/$username',
+            scheme: serverConfig['scheme'],
+            host: serverConfig['host'],
+            port: serverConfig['port'],
+            path: '$_baseUrl/$username',
           ),
-          headers: _generateHeader(token),
+          headers: generateHeader(token: token),
           body: json.encode({
             'firstName': firstName,
             'middleName': middleName,
@@ -65,12 +63,12 @@ class UserService {
   ) {
     return http.patch(
         Uri(
-          scheme: 'http',
-          host: '10.0.2.2',
-          port: 3000,
-          path: '/api/users/change-email/$username',
+          scheme: serverConfig['scheme'],
+          host: serverConfig['host'],
+          port: serverConfig['port'],
+          path: '$_baseUrl/change-email/$username',
         ),
-        headers: _generateHeader(token),
+        headers: generateHeader(token: token),
         body: json.encode({
           'email': email,
         }));
@@ -84,12 +82,12 @@ class UserService {
   ) {
     return http.patch(
         Uri(
-          scheme: 'http',
-          host: '10.0.2.2',
-          port: 3000,
-          path: '/api/users/change-password/$username',
+          scheme: serverConfig['scheme'],
+          host: serverConfig['host'],
+          port: serverConfig['port'],
+          path: '$_baseUrl/change-password/$username',
         ),
-        headers: _generateHeader(token),
+        headers: generateHeader(token: token),
         body: json.encode({
           'oldPassword': oldPassword,
           'password': password,
