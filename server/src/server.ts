@@ -6,6 +6,7 @@ import swaggerDocs from './config/swagger.config';
 import productRoutes, { productsRouteName } from './routes/products';
 import userRoutes, { usersRouteName } from './routes/users';
 import orderRoutes, { ordersRouteName } from './routes/orders';
+import likeRotes, { likeRouteName } from './routes/like';
 
 const app: Express = express();
 const port: number = 3000;
