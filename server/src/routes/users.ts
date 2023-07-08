@@ -1,10 +1,9 @@
 import { Router, Request, Response } from 'express';
 import multer, { Multer, StorageEngine, FileFilterCallback } from 'multer';
-import { Model } from 'sequelize';
+
 import { v4 } from 'uuid';
 import { mkdirSync, existsSync, removeSync } from 'fs-extra';
 import { createHash } from 'crypto';
-
 
 import { physicalRootDir } from '../config/server.config';
 import { DestinationCallback, FileNameCallback, limits } from '../config/multer.config';
