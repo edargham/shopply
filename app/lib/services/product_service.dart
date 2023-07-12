@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 import './utils/common.dart';
@@ -5,7 +7,7 @@ import './utils/common.dart';
 
 class ProductService {
   static const String baseUrl = '/api/products/';
-
+  static const String likeUrl = '/api/like/';
   // static Future<http.Response> addProduct(Product item) {
   //   return http.post(
   //     Uri.https(baseUrl, _productsUrl),
@@ -18,6 +20,36 @@ class ProductService {
   //     }),
   //   );
   // }
+
+  static Future<http.Response> postLike(String token, String productId) {
+    return http.post(
+      Uri(
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: likeUrl,
+      ),
+      headers: generateHeader(token: token),
+      body: json.encode({
+        'productId': productId,
+      }),
+    );
+  }
+
+  static Future<http.Response> deleteLike(String token, String productId) {
+    return http.delete(
+      Uri(
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: likeUrl,
+      ),
+      headers: generateHeader(token: token),
+      body: json.encode({
+        'productId': productId,
+      }),
+    );
+  }
 
   static Future<http.Response> getProducts() {
     return http.get(

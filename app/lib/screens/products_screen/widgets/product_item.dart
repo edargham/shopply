@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../providers/authentication.dart';
-import '../../auth_screen/auth_screen.dart';
-import '../../../providers/cart.dart';
-import '../../product_details_screen/product_details_screen.dart';
-import '../../../models/view_models/product.dart';
-import '../../widgets/item_button.dart';
+
 import './favorite_loading_indicator.dart';
+import '../../widgets/item_button.dart';
+
+import '../../auth_screen/auth_screen.dart';
+
+import '../../../providers/authentication.dart';
+import '../../../providers/cart.dart';
+import '../../../providers/products.dart';
+
+import '../../../models/view_models/product.dart' as model;
+
+import '../../product_details_screen/product_details_screen.dart';
 
 class ProductItem extends StatefulWidget {
   const ProductItem({super.key});
@@ -19,7 +25,7 @@ class _ProductItemState extends State<ProductItem> {
   final double _radius = 8.0;
   bool _isLoading = false;
 
-  void _onProductPressed(BuildContext context, Product item) {
+  void _onProductPressed(BuildContext context, model.Product item) {
     Navigator.of(context).pushNamed(
       ProductDetailsScreen.routeName,
       arguments: {
@@ -28,7 +34,7 @@ class _ProductItemState extends State<ProductItem> {
     );
   }
 
-  Widget _showImage(Product item) {
+  Widget _showImage(model.Product item) {
     // try {
     return Expanded(
       flex: 2,
@@ -80,31 +86,33 @@ class _ProductItemState extends State<ProductItem> {
     );
   }
 
-  Widget _showFavoriteButton(String? token) {
+  Widget _showFavoriteButton(BuildContext context, String? token) {
+    Products productsProvider = Provider.of<Products>(context, listen: false);
     if (!_isLoading) {
       return Expanded(
-        child: Consumer<Product>(
-          builder: (BuildContext context, Product item, Widget? child) =>
+        child: Consumer<model.Product>(
+          builder: (BuildContext context, model.Product item, Widget? child) =>
               ItemButton(
             onPressed: () async {
               if (token != null) {
                 setState(() {
                   _isLoading = true;
                 });
-                item.setFavorite(
-                  item.id,
-                  !item.isFavorite,
-                );
+                productsProvider
+                    .setFavorite(token, item.id, !item.isFavorite)
+                    .then((_) {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                }).catchError((_) {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                  return;
+                });
               } else {
                 await _showAuthDialog();
-              } /*.then((_) {
-                setState(() {
-                  _isLoading = false;
-                });
-              }).catchError((_) {
-                return;
-              });*/
-              ;
+              }
             },
             icon: item.isFavorite ? Icons.favorite : Icons.favorite_outline,
             color: Colors.red,
@@ -121,7 +129,8 @@ class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData deviceDisplay = MediaQuery.of(context);
-    final Product item = Provider.of<Product>(context, listen: false);
+    final model.Product item =
+        Provider.of<model.Product>(context, listen: false);
     final Cart cart = Provider.of<Cart>(context, listen: false);
     final String? token =
         Provider.of<Authentication>(context, listen: true).token;
@@ -208,7 +217,7 @@ class _ProductItemState extends State<ProductItem> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          _showFavoriteButton(token),
+                          _showFavoriteButton(context, token),
                           Expanded(
                             child: ItemButton(
                               onPressed: () async {

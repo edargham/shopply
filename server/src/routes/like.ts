@@ -12,6 +12,7 @@ import { UserLikesModel } from '../models/user_likes_product';
 
 import StatusCodes from '../utils/status_codes';
 
+import LikeValidator from '../validators/like';
 import { checkValidationResult } from '../validators/validation_result';
 
 export const likeRouteName: string = '/api/like';
@@ -20,6 +21,8 @@ const router: Router = Router();
 router.post(
   '/',
   authenticateToken,
+  LikeValidator.validate(),
+  checkValidationResult,
   async (req: AuthenticatedRequest, res: Response) => { 
     try {
       await UserLikesModel.create({
@@ -31,7 +34,8 @@ router.post(
       res.status(StatusCodes.CREATED_CODE);
       return res.json({ 
         status: StatusCodes.CREATED_CODE,
-        message: 'Succesfuly liked product.'
+        message: 'Succesfuly liked product.',
+        like: true,
       });
     } catch (error) {
       console.error(error);
@@ -49,6 +53,8 @@ router.post(
 router.delete(
   '/',
   authenticateToken,
+  LikeValidator.validate(),
+  checkValidationResult,
   async (req: AuthenticatedRequest, res: Response) => { 
     try {
       await UserLikesModel.destroy({
@@ -58,10 +64,11 @@ router.delete(
         }
       })
       // TODO - Get Liked Product View Model.
-      res.status(StatusCodes.CREATED_CODE);
+      res.status(StatusCodes.SUCCESS_CODE);
       return res.json({ 
-        status: StatusCodes.CREATED_CODE,
-        message: 'Succesfuly liked product.'
+        status: StatusCodes.SUCCESS_CODE,
+        message: 'Succesfuly removed liked product.',
+        like: false,
       });
     } catch (error) {
       console.error(error);

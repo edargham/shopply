@@ -1,8 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart';
-
-import '../../errors/http_exception.dart';
-import '../../services/product_service.dart';
+import 'package:flutter/cupertino.dart';
 
 class Product with ChangeNotifier {
   String id;
@@ -23,20 +19,9 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  /*Future<void>*/ void setFavorite(String id, bool isFavorite) {
-    // bool thisIsFavorite = this.isFavorite;
-
-    // return ProductService.setFavorite(id, isFavorite).then((Response res) {
-    //   if (res.statusCode >= 400) {
-    //     throw HttpException('Could not update product $id.');
-    //   }
-    this.isFavorite = isFavorite;
-    //   notifyListeners();
-    // }).catchError((error) {
-    //   this.isFavorite = thisIsFavorite;
-    //   notifyListeners();
-    //   throw error;
-    // });
+  void setFavorite(bool value) {
+    isFavorite = value;
+    notifyListeners();
   }
 
   static Product fromJson(dynamic jsonBody) {

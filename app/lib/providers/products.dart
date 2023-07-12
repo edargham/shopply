@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
 import '../models/responses/product_response.dart';
+import '../models/responses/like_response.dart';
 import '../models/view_models/product.dart';
 
-import '../errors/http_exception.dart';
 import '../services/product_service.dart';
 
 class Products with ChangeNotifier {
@@ -29,6 +29,44 @@ class Products with ChangeNotifier {
   //     notifyListeners();
   //   });
   // }
+
+  Future<LikeResponse> setFavorite(String token, String id, bool isFavorite) {
+    if (isFavorite) {
+      return ProductService.postLike(token, id).then((Response res) {
+        final Map<String, dynamic> data = json.decode(res.body);
+        LikeResponse response = LikeResponse.fromJson(data);
+
+        if (response.status == 201 && response.like != null) {
+          for (Product prod in _items) {
+            if (prod.id == id) {
+              prod.setFavorite(response.like!);
+              notifyListeners();
+              break;
+            }
+          }
+        }
+
+        return response;
+      });
+    } else {
+      return ProductService.deleteLike(token, id).then((Response res) {
+        final Map<String, dynamic> data = json.decode(res.body);
+        LikeResponse response = LikeResponse.fromJson(data);
+
+        if (response.status == 200 && response.like != null) {
+          for (Product prod in _items) {
+            if (prod.id == id) {
+              prod.setFavorite(response.like!);
+              notifyListeners();
+              break;
+            }
+          }
+        }
+
+        return response;
+      });
+    }
+  }
 
   Future<void> getProducts() {
     return ProductService.getProducts().then((Response res) {
