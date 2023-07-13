@@ -96,7 +96,7 @@ class _LoginSectionState extends State<LoginSection> {
           await userHandler.getUser(authHandler.token!, authHandler.username!);
 
           if (!mounted) return;
-          Navigator.of(context).pop();
+          Navigator.of(context).pushReplacementNamed("/");
         }
       } catch (_) {
         showExceptionDialog(context);

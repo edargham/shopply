@@ -51,7 +51,7 @@ class ProductService {
     );
   }
 
-  static Future<http.Response> getProducts() {
+  static Future<http.Response> getProducts({String? token}) {
     return http.get(
       Uri(
         scheme: serverConfig['scheme'],
@@ -59,6 +59,7 @@ class ProductService {
         port: serverConfig['port'],
         path: baseUrl,
       ),
+      headers: generateHeader(token: token),
     );
   }
 

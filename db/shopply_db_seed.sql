@@ -157,3 +157,38 @@ CREATE OR REPLACE VIEW shopply.vw_cart_item
     products.title
    FROM shopply.cart_item
      JOIN shopply.products ON cart_item.product_id::text = products.id::text;
+
+CREATE OR REPLACE FUNCTION shopply.fn_liked_products(
+	in_username character varying)
+    RETURNS TABLE
+    (
+      id character varying, 
+      title character varying, 
+      "description" character varying, 
+      "imageUrl" character varying, 
+      price double precision, 
+      stock integer, 
+      liked boolean
+    ) 
+    LANGUAGE 'plpgsql'
+
+AS $BODY$
+BEGIN
+	RETURN QUERY 
+	SELECT 
+	"shopply"."products".*,
+	(
+		CASE 
+			WHEN "shopply"."user_likes_products"."username" IS NOT NULL 
+			AND  "shopply"."user_likes_products"."username" = in_username
+			THEN TRUE 
+			ELSE FALSE
+		END
+	) AS "liked" 
+	FROM "shopply"."products"
+	LEFT JOIN "shopply"."user_likes_products" 
+	ON "shopply"."products"."id" = "shopply"."user_likes_products"."product_id";
+END
+$BODY$;
+
+     

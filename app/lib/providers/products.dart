@@ -68,8 +68,8 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> getProducts() {
-    return ProductService.getProducts().then((Response res) {
+  Future<void> getProducts({String? token}) {
+    return ProductService.getProducts(token: token).then((Response res) {
       final Map<String, dynamic> data = json.decode(res.body);
       ProductsResponse response = ProductsResponse.fromJson(data);
 

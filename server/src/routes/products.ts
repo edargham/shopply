@@ -4,11 +4,13 @@ import { Model } from 'sequelize';
 import { v4 } from 'uuid';
 import { mkdirSync, existsSync, removeSync } from 'fs-extra';
 
-import { ProductModel, IProduct } from '../models/product';
+import { ProductModel, IProduct, ILikedProduct } from '../models/product';
 
 import { physicalRootDir } from '../config/server.config';
-import { authenticateToken, AuthenticatedRequest } from '../config/auth.config';
+import { authenticateToken, AuthenticatedRequest, acceptToken } from '../config/auth.config';
 import { DestinationCallback, FileNameCallback, limits } from '../config/multer.config';
+
+import dbConnectionConfiguration from '../config/database.config';
 
 import StatusCodes from '../utils/status_codes';
 
@@ -54,6 +56,8 @@ const uploads: Multer = multer({
  * @openapi
  * /api/products:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    description: Returns a list of all the products from the database.
  *    responses:
  *      200:
@@ -65,14 +69,28 @@ const uploads: Multer = multer({
  */
 router.get(
   '/',
-  async (req: Request, res: Response) => {
+  acceptToken,
+  async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const products: ProductModel[] = await ProductModel.findAll();
-      res.status(StatusCodes.SUCCESS_CODE);
-      return res.json({
-        status: StatusCodes.SUCCESS_CODE,
-        products: products
-      });
+      if (!req.user) {
+        const products: ProductModel[] = await ProductModel.findAll();
+        res.status(StatusCodes.SUCCESS_CODE);
+        return res.json({
+          status: StatusCodes.SUCCESS_CODE,
+          products: products
+        });
+      } else {
+        const products: ILikedProduct[] = await dbConnectionConfiguration
+          .query(`SELECT * FROM "shopply"."fn_liked_products"('${ req.user!.username }');`)
+          .then((data): ILikedProduct[] => {
+            return data[0] as ILikedProduct[];
+          });
+
+          return res.json({
+            status: StatusCodes.SUCCESS_CODE,
+            products: products
+          });
+      }
     } catch (error) {
       console.error(error);
       const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;

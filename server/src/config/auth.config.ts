@@ -66,6 +66,51 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
   }
 }
 
+export const acceptToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const authHeader: string | undefined = req.headers.authorization;
+
+  if (!authHeader) {
+    next();
+  } else {
+    const token: string = authHeader.split(' ')[1];
+    if (!token) {
+      const statusCode: number = StatusCodes.UNAUTHORIZED;
+      res.status(statusCode);
+  
+      return res.json({
+        status: statusCode,
+        message: 'Invalid token.'
+      });
+    }
+
+    jwt.verify(token, authToken, (error: any, user: any) => {
+      if (error) {
+        const statusCode: number = StatusCodes.FORBIDDEN;
+        res.status(statusCode);
+
+        return res.json({
+          status: statusCode,
+          message: `FORBIDDEN\n${ error }`
+        });
+      } else {
+        req.user = {
+          username: user.username,
+          firstName: user.firstName,
+          middleName: user.middleName,
+          lastName: user.lastName,
+          dateOfBirth: user.dateOfBirth,
+          sex: user.sex,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          profilePhotoUrl: user.profilePhotoUrl,
+          isVerified: user.isVerified
+        };
+        next();
+      }
+    });
+  }
+}
+
 export const authorizeSelf = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   if (req.user && req.user.username != req.params.username) {
     const statusCode: number = StatusCodes.FORBIDDEN;

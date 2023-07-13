@@ -10,6 +10,17 @@ export interface IProduct {
   stock: number
 }
 
+export interface ILikedProduct {
+  id: string,
+  title: string,
+  description: string | null,
+  imageUrl: string | null,
+  price: number,
+  stock: number,
+  liked: boolean
+}
+
+
 export class ProductModel extends Model<IProduct> {}
 
 ProductModel.init(

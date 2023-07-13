@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/view_models/product.dart';
+import '../../providers/authentication.dart';
 import './widgets/product_item.dart';
 import '../../providers/products.dart';
 
@@ -21,7 +22,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
   bool _isLoading = false;
 
   Future<void> _refreshItems(BuildContext context) async {
-    return await Provider.of<Products>(context, listen: false).getProducts();
+    String? token = Provider.of<Authentication>(context, listen: false).token;
+    return await Provider.of<Products>(context, listen: false)
+        .getProducts(token: token);
   }
 
   @override
@@ -35,7 +38,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Products>(context).getProducts().then((_) {
+      String? token = Provider.of<Authentication>(context).token;
+      Provider.of<Products>(context).getProducts(token: token).then((_) {
         setState(() {
           _isLoading = false;
         });

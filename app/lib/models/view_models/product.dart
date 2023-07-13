@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 
 class Product with ChangeNotifier {
@@ -25,6 +27,12 @@ class Product with ChangeNotifier {
   }
 
   static Product fromJson(dynamic jsonBody) {
+    bool liked = false;
+
+    if (jsonBody['liked'] != null) {
+      liked = jsonBody['liked'];
+    }
+
     Product res = Product(
       id: jsonBody['id'],
       title: jsonBody['title'],
@@ -32,6 +40,7 @@ class Product with ChangeNotifier {
       imageUrl: 'http://10.0.2.2:3000/${jsonBody['imageUrl']}',
       price: jsonBody['price'],
       stock: jsonBody['stock'],
+      isFavorite: liked,
     );
 
     return res;
