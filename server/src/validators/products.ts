@@ -79,4 +79,12 @@ export default class ProductValidator {
       .withMessage(ValidatorTemplateMessages.missingRequirementMessage('id'))
     ]
   }
+
+  public static validateSearchParam(): ValidationChain[] {
+    return [
+      param('title')
+      .notEmpty()
+      .withMessage(ValidatorTemplateMessages.missingRequirementMessage('title'))
+    ]
+  }
 }

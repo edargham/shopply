@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import multer, { Multer, StorageEngine, FileFilterCallback } from 'multer';
-import { Model } from 'sequelize';
+import { Model, Op } from 'sequelize';
 import { v4 } from 'uuid';
 import { mkdirSync, existsSync, removeSync } from 'fs-extra';
 
@@ -104,7 +104,78 @@ router.get(
   }
 );
 
-// TODO - Get product details with favorite info.
+/**
+ * @openapi
+ * /api/products/search/{title}:
+ *  get:
+ *    security:
+ *      - bearerAuth: []
+ *    description: Returns a list of all the products from the database.
+ *    parameters:
+ *      - in: path
+ *        name: title
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: The ID of the product that will be returned.
+ *    responses:
+ *      200:
+ *        description: All products were successfuly returned.
+ *      500:
+ *        description: An internal error has occured while pulling the list of products from the database.
+ *    tags:
+ *      - Products
+ */
+router.get(
+  '/search/:title',
+  acceptToken,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.user) {
+        const products: ProductModel[] = await ProductModel.findAll({
+          where: {
+            title: {
+              [Op.iLike]: `%${ req.params.title }`
+            }
+          }
+        });
+        res.status(StatusCodes.SUCCESS_CODE);
+        return res.json({
+          status: StatusCodes.SUCCESS_CODE,
+          products: products
+        });
+      } else {
+        const products: ILikedProduct[] = await dbConnectionConfiguration
+          .query(
+            `SELECT * FROM "shopply"."fn_liked_products"(':username') WHERE LOWER("title") LIKE LOWER('%:search_title%');`,
+            {
+              replacements: {
+                username: req.user!.username,
+                search_title: req.params.title,
+              }
+            }
+          )
+          .then((data): ILikedProduct[] => {
+            return data[0] as ILikedProduct[];
+          });
+
+          return res.json({
+            status: StatusCodes.SUCCESS_CODE,
+            products: products
+          });
+      }
+    } catch (error) {
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        message: 'Failed to read products from the database.',
+        route: `GET ${ productsRouteName }/`
+      });
+    }
+  }
+);
 
 /**
  * @openapi
