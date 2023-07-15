@@ -83,7 +83,7 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
   void _search(BuildContext ctx) {
     FocusManager.instance.primaryFocus?.unfocus();
     String? token = Provider.of<Authentication>(context, listen: false).token;
-    Provider.of<SearchResults>(context, listen: false)
+    Provider.of<Products>(context, listen: false)
         .searchFor(_searchQuery, token: token);
     for (int i = 0; i < _screens.length; i++) {
       if (_screens[i]['name'] == 'search') {

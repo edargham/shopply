@@ -131,8 +131,7 @@ class _ProductItemState extends State<ProductItem> {
     MediaQueryData deviceDisplay = MediaQuery.of(context);
     final model.Product item = Provider.of<model.Product>(context);
     final Cart cart = Provider.of<Cart>(context, listen: false);
-    final String? token =
-        Provider.of<Authentication>(context, listen: true).token;
+    final String? token = Provider.of<Authentication>(context).token;
 
     const double hScale = 0.32;
     return InkWell(

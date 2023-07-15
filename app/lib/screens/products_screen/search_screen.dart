@@ -25,7 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _refreshItems(BuildContext context) async {
     String? token = Provider.of<Authentication>(context, listen: false).token;
-    return await Provider.of<SearchResults>(context, listen: false)
+    return await Provider.of<Products>(context, listen: false)
         .searchFor(widget.searchQuery, token: token);
   }
 
@@ -41,7 +41,7 @@ class _SearchScreenState extends State<SearchScreen> {
         _isLoading = true;
       });
       String? token = Provider.of<Authentication>(context).token;
-      Provider.of<SearchResults>(context)
+      Provider.of<Products>(context)
           .searchFor(widget.searchQuery, token: token)
           .then((_) {
         setState(() {
@@ -55,7 +55,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final SearchResults productsProvider = Provider.of<SearchResults>(context);
+    final Products productsProvider = Provider.of<Products>(context);
     final List<Product> products = widget.filterFavorites
         ? productsProvider.searchResults
             .where((Product item) => item.isFavorite)

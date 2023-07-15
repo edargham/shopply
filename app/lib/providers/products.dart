@@ -15,6 +15,28 @@ class Products with ChangeNotifier {
     return [..._items];
   }
 
+  List<Product> _searchResults = <Product>[];
+
+  List<Product> get searchResults {
+    return [..._searchResults];
+  }
+
+  Future<void> searchFor(String query, {String? token}) {
+    return ProductService.searchFor(query, token: token).then((Response res) {
+      final Map<String, dynamic> data = json.decode(res.body);
+      ProductsResponse response = ProductsResponse.fromJson(data);
+
+      List<Product> loadedItems = [];
+
+      if (response.products != null) {
+        loadedItems = response.products!;
+      }
+
+      _searchResults = loadedItems;
+      notifyListeners();
+    });
+  }
+
   // Future<void> addProduct(Product newItem) {
   //   return ProductService.addProduct(newItem).then((Response res) {
   //     Product savedItem = Product(
@@ -44,6 +66,14 @@ class Products with ChangeNotifier {
               break;
             }
           }
+
+          for (Product prod in _searchResults) {
+            if (prod.id == id) {
+              prod.setFavorite(response.like!);
+              notifyListeners();
+              break;
+            }
+          }
         }
 
         return response;
@@ -52,14 +82,26 @@ class Products with ChangeNotifier {
       return ProductService.deleteLike(token, id).then((Response res) {
         final Map<String, dynamic> data = json.decode(res.body);
         LikeResponse response = LikeResponse.fromJson(data);
-
+        bool updated = false;
         if (response.status == 200 && response.like != null) {
           for (Product prod in _items) {
             if (prod.id == id) {
               prod.setFavorite(response.like!);
-              notifyListeners();
+              updated = true;
               break;
             }
+          }
+
+          for (Product prod in _searchResults) {
+            if (prod.id == id) {
+              prod.setFavorite(response.like!);
+              updated = true;
+              break;
+            }
+          }
+
+          if (updated) {
+            notifyListeners();
           }
         }
 
@@ -110,33 +152,5 @@ class Products with ChangeNotifier {
 
   Product findProductById(String productId) {
     return items.firstWhere((Product itm) => productId == itm.id);
-  }
-}
-
-class SearchResults with ChangeNotifier {
-  List<Product> _searchResults = <Product>[];
-
-  List<Product> get searchResults {
-    return [..._searchResults];
-  }
-
-  Future<void> searchFor(String query, {String? token}) {
-    return ProductService.searchFor(query, token: token).then((Response res) {
-      final Map<String, dynamic> data = json.decode(res.body);
-      ProductsResponse response = ProductsResponse.fromJson(data);
-
-      List<Product> loadedItems = [];
-
-      if (response.products != null) {
-        loadedItems = response.products!;
-      }
-
-      _searchResults = loadedItems;
-      notifyListeners();
-    });
-  }
-
-  Product findProductById(String productId) {
-    return searchResults.firstWhere((Product itm) => productId == itm.id);
   }
 }

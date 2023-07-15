@@ -34,9 +34,6 @@ class App extends StatelessWidget {
           create: (ctx) => Products(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => SearchResults(),
-        ),
-        ChangeNotifierProvider(
           create: (ctx) => Cart(),
         ),
         ChangeNotifierProvider(
