@@ -63,6 +63,18 @@ class ProductService {
     );
   }
 
+  static Future<http.Response> searchFor(String query, {String? token}) {
+    return http.get(
+      Uri(
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: '$baseUrl/search/$query',
+      ),
+      headers: generateHeader(token: token),
+    );
+  }
+
   // static Future<http.Response> updateProduct(Product item) {
   //   return http.patch(
   //     Uri.https(baseUrl, '$_productsRoute/${item.id}.json'),
@@ -78,15 +90,6 @@ class ProductService {
   // static Future<http.Response> deleteProduct(Product item) {
   //   return http.delete(
   //     Uri.https(baseUrl, '$_productsRoute/${item.id}.json'),
-  //   );
-  // }
-
-  // static Future<http.Response> setFavorite(String id, bool isFavorite) {
-  //   return http.patch(
-  //     Uri.https(baseUrl, '$_productsRoute/$id.json'),
-  //     body: json.encode({
-  //       'isFavorite': isFavorite,
-  //     }),
   //   );
   // }
 }

@@ -83,7 +83,6 @@ class Products with ChangeNotifier {
       notifyListeners();
     });
   }
-
   // Future<void> updateProduct(Product item) {
   //   return ProductService.updateProduct(item).then((_) {
   //     int index = _items.indexWhere((Product itm) => item.id == itm.id);
@@ -111,5 +110,33 @@ class Products with ChangeNotifier {
 
   Product findProductById(String productId) {
     return items.firstWhere((Product itm) => productId == itm.id);
+  }
+}
+
+class SearchResults with ChangeNotifier {
+  List<Product> _searchResults = <Product>[];
+
+  List<Product> get searchResults {
+    return [..._searchResults];
+  }
+
+  Future<void> searchFor(String query, {String? token}) {
+    return ProductService.searchFor(query, token: token).then((Response res) {
+      final Map<String, dynamic> data = json.decode(res.body);
+      ProductsResponse response = ProductsResponse.fromJson(data);
+
+      List<Product> loadedItems = [];
+
+      if (response.products != null) {
+        loadedItems = response.products!;
+      }
+
+      _searchResults = loadedItems;
+      notifyListeners();
+    });
+  }
+
+  Product findProductById(String productId) {
+    return searchResults.firstWhere((Product itm) => productId == itm.id);
   }
 }

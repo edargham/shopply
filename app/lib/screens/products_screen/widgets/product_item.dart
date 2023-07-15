@@ -129,8 +129,7 @@ class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData deviceDisplay = MediaQuery.of(context);
-    final model.Product item =
-        Provider.of<model.Product>(context, listen: false);
+    final model.Product item = Provider.of<model.Product>(context);
     final Cart cart = Provider.of<Cart>(context, listen: false);
     final String? token =
         Provider.of<Authentication>(context, listen: true).token;

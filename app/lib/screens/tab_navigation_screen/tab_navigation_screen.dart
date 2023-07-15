@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/authentication.dart';
+import '../../providers/products.dart';
 import '../../providers/user.dart';
+
 import '../products_screen/products_screen.dart';
+import '../products_screen/search_screen.dart';
 
 import '../widgets/main_drawer.dart';
 import '../widgets/cart_button.dart';
+import '../widgets/item_button.dart';
+import '../widgets/search_box.dart';
 
 import './widgets/context_menu_button.dart';
 
@@ -25,59 +30,117 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
   late List<Map<String, Object>> _screens;
   late bool _filterFavorites;
   int _selectedScreenIdx = 0;
+  late String _searchQuery;
+
+  Widget _showContextMenuButton() {
+    return ContextMenuButton(
+      child: PopupMenuButton(
+        onSelected: (selectedOption) {
+          setState(() {
+            _filterFavorites = selectedOption == _FilterOptions.showFavorites;
+            for (int i = 0; i < _screens.length; i++) {
+              if (_screens[i]['name'] == 'search') {
+                _screens[i]['screen'] = SearchScreen(
+                  searchQuery: _searchQuery,
+                  filterFavorites: _filterFavorites,
+                );
+              } else {
+                _screens[i]['screen'] =
+                    ProductsScreen(filterFavorites: _filterFavorites);
+              }
+            }
+            // _screens[0]['screen'] =
+            //     ProductsScreen(filterFavorites: _filterFavorites);
+          });
+        },
+        icon: const Icon(Icons.more_vert),
+        itemBuilder: (BuildContext context) => [
+          const PopupMenuItem(
+            value: _FilterOptions.showFavorites,
+            child: ListTile(
+              leading: Icon(
+                Icons.favorite,
+                color: Colors.red,
+              ),
+              title: Text('Show Favorites'),
+            ),
+          ),
+          PopupMenuItem(
+            value: _FilterOptions.showAll,
+            child: ListTile(
+              leading: Icon(
+                Icons.apps,
+                color: Theme.of(context).colorScheme.surface,
+              ),
+              title: const Text('Show All'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _search(BuildContext ctx) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    String? token = Provider.of<Authentication>(context, listen: false).token;
+    Provider.of<SearchResults>(context, listen: false)
+        .searchFor(_searchQuery, token: token);
+    for (int i = 0; i < _screens.length; i++) {
+      if (_screens[i]['name'] == 'search') {
+        _screens[i]['screen'] = SearchScreen(
+          searchQuery: _searchQuery,
+          filterFavorites: _filterFavorites,
+        );
+        break;
+      }
+    }
+  }
+
+  void _onSearchQueryChanged(val) {
+    setState(() {
+      _searchQuery = val;
+    });
+  }
 
   @override
   void initState() {
     _filterFavorites = false;
+    _searchQuery = '';
     _screens = [
       {
-        'title': 'Products',
+        'name': 'home',
+        'title': const Text(
+          'Products',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         'actions': <Widget>[
           const CartButton(),
-          ContextMenuButton(
-            child: PopupMenuButton(
-              onSelected: (selectedOption) {
-                setState(() {
-                  _filterFavorites =
-                      selectedOption == _FilterOptions.showFavorites;
-                  _screens[0]['screen'] =
-                      ProductsScreen(filterFavorites: _filterFavorites);
-                });
-              },
-              icon: const Icon(Icons.more_vert),
-              itemBuilder: (BuildContext context) => [
-                const PopupMenuItem(
-                  value: _FilterOptions.showFavorites,
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                    ),
-                    title: Text('Show Favorites'),
-                  ),
-                ),
-                PopupMenuItem(
-                  value: _FilterOptions.showAll,
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.apps,
-                      color: Theme.of(context).colorScheme.surface,
-                    ),
-                    title: const Text('Show All'),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _showContextMenuButton(),
         ],
         'screen': ProductsScreen(
           filterFavorites: _filterFavorites,
         ),
       },
       {
-        'title': 'Search',
-        'actions': <Widget>[],
-        'screen': const Scaffold(),
+        'name': 'search',
+        'title': SearchBox(
+          caption: 'Search',
+          onChange: _onSearchQueryChanged,
+        ),
+        'actions': <Widget>[
+          ItemButton(
+            onPressed: () => _search(context),
+            icon: Icons.search,
+          ),
+          const CartButton(),
+          _showContextMenuButton(),
+        ],
+        'screen': SearchScreen(
+          searchQuery: _searchQuery,
+          filterFavorites: _filterFavorites,
+        ),
       },
     ];
     super.initState();
@@ -115,12 +178,7 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
       length: numTabs,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            _screens[_selectedScreenIdx]['title'] as String,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          title: _screens[_selectedScreenIdx]['title'] as Widget,
           elevation: 0,
           centerTitle: false,
           actions: _screens[_selectedScreenIdx]['actions'] as List<Widget>,
