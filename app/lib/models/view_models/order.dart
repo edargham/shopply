@@ -1,9 +1,13 @@
 import 'cart.dart';
 
 enum OrderStatus {
+  // ignore: constant_identifier_names
   Pending,
+  // ignore: constant_identifier_names
   Processing,
+  // ignore: constant_identifier_names
   Delivering,
+  // ignore: constant_identifier_names
   Completed,
 }
 
@@ -33,7 +37,9 @@ class OrderItem {
       amount: jsonBody['_amountPaid'],
       products: products,
       dateOrdered: DateTime.parse(jsonBody['_dateOrdered']),
-      status: jsonBody['_status'],
+      status: OrderStatus.values
+          .where((status) => status.index == (jsonBody['_statusId'] - 1))
+          .first,
     );
   }
 }

@@ -57,14 +57,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     }
   }
 
-  void _onExitEditMode() {
-    if (_isEditMode) {
-      setState(() {
-        _isEditMode = false;
-      });
-    }
-  }
-
   void _saveForm(BuildContext context) async {
     String? token = Provider.of<Authentication>(
       context,
@@ -195,6 +187,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   confirmPassword: _changePasswordViewModel.confirmPassword,
                 );
               },
+              isPassword: true,
             ),
             const SizedBox(
               height: 8.0,
@@ -229,6 +222,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   confirmPassword: _changePasswordViewModel.confirmPassword,
                 );
               },
+              isPassword: true,
             ),
             const SizedBox(
               height: 8.0,
@@ -263,6 +257,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   confirmPassword: value!,
                 );
               },
+              isPassword: true,
             ),
             const SizedBox(
               height: 8.0,

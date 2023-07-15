@@ -74,6 +74,7 @@ router.get(
     try {
       if (!req.user) {
         const products: ProductModel[] = await ProductModel.findAll();
+
         res.status(StatusCodes.SUCCESS_CODE);
         return res.json({
           status: StatusCodes.SUCCESS_CODE,
@@ -81,15 +82,23 @@ router.get(
         });
       } else {
         const products: ILikedProduct[] = await dbConnectionConfiguration
-          .query(`SELECT * FROM "shopply"."fn_liked_products"('${ req.user!.username }');`)
+          .query(
+            `SELECT * FROM "shopply"."fn_liked_products"(:username);`,
+            {
+              replacements:{
+                username: `${ req.user!.username }`
+              }
+            }
+          )
           .then((data): ILikedProduct[] => {
             return data[0] as ILikedProduct[];
           });
 
-          return res.json({
-            status: StatusCodes.SUCCESS_CODE,
-            products: products
-          });
+        res.status(StatusCodes.SUCCESS_CODE);
+        return res.json({
+          status: StatusCodes.SUCCESS_CODE,
+          products: products
+        });
       }
     } catch (error) {
       console.error(error);
@@ -135,10 +144,11 @@ router.get(
         const products: ProductModel[] = await ProductModel.findAll({
           where: {
             title: {
-              [Op.iLike]: `%${ req.params.title }`
+              [Op.iLike]: `%${ req.params.title }%`
             }
           }
         });
+
         res.status(StatusCodes.SUCCESS_CODE);
         return res.json({
           status: StatusCodes.SUCCESS_CODE,
@@ -147,11 +157,11 @@ router.get(
       } else {
         const products: ILikedProduct[] = await dbConnectionConfiguration
           .query(
-            `SELECT * FROM "shopply"."fn_liked_products"(':username') WHERE LOWER("title") LIKE LOWER('%:search_title%');`,
+            `SELECT * FROM "shopply"."fn_liked_products"(:username) WHERE LOWER("title") LIKE LOWER(:search_title);`,
             {
               replacements: {
-                username: req.user!.username,
-                search_title: req.params.title,
+                username: `${ req.user!.username }`,
+                search_title: `%${ req.params.title }%`,
               }
             }
           )
@@ -159,6 +169,7 @@ router.get(
             return data[0] as ILikedProduct[];
           });
 
+          res.status(StatusCodes.SUCCESS_CODE);
           return res.json({
             status: StatusCodes.SUCCESS_CODE,
             products: products
@@ -181,6 +192,8 @@ router.get(
  * @openapi
  * /api/products/{id}:
  *  get:
+ *    security:
+ *      - bearerAuth: []
  *    description: Returns the product with the specified ID from the database.
  *    parameters:
  *      - in: path
@@ -203,11 +216,13 @@ router.get(
  */
 router.get(
   '/:id',
+  acceptToken,
   ProductValidator.validateGetSingleProduct(),
   checkValidationResult,
-  async (req: Request, res: Response) => {
+  async (req: AuthenticatedRequest, res: Response) => {
     try {
       const paramId: string = req.params.id;
+      if (!req.user) {
       const product: ProductModel | null = await ProductModel.findOne({
         where: {
           id: paramId
@@ -227,6 +242,35 @@ router.get(
 
       res.status(StatusCodes.SUCCESS_CODE);
       return res.json(product);
+    } else {
+      const product: ILikedProduct | null = await dbConnectionConfiguration
+      .query(
+        `SELECT * FROM "shopply"."fn_liked_products"(:username) WHERE "id" = :productId;`,
+        {
+          replacements:{
+            username: `${ req.user!.username }`,
+            productId: paramId,
+          }
+        }
+      )
+      .then((data): ILikedProduct | null => {
+        return data[0][0] as ILikedProduct | null;
+      });
+
+      if (!product) {
+        const statusCode: number = StatusCodes.NOT_FOUND;
+        
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          message: `No product with id ${ paramId } was found.`,
+          route: `GET ${ productsRouteName }/${ paramId }`
+        });
+      }
+
+      res.status(StatusCodes.SUCCESS_CODE);
+      return res.json(product);
+    }
     } catch (error) {
       console.error(error);
       const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;

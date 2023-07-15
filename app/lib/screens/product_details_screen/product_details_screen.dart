@@ -69,7 +69,7 @@ class ProductDetailsScreen extends StatelessWidget {
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          const double indentation = 16.0;
+          const double indentation = 8.0;
           return SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(
@@ -83,8 +83,46 @@ class ProductDetailsScreen extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                     title: item.title,
                   ),
+                  (token != null && item.isFavorite)
+                      ? Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            indentation * 2,
+                            indentation,
+                            indentation * 2,
+                            indentation / 2,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: const <Widget>[
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                  0.0,
+                                  0.0,
+                                  8.0,
+                                  0.0,
+                                ),
+                                child: Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              Text(
+                                'You like this item.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(),
                   Padding(
-                    padding: const EdgeInsets.all(indentation),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: indentation,
+                      horizontal: 2 * indentation,
+                    ),
                     child: Column(
                       children: <Widget>[
                         SectionHeader(

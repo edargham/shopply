@@ -69,7 +69,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const Icon(
-              Icons.history,
+              Icons.assignment,
               size: 64.0,
               color: Colors.amber,
             ),
@@ -112,7 +112,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Previous Orders',
+          'Your Orders',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),

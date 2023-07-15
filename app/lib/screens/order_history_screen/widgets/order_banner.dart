@@ -173,7 +173,9 @@ class _OrderBannerState extends State<OrderBanner> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Icon(Icons.shopping_cart),
+                        (widget.item.status != OrderStatus.Completed)
+                            ? const Icon(Icons.assignment)
+                            : const Icon(Icons.receipt_long),
                         const SizedBox(width: 4.0),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,6 +192,13 @@ class _OrderBannerState extends State<OrderBanner> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16.0,
+                              ),
+                            ),
+                            Text(
+                              'Order Status: ${widget.item.status.toString().split('.').last}',
+                              style: const TextStyle(
+                                fontStyle: FontStyle.italic,
+                                fontSize: 8.0,
                               ),
                             ),
                           ],

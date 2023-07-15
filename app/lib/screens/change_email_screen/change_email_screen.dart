@@ -47,14 +47,6 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
     }
   }
 
-  void _onExitEditMode() {
-    if (_isEditMode) {
-      setState(() {
-        _isEditMode = false;
-      });
-    }
-  }
-
   void _saveForm(BuildContext context) async {
     String? token = Provider.of<Authentication>(
       context,

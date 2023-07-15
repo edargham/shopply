@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import './utils/common.dart';
+import '../utilities/common.dart';
 
 class AuthService {
   static const String _baseUrl = '/api/users';

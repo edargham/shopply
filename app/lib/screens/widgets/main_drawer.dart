@@ -134,7 +134,7 @@ class MainDrawer extends StatelessWidget {
           (token != null)
               ? _buildListTile(
                   context: context,
-                  icon: Icons.history,
+                  icon: Icons.assignment,
                   caption: 'Orders',
                   tileTapped: () {
                     Navigator.of(context)

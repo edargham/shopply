@@ -54,14 +54,6 @@ class _ChangeInformationScreenState extends State<ChangeInformationScreen> {
     }
   }
 
-  void _onExitEditMode() {
-    if (_isEditMode) {
-      setState(() {
-        _isEditMode = false;
-      });
-    }
-  }
-
   void _saveForm(BuildContext context) async {
     String? token = Provider.of<Authentication>(
       context,

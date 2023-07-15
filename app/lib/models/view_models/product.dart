@@ -1,6 +1,6 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
 
-import 'package:flutter/cupertino.dart';
+import '../../utilities/common.dart';
 
 class Product with ChangeNotifier {
   String id;
@@ -37,7 +37,8 @@ class Product with ChangeNotifier {
       id: jsonBody['id'],
       title: jsonBody['title'],
       description: jsonBody['description'],
-      imageUrl: 'http://10.0.2.2:3000/${jsonBody['imageUrl']}',
+      imageUrl:
+          '${serverConfig['scheme']}://${serverConfig['host']}:${serverConfig['port']}/${jsonBody['imageUrl']}',
       price: jsonBody['price'],
       stock: jsonBody['stock'],
       isFavorite: liked,

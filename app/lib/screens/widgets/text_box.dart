@@ -15,6 +15,7 @@ class TextBox extends StatelessWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final int maxLines;
+  final bool isPassword;
 
   const TextBox({
     super.key,
@@ -31,6 +32,7 @@ class TextBox extends StatelessWidget {
     this.initalValue,
     this.onTap,
     this.maxLines = 1,
+    this.isPassword = false,
   });
 
   @override
@@ -95,6 +97,7 @@ class TextBox extends StatelessWidget {
               ),
               style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
               onChanged: onChange,
+              obscureText: isPassword,
             ),
           )
         ],

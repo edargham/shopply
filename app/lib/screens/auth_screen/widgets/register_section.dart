@@ -362,6 +362,7 @@ class _RegisterSectionState extends State<RegisterSection> {
                 actionButton: TextInputAction.next,
                 onTap: widget.onEnterEditMode,
                 focusNode: _passwordFocusNode,
+                isPassword: true,
                 onChange: (String value) {
                   _registerViewModel = _RegisterViewModel(
                     username: _registerViewModel.username,
@@ -404,6 +405,7 @@ class _RegisterSectionState extends State<RegisterSection> {
                 initalValue: _registerViewModel.confirmPassword,
                 actionButton: TextInputAction.done,
                 onTap: widget.onEnterEditMode,
+                isPassword: true,
                 focusNode: _confirmPasswordFocusNode,
                 onChange: (String value) {
                   _registerViewModel = _RegisterViewModel(

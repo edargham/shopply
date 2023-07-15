@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import './utils/common.dart';
+import '../utilities/common.dart';
 // import '../models/view_models/product.dart';
 
 class ProductService {

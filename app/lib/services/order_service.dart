@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/view_models/cart.dart';
 import '../models/view_models/order.dart';
 
-import './utils/common.dart';
+import '../utilities/common.dart';
 
 class OrderService {
   static const String _baseUrl = '/api/orders';

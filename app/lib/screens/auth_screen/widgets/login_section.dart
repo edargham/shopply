@@ -167,6 +167,7 @@ class _LoginSectionState extends State<LoginSection> {
                 onTap: widget.onEnterEditMode,
                 actionButton: TextInputAction.done,
                 focusNode: _passwordFocusNode,
+                isPassword: true,
                 onChange: (_) {},
                 onSubmit: (_) {},
                 validator: (String? value) {
