@@ -142,6 +142,18 @@ CREATE TABLE IF NOT EXISTS "shopply"."rating" (
     ON DELETE CASCADE
     ON UPDATE NO ACTION);
 
+
+CREATE TABLE IF NOT EXISTS "shopply"."sys_admins" (
+  "username" VARCHAR(16) NOT NULL,
+  "first_name" VARCHAR(64) NOT NULL,
+  "last_name" VARCHAR(64) NOT NULL,
+  "email" VARCHAR(256) NOT NULL,
+  "phone_number" VARCHAR(128) NOT NULL,
+  "password" VARCHAR(512) NOT NULL,
+  "stamp" VARCHAR(128) NOT NULL,
+  "date_created" TIMESTAMP NOT NULL,
+  PRIMARY KEY ("username"));
+
 -- View: shopply.vw_cart_item
 
 -- DROP VIEW shopply.vw_cart_item;
