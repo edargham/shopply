@@ -191,7 +191,7 @@ router.post(
         amountPaid: req.body.amountPaid,
         dateOrdered: new Date(),
         statusId: OrderStatus.Pending as number,
-        username: req.user.username
+        username: req.user!.username
       }, { transaction: transaction }); 
 
       const cartItems: IVwCartItem[] = req.body.cartItems;
@@ -204,7 +204,7 @@ router.post(
           price: cartItems[i].price,
           productId: cartItems[i].productId,
           quantity: cartItems[i].quantity,
-          username: req.user.username,
+          username: req.user!.username,
           orderId: orderId,
         }, { transaction: transaction });
 

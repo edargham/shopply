@@ -22,7 +22,8 @@ const swaggerOptions: swaggerJSDoc.Options = {
   },
   apis: [
     './src/routes/products.ts',
-    './src/routes/users.ts'
+    './src/routes/users.ts',
+    './src/routes/sys_admins.ts',
   ]
 };
 

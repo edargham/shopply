@@ -4,6 +4,7 @@ import dbConnectionConfiguration from './config/database.config';
 import swaggerDocs from './config/swagger.config';
 
 import productRoutes, { productsRouteName } from './routes/products';
+import sysAdminRoutes, { sysAdminRouteName } from './routes/sys_admins';
 import userRoutes, { usersRouteName } from './routes/users';
 import orderRoutes, { ordersRouteName } from './routes/orders';
 import likeRoutes, { likeRouteName } from './routes/like';
@@ -24,6 +25,7 @@ app.use('/uploads', express.static('./dist/uploads'));
 
 // Register Routes
 app.use(productsRouteName, productRoutes);
+app.use(sysAdminRouteName, sysAdminRoutes);
 app.use(usersRouteName, userRoutes);
 app.use(ordersRouteName, orderRoutes);
 app.use(likeRouteName, likeRoutes);

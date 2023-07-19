@@ -7,7 +7,7 @@ import { mkdirSync, existsSync, removeSync } from 'fs-extra';
 import { ProductModel, IProduct, ILikedProduct } from '../models/product';
 
 import { physicalRootDir } from '../config/server.config';
-import { authenticateToken, AuthenticatedRequest, acceptToken } from '../config/auth.config';
+import { authenticateToken, AuthenticatedRequest, acceptToken, escalatePrivilages } from '../config/auth.config';
 import { DestinationCallback, FileNameCallback, limits } from '../config/multer.config';
 
 import dbConnectionConfiguration from '../config/database.config';
@@ -335,6 +335,7 @@ router.get(
 router.post(
   '/',
   authenticateToken,
+  escalatePrivilages,
   uploads.single('image'),
   ProductValidator.validateCreateProduct(),
   checkValidationResult,
@@ -421,6 +422,7 @@ router.post(
 router.patch(
   '/:id',
   authenticateToken,
+  escalatePrivilages,
   ProductValidator.validateUpdateProduct(),
   checkValidationResult,
   async (req: AuthenticatedRequest, res: Response) => {
@@ -499,6 +501,7 @@ router.patch(
 router.delete(
   '/:id',
   authenticateToken,
+  escalatePrivilages,
   ProductValidator.validateDelete(),
   checkValidationResult,
   async (req: AuthenticatedRequest, res: Response) => {
@@ -591,6 +594,7 @@ router.delete(
 router.patch(
   '/update-photo/:id',
   authenticateToken,
+  escalatePrivilages,
   uploads.single('image'),
   ProductValidator.validateUpdateImage(),
   checkValidationResult,

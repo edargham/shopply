@@ -3,16 +3,41 @@ import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
 
 import { IUser } from '../models/user';
+import { ISysAdmin } from '../models/sys_admin';
+import IShopplyUser from '../models/view_models/user_view';
+
 import StatusCodes from '../utils/status_codes';
 
 export interface AuthenticatedRequest extends Request {
-  user?: any
+  user?: IShopplyUser
 }
 
 export const authToken: string = randomBytes(64).toString('hex');
 
 export const generateAccessToken = (user: IUser, token: string): string => {
-  return jwt.sign(user, token);
+  const shopplyUser: IShopplyUser = {
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    isVerified: user.isVerified,
+    ok: undefined,
+  }
+  return jwt.sign(shopplyUser, token);
+}
+
+export const generateAccessTokenAdmin = (user: ISysAdmin, token: string): string => {
+  const shopplyUser: IShopplyUser = {
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    isVerified: undefined,
+    ok: true,
+  }
+  return jwt.sign(shopplyUser, token);
 }
 
 export const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -51,17 +76,28 @@ export const authenticateToken = (req: AuthenticatedRequest, res: Response, next
         req.user = {
           username: user.username,
           firstName: user.firstName,
-          middleName: user.middleName,
           lastName: user.lastName,
-          dateOfBirth: user.dateOfBirth,
-          sex: user.sex,
           email: user.email,
           phoneNumber: user.phoneNumber,
-          profilePhotoUrl: user.profilePhotoUrl,
-          isVerified: user.isVerified
+          isVerified: user.isVerified,
+          ok: user.ok
         };
         next();
       }
+    });
+  }
+}
+
+export const escalatePrivilages = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  if (req.user?.ok) {
+    next();
+  } else {
+    const statusCode: number = StatusCodes.FORBIDDEN;
+    res.status(statusCode);
+
+    return res.json({
+      status: statusCode,
+      message: `FORBIDDEN\nYou are not authorized to access this content.`
     });
   }
 }
@@ -96,14 +132,11 @@ export const acceptToken = (req: AuthenticatedRequest, res: Response, next: Next
         req.user = {
           username: user.username,
           firstName: user.firstName,
-          middleName: user.middleName,
           lastName: user.lastName,
-          dateOfBirth: user.dateOfBirth,
-          sex: user.sex,
           email: user.email,
           phoneNumber: user.phoneNumber,
-          profilePhotoUrl: user.profilePhotoUrl,
-          isVerified: user.isVerified
+          isVerified: user.isVerified,
+          ok: user.ok
         };
         next();
       }

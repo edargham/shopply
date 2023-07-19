@@ -60,7 +60,7 @@ SysAdminModel.init(
   {
     sequelize: dbConnectionConfiguration,
     schema: 'shopply',
-    tableName: 'sys_admin',
+    tableName: 'sys_admins',
     timestamps: false,
   }
 );
