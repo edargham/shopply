@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/view_models/user.dart' as models;
+import '../../models/view_models/sys_admin.dart' as models;
 
 import '../../providers/authentication.dart';
-import '../../providers/user.dart';
+import '../../providers/sys_admin.dart';
 
 import '../../utilities/string_utils.dart';
 import '../widgets/dialogs.dart';
@@ -13,12 +13,10 @@ import '../widgets/text_box.dart';
 
 class _ChangeInformationViewModel {
   final String firstName;
-  final String? middleName;
   final String lastName;
 
   const _ChangeInformationViewModel({
     required this.firstName,
-    this.middleName,
     required this.lastName,
   });
 }
@@ -37,7 +35,6 @@ class _ChangeInformationScreenState extends State<ChangeInformationScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final FocusNode _firstNameFocusNode = FocusNode();
-  final FocusNode _middleNameFocusNode = FocusNode();
   final FocusNode _lastNameFocusNode = FocusNode();
 
   late _ChangeInformationViewModel _changeInformationViewModel =
@@ -74,12 +71,12 @@ class _ChangeInformationScreenState extends State<ChangeInformationScreen> {
       });
 
       try {
-        var res = await Provider.of<User>(context, listen: false).updateUser(
+        var res =
+            await Provider.of<SysAdmin>(context, listen: false).updateUser(
           token!,
           username!,
           _changeInformationViewModel.firstName,
           _changeInformationViewModel.lastName,
-          _changeInformationViewModel.middleName,
         );
 
         if (res.status == 200) {
@@ -123,12 +120,11 @@ class _ChangeInformationScreenState extends State<ChangeInformationScreen> {
 
   @override
   void didChangeDependencies() {
-    final models.User? user = Provider.of<User>(context).currentUser;
+    final models.SysAdmin? user = Provider.of<SysAdmin>(context).currentUser;
     if (user != null) {
       setState(() {
         _changeInformationViewModel = _ChangeInformationViewModel(
           firstName: user.firstName,
-          middleName: user.middleName,
           lastName: user.lastName,
         );
       });
@@ -139,7 +135,6 @@ class _ChangeInformationScreenState extends State<ChangeInformationScreen> {
   @override
   void dispose() {
     _firstNameFocusNode.dispose();
-    _middleNameFocusNode.dispose();
     _lastNameFocusNode.dispose();
     super.dispose();
   }
@@ -172,7 +167,7 @@ class _ChangeInformationScreenState extends State<ChangeInformationScreen> {
               initalValue: _changeInformationViewModel.firstName,
               onChange: (_) {},
               onSubmit: (_) {
-                FocusScope.of(context).requestFocus(_middleNameFocusNode);
+                FocusScope.of(context).requestFocus(_lastNameFocusNode);
               },
               validator: (String? value) {
                 if (value!.isEmpty) {
@@ -184,28 +179,6 @@ class _ChangeInformationScreenState extends State<ChangeInformationScreen> {
               onSaved: (String? value) {
                 _changeInformationViewModel = _ChangeInformationViewModel(
                   firstName: value!,
-                  middleName: _changeInformationViewModel.middleName,
-                  lastName: _changeInformationViewModel.lastName,
-                );
-              },
-            ),
-            const SizedBox(
-              height: 8.0,
-            ),
-            TextBox(
-              caption: 'Middle Name',
-              actionButton: TextInputAction.next,
-              onTap: _onEnterEditMode,
-              focusNode: _middleNameFocusNode,
-              initalValue: _changeInformationViewModel.middleName,
-              onChange: (_) {},
-              onSubmit: (_) {
-                FocusScope.of(context).requestFocus(_lastNameFocusNode);
-              },
-              onSaved: (String? value) {
-                _changeInformationViewModel = _ChangeInformationViewModel(
-                  firstName: _changeInformationViewModel.firstName,
-                  middleName: value!,
                   lastName: _changeInformationViewModel.lastName,
                 );
               },
@@ -231,7 +204,6 @@ class _ChangeInformationScreenState extends State<ChangeInformationScreen> {
               onSaved: (String? value) {
                 _changeInformationViewModel = _ChangeInformationViewModel(
                   firstName: _changeInformationViewModel.firstName,
-                  middleName: _changeInformationViewModel.middleName,
                   lastName: value!,
                 );
               },

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import './widgets/login_section.dart';
-import './widgets/register_section.dart';
 
 class AuthScreen extends StatefulWidget {
   static const routeName = '/auth';
@@ -74,7 +73,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
             const SizedBox(height: 16.0),
             Expanded(
               child: DefaultTabController(
-                  length: 2,
+                  length: 1,
                   child: ControllerBody(
                     onEnterEditMode: _onEnterEditMode,
                     onExitEditMode: _onExitEditMode,

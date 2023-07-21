@@ -1,15 +1,16 @@
-import '../view_models/user.dart';
+import '../view_models/sys_admin.dart';
 import '../view_models/validation_error.dart';
 
-class UpdateUserResponse {
+class UpdateSysAdminResponse {
   int? status;
   String? message;
   String? route;
   List<ValidationError>? errors;
-  User? user;
+  SysAdmin? user;
 
-  static UpdateUserResponse fromJson(dynamic jsonBody, User currentUser) {
-    UpdateUserResponse res = UpdateUserResponse();
+  static UpdateSysAdminResponse fromJson(
+      dynamic jsonBody, SysAdmin currentUser) {
+    UpdateSysAdminResponse res = UpdateSysAdminResponse();
 
     res.status = jsonBody['status'];
     res.message = jsonBody['message'];
@@ -22,7 +23,7 @@ class UpdateUserResponse {
     }
 
     if (jsonBody['user'] != null) {
-      res.user = User.patchJson(jsonBody['user'], currentUser);
+      res.user = SysAdmin.patchJson(jsonBody['user'], currentUser);
     }
 
     return res;

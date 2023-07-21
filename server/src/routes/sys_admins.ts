@@ -58,10 +58,10 @@ const router: Router = Router();
  *              - phoneNumber
  *              - password
  *          example:
- *            username: tiesto
- *            firstName: DeeJay
- *            lastName: Tiesto
- *            email: tiesto@test.com
+ *            username: root
+ *            firstName: Iam
+ *            lastName: Root
+ *            email: root@shopply.online
  *            phoneNumber: 81205500
  *            password: Admin@1234
  *    responses:

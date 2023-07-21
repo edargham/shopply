@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/view_models/user.dart' as models;
-
 import '../../providers/authentication.dart';
-import '../../providers/user.dart';
+import '../../providers/sys_admin.dart';
 
 import '../../utilities/string_utils.dart';
 import '../widgets/dialogs.dart';
@@ -78,7 +76,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
       try {
         var res =
-            await Provider.of<User>(context, listen: false).updatePassword(
+            await Provider.of<SysAdmin>(context, listen: false).updatePassword(
           token!,
           username!,
           _changePasswordViewModel.oldPassword,

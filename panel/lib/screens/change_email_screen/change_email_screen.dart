@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/view_models/user.dart' as models;
+import '../../models/view_models/sys_admin.dart' as models;
 
 import '../../providers/authentication.dart';
-import '../../providers/user.dart';
+import '../../providers/sys_admin.dart';
 
 import '../../utilities/string_utils.dart';
 import '../widgets/dialogs.dart';
@@ -67,7 +67,8 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
       });
 
       try {
-        var res = await Provider.of<User>(context, listen: false).updateEmail(
+        var res =
+            await Provider.of<SysAdmin>(context, listen: false).updateEmail(
           token!,
           username!,
           _changeEmailViewModel.email,
@@ -119,7 +120,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
 
   @override
   void didChangeDependencies() {
-    final models.User? user = Provider.of<User>(context).currentUser;
+    final models.SysAdmin? user = Provider.of<SysAdmin>(context).currentUser;
     if (user != null) {
       setState(() {
         _changeEmailViewModel = _ChangeEmailViewModel(

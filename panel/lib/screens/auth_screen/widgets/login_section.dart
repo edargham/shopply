@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/user.dart';
+import '../../../providers/sys_admin.dart';
 import '../../../utilities/string_utils.dart';
 
 import '../../../providers/authentication.dart';
@@ -91,7 +91,7 @@ class _LoginSectionState extends State<LoginSection> {
 
           authHandler.username = _loginViewModel.username;
 
-          User userHandler = Provider.of<User>(context, listen: false);
+          SysAdmin userHandler = Provider.of<SysAdmin>(context, listen: false);
 
           await userHandler.getUser(authHandler.token!, authHandler.username!);
 

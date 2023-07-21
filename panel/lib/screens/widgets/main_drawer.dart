@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/view_models/user.dart' as model;
+import '../../models/view_models/sys_admin.dart' as model;
 
 import '../../providers/authentication.dart';
-import '../../providers/user.dart';
+import '../../providers/sys_admin.dart';
 
 import '../auth_screen/auth_screen.dart';
 import '../order_history_screen/order_history_screen.dart';
@@ -36,7 +36,7 @@ class MainDrawer extends StatelessWidget {
     );
   }
 
-  Widget _renderWelcome(model.User? user) => (user != null)
+  Widget _renderWelcome(model.SysAdmin? user) => (user != null)
       ? Padding(
           padding: const EdgeInsets.symmetric(horizontal: 1.0),
           child: Align(
@@ -56,7 +56,8 @@ class MainDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final String? token =
         Provider.of<Authentication>(context, listen: false).token;
-    final model.User? currentUser = Provider.of<User>(context).currentUser;
+    final model.SysAdmin? currentUser =
+        Provider.of<SysAdmin>(context).currentUser;
     return Drawer(
       child: Column(
         children: <Widget>[

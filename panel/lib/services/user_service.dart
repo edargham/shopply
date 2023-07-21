@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../utilities/common.dart';
 
 class UserService {
-  static const String _baseUrl = '/api/sysadmins';
+  static const String _baseUrl = '/api/users';
 
   static Future<http.Response> getUserInformation(
       String token, String username) {

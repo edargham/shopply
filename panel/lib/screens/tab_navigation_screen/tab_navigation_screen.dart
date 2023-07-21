@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/authentication.dart';
 import '../../providers/products.dart';
-import '../../providers/user.dart';
+import '../../providers/sys_admin.dart';
 
 import '../manage_products_screen/manage_products_screen.dart';
 import '../search_screen/search_screen.dart';
@@ -11,13 +11,6 @@ import '../search_screen/search_screen.dart';
 import '../widgets/main_drawer.dart';
 import '../widgets/item_button.dart';
 import '../widgets/search_box.dart';
-
-import './widgets/context_menu_button.dart';
-
-enum _FilterOptions {
-  showFavorites,
-  showAll,
-}
 
 class TabNavigationScreen extends StatefulWidget {
   const TabNavigationScreen({super.key});
@@ -27,7 +20,6 @@ class TabNavigationScreen extends StatefulWidget {
 
 class _TabNavigationScreenState extends State<TabNavigationScreen> {
   late List<Map<String, Object>> _screens;
-  late bool _filterFavorites;
   int _selectedScreenIdx = 0;
   late String _searchQuery;
 
@@ -52,7 +44,6 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
 
   @override
   void initState() {
-    _filterFavorites = false;
     _searchQuery = '';
     _screens = [
       {
@@ -89,7 +80,7 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
     String? token = Provider.of<Authentication>(context, listen: false).token;
     String? username =
         Provider.of<Authentication>(context, listen: false).username;
-    User user = Provider.of<User>(context, listen: false);
+    SysAdmin user = Provider.of<SysAdmin>(context, listen: false);
 
     if (token != null && username != null && user.currentUser == null) {
       user.getUser(token, username).then((_) {

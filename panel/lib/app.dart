@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopply_admin_panel/screens/tab_navigation_screen/tab_navigation_screen.dart';
 
+import './screens/tab_navigation_screen/tab_navigation_screen.dart';
 import './screens/product_details_screen/product_details_screen.dart';
 import './screens/order_history_screen/order_history_screen.dart';
 import './screens/manage_products_screen/manage_products_screen.dart';
@@ -15,7 +15,7 @@ import './screens/change_password_screen/change_password_screen.dart';
 
 import './providers/products.dart';
 import './providers/authentication.dart';
-import './providers/user.dart';
+import './providers/sys_admin.dart';
 import './providers/cart.dart';
 import './providers/order.dart';
 
@@ -39,7 +39,7 @@ class App extends StatelessWidget {
           create: (ctx) => Order(),
         ),
         ChangeNotifierProvider(
-          create: (ctx) => User(),
+          create: (ctx) => SysAdmin(),
         ),
       ],
       child: MaterialApp(
