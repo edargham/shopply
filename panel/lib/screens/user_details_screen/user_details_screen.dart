@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/view_models/user.dart' as model;
-import '../../providers/user.dart';
+import '../../models/view_models/sys_admin.dart' as model;
+import '../../providers/sys_admin.dart';
 
 import '../profile_settings_screen/profile_settings_screen.dart';
 
@@ -19,7 +19,8 @@ class UserDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model.User? currentUser = Provider.of<User>(context).currentUser;
+    final model.SysAdmin? currentUser =
+        Provider.of<SysAdmin>(context).currentUser;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -66,27 +67,6 @@ class UserDetailsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    SectionHeader(
-                      color: Theme.of(context).colorScheme.background,
-                      icon: Icons.access_time,
-                      title: 'Joined',
-                      description:
-                          '${currentUser.dateJoined.day}/${currentUser.dateJoined.month}/${currentUser.dateJoined.year}',
-                    ),
-                    SectionHeader(
-                      color: Theme.of(context).colorScheme.background,
-                      icon: Icons.calendar_month,
-                      title: 'Date of Birth',
-                      description:
-                          '${currentUser.dateOfBirth.day}/${currentUser.dateOfBirth.month}/${currentUser.dateOfBirth.year}',
-                    ),
-                    SectionHeader(
-                      color: Theme.of(context).colorScheme.background,
-                      icon:
-                          currentUser.sex == 'Male' ? Icons.male : Icons.female,
-                      title: 'Sex',
-                      description: currentUser.sex,
-                    ),
                     SectionHeader(
                       color: Theme.of(context).colorScheme.background,
                       icon: Icons.mail_outline,

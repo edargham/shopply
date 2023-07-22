@@ -99,6 +99,16 @@ class MainDrawer extends StatelessWidget {
                     ),
                   ),
                 ),
+                const Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    'Admin Panel',
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
                 _renderWelcome(currentUser),
               ],
             ),
@@ -128,7 +138,7 @@ class MainDrawer extends StatelessWidget {
           _buildListTile(
             context: context,
             icon: Icons.shopping_cart,
-            caption: 'Shop',
+            caption: 'Manage Products',
             tileTapped: () {
               Navigator.of(context).pushReplacementNamed('/');
             },

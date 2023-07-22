@@ -5,6 +5,7 @@ import '../../providers/authentication.dart';
 import '../../providers/products.dart';
 import '../../providers/sys_admin.dart';
 
+import '../product_form_screen/product_form_screen.dart';
 import '../manage_products_screen/manage_products_screen.dart';
 import '../search_screen/search_screen.dart';
 
@@ -49,12 +50,30 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
       {
         'name': 'home',
         'title': const Text(
-          'Products',
+          'Manage',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
-        'actions': <Widget>[],
+        'actions': <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 2.0,
+              vertical: 1.0,
+            ),
+            child: ItemButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  ProductFormScreen.routeName,
+                  arguments: {
+                    'productId': null,
+                  },
+                );
+              },
+              icon: Icons.add,
+            ),
+          ),
+        ],
         'screen': const ManageProductsScreen(),
       },
       {
@@ -127,9 +146,9 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
                 Icons.shopping_bag_outlined,
               ),
               activeIcon: Icon(
-                Icons.shopping_bag,
+                Icons.inventory_2,
               ),
-              label: 'Shop',
+              label: 'Manage',
             ),
             BottomNavigationBarItem(
               icon: Icon(

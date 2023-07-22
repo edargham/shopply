@@ -31,6 +31,25 @@ class _ManageProductItemState extends State<ManageProductItem> {
   //   // }
   // }
 
+  Widget _showImage(Product item) {
+    // try {
+    return Expanded(
+      flex: 2,
+      child: Image.network(
+        item.imageUrl!,
+        fit: BoxFit.fill,
+      ),
+    );
+    // } catch (_) {
+    // return const Expanded(
+    //   flex: 2,
+    //   child: Center(
+    //     child: Text('Image not available.'),
+    //   ),
+    // );
+    // }
+  }
+
   void _showAlert(BuildContext context, Product item) async {
     await showDialog(
       context: context,
@@ -120,7 +139,7 @@ class _ManageProductItemState extends State<ManageProductItem> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          // _showImage(item),
+          _showImage(item),
           Expanded(
             flex: 1,
             child: Align(

@@ -4,19 +4,47 @@ import 'package:provider/provider.dart';
 import '../../models/view_models/product.dart';
 import '../../providers/products.dart';
 
-import '../product_form_screen/product_form_screen.dart';
-
 import './widgets/manage_product_item.dart';
 
 import '../widgets/main_drawer.dart';
 import '../widgets/item_button.dart';
 
-class ManageProductsScreen extends StatelessWidget {
+class ManageProductsScreen extends StatefulWidget {
   static const String routeName = '/manage';
   const ManageProductsScreen({super.key});
 
+  @override
+  State<ManageProductsScreen> createState() => _ManageProductsScreenState();
+}
+
+class _ManageProductsScreenState extends State<ManageProductsScreen> {
+  bool _init = true;
+  bool _isLoading = false;
+
   Future<void> _refreshItems(BuildContext context) async {
     return await Provider.of<Products>(context, listen: false).getProducts();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_init) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Provider.of<Products>(context).getProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+      _init = false;
+    }
+    super.didChangeDependencies();
   }
 
   Widget _showBody(BuildContext context) {
@@ -71,38 +99,6 @@ class ManageProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Manage',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 2.0,
-              vertical: 1.0,
-            ),
-            child: ItemButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(
-                  ProductFormScreen.routeName,
-                  arguments: {
-                    'productId': null,
-                  },
-                );
-              },
-              icon: Icons.add,
-            ),
-          ),
-        ],
-        centerTitle: false,
-        elevation: 0,
-      ),
-      drawer: const MainDrawer(),
-      body: _showBody(context),
-    );
+    return _showBody(context);
   }
 }

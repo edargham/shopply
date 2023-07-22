@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/view_models/user.dart';
+import '../../../models/view_models/sys_admin.dart';
 
 class UserBannerCard extends StatelessWidget {
-  final User user;
+  final SysAdmin user;
 
   const UserBannerCard({super.key, required this.user});
 
@@ -65,19 +65,14 @@ class UserBannerCard extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 64.0,
                   backgroundColor: Theme.of(context).colorScheme.background,
-                  backgroundImage: (user.profilePhotoUrl != null)
-                      ? NetworkImage(user.profilePhotoUrl!)
-                      : null,
-                  child: (user.profilePhotoUrl != null)
-                      ? null
-                      : Text(
-                          '${user.firstName[0]}${user.lastName[0]}',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 64.0,
-                          ),
-                        ),
+                  child: Text(
+                    '${user.firstName[0]}${user.lastName[0]}',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 64.0,
+                    ),
+                  ),
                 ),
               ),
             ),
