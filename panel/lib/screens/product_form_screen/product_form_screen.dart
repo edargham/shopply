@@ -5,6 +5,7 @@ import '../../models/view_models/product.dart';
 import '../../providers/products.dart';
 
 import '../widgets/text_box.dart';
+import '../widgets/image_input_box.dart';
 import '../widgets/item_button.dart';
 import '../widgets/main_button.dart';
 
@@ -344,6 +345,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   }
                 },
               ),
+              const ImageInputBox(),
               Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: MainButton(

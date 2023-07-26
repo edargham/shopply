@@ -143,7 +143,7 @@ class _TabNavigationScreenState extends State<TabNavigationScreen> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(
-                Icons.shopping_bag_outlined,
+                Icons.inventory_2_outlined,
               ),
               activeIcon: Icon(
                 Icons.inventory_2,

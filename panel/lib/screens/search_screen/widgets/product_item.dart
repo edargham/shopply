@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './favorite_loading_indicator.dart';
 import '../../widgets/item_button.dart';
 
 import '../../auth_screen/auth_screen.dart';
 
 import '../../../providers/authentication.dart';
 import '../../../providers/cart.dart';
-import '../../../providers/products.dart';
 
-import '../../../models/view_models/product.dart' as model;
+import '../../../models/view_models/product.dart';
 
 import '../../product_details_screen/product_details_screen.dart';
 
@@ -25,7 +23,7 @@ class _ProductItemState extends State<ProductItem> {
   final double _radius = 8.0;
   bool _isLoading = false;
 
-  void _onProductPressed(BuildContext context, model.Product item) {
+  void _onProductPressed(BuildContext context, Product item) {
     Navigator.of(context).pushNamed(
       ProductDetailsScreen.routeName,
       arguments: {
@@ -34,7 +32,7 @@ class _ProductItemState extends State<ProductItem> {
     );
   }
 
-  Widget _showImage(model.Product item) {
+  Widget _showImage(Product item) {
     // try {
     return Expanded(
       flex: 2,
@@ -89,7 +87,7 @@ class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData deviceDisplay = MediaQuery.of(context);
-    final model.Product item = Provider.of<model.Product>(context);
+    final Product item = Provider.of<Product>(context);
     final Cart cart = Provider.of<Cart>(context, listen: false);
     final String? token = Provider.of<Authentication>(context).token;
 

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/view_models/product.dart';
 import '../../providers/authentication.dart';
-import './widgets/product_item.dart';
+import '../manage_products_screen/widgets/manage_product_item.dart';
 import '../../providers/products.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -75,7 +75,7 @@ class _SearchScreenState extends State<SearchScreen> {
             itemBuilder: (BuildContext ctx, int i) =>
                 ChangeNotifierProvider.value(
               value: products[i],
-              child: const ProductItem(),
+              child: const ManageProductItem(),
             ),
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 512,

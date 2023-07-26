@@ -9,10 +9,12 @@ import '../../providers/cart.dart';
 
 import '../auth_screen/auth_screen.dart';
 
+import '../product_form_screen/product_form_screen.dart';
 import './widgets/title_banner.dart';
 
 import '../widgets/main_button.dart';
 import '../widgets/section_header.dart';
+import '../widgets/item_button.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   static const String routeName = '/product_details';
@@ -32,6 +34,17 @@ class ProductDetailsScreen extends StatelessWidget {
     // );
     // }
   }
+
+  void _onEditButtonPressed(BuildContext context, Product item) {
+    Navigator.of(context).pushNamed(
+      ProductFormScreen.routeName,
+      arguments: {
+        'productId': item.id,
+      },
+    );
+  }
+
+  void _onDeleteButtonPressed() {}
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +69,18 @@ class ProductDetailsScreen extends StatelessWidget {
         ),
         centerTitle: false,
         elevation: 0,
-        actions: const <Widget>[],
+        actions: <Widget>[
+          ItemButton(
+            color: Colors.amber,
+            onPressed: () => _onEditButtonPressed(context, item),
+            icon: Icons.edit,
+          ),
+          ItemButton(
+            color: Colors.red,
+            onPressed: () => _onDeleteButtonPressed(),
+            icon: Icons.delete_forever,
+          ),
+        ],
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
@@ -170,12 +194,23 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget _showProductPrompt(
       BuildContext context, String? token, Cart cart, Product item) {
     return (token != null)
-        ? MainButton(
-            onPressed: () {
-              cart.addItem(item.id, item.price, item.title);
-            },
-            title: 'BUY',
-            icon: Icons.add_shopping_cart,
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              MainButton(
+                color: Colors.amber,
+                onPressed: () => _onEditButtonPressed(context, item),
+                title: 'EDIT',
+                icon: Icons.edit,
+              ),
+              MainButton(
+                color: Colors.red,
+                onPressed: () => _onDeleteButtonPressed(),
+                title: 'REMOVE',
+                icon: Icons.delete_forever,
+              ),
+            ],
           )
         : Column(
             mainAxisAlignment: MainAxisAlignment.center,
