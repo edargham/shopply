@@ -6,9 +6,6 @@ import '../../providers/products.dart';
 
 import './widgets/manage_product_item.dart';
 
-import '../widgets/main_drawer.dart';
-import '../widgets/item_button.dart';
-
 class ManageProductsScreen extends StatefulWidget {
   static const String routeName = '/manage';
   const ManageProductsScreen({super.key});

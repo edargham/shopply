@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../utilities/common.dart';
@@ -10,6 +12,7 @@ class Product with ChangeNotifier {
   double price;
   int stock;
   bool isFavorite;
+  File? imgFile;
 
   Product({
     required this.id,
@@ -19,6 +22,7 @@ class Product with ChangeNotifier {
     required this.price,
     required this.stock,
     this.isFavorite = false,
+    this.imgFile,
   });
 
   void setFavorite(bool value) {
