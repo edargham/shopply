@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
+import 'package:shopply_admin_panel/models/responses/add_prooduct_response.dart';
 
 import '../models/responses/product_response.dart';
 import '../models/view_models/product.dart';
@@ -36,20 +37,29 @@ class Products with ChangeNotifier {
     });
   }
 
-  // Future<void> addProduct(Product newItem) {
-  //   return ProductService.addProduct(newItem).then((Response res) {
-  //     Product savedItem = Product(
-  //       id: json.decode(res.body)['name'],
-  //       title: newItem.title,
-  //       description: newItem.description,
-  //       price: newItem.price,
-  //       imageUrl: newItem.imageUrl,
-  //       isFavorite: newItem.isFavorite,
-  //     );
-  //     _items.add(savedItem);
-  //     notifyListeners();
-  //   });
-  // }
+  Future<AddProductResponse> addProduct(String token, Product newItem) {
+    return ProductService.addProduct(token, newItem)
+        .then((StreamedResponse res) {
+      final Map<String, dynamic> data = json.decode(res.stream);
+      AddProductResponse response = AddProductResponse.fromJson(data);
+      if (response.status == 201) {
+        Product savedItem = Product(
+          id: json.decode(res.body)['name'],
+          title: newItem.title,
+          description: newItem.description,
+          price: newItem.price,
+          stock: newItem.stock,
+          imageUrl: newItem.imageUrl,
+        );
+        _items.add(savedItem);
+        notifyListeners();
+      } else {
+        throw Exception(response.message);
+      }
+
+      return response;
+    });
+  }
 
   Future<void> getProducts({String? token}) {
     return ProductService.getProducts(token: token).then((Response res) {

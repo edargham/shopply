@@ -113,27 +113,27 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           Navigator.of(context).pop();
         }
       } else {
-        setState(() {
-          _isloading = true;
-        });
-        Product newProduct = Product(
-          id: _editedProduct.id,
-          description: _editedProduct.description,
-          title: _editedProduct.title,
-          price: _editedProduct.price,
-          stock: _editedProduct.stock,
-          imageUrl: _editedProduct.imageUrl,
-        );
-        try {
-          await Provider.of<Products>(context, listen: false)
-              .updateProduct(newProduct);
-          if (!mounted) return;
-          Navigator.of(context).pop();
-        } catch (_) {
-          showExceptionDialog(context);
-          if (!mounted) return;
-          Navigator.of(context).pop();
-        }
+        // setState(() {
+        //   _isloading = true;
+        // });
+        // Product newProduct = Product(
+        //   id: _editedProduct.id,
+        //   description: _editedProduct.description,
+        //   title: _editedProduct.title,
+        //   price: _editedProduct.price,
+        //   stock: _editedProduct.stock,
+        //   imageUrl: _editedProduct.imageUrl,
+        // );
+        // try {
+        //   await Provider.of<Products>(context, listen: false)
+        //       .updateProduct(newProduct);
+        //   if (!mounted) return;
+        //   Navigator.of(context).pop();
+        // } catch (_) {
+        //   showExceptionDialog(context);
+        //   if (!mounted) return;
+        //   Navigator.of(context).pop();
+        // }
       }
     }
     FocusManager.instance.primaryFocus?.unfocus();
@@ -182,7 +182,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     imageUrl: _editedProduct.imageUrl,
                     price: _editedProduct.price,
                     stock: _editedProduct.stock,
-                    isFavorite: _editedProduct.isFavorite,
                     imgFile: _editedProduct.imgFile,
                   );
                 },
@@ -219,7 +218,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     imageUrl: _editedProduct.imageUrl,
                     price: double.parse(value!),
                     stock: _editedProduct.stock,
-                    isFavorite: _editedProduct.isFavorite,
                     imgFile: _editedProduct.imgFile,
                   );
                 },
@@ -253,7 +251,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     imageUrl: _editedProduct.imageUrl,
                     price: _editedProduct.price,
                     stock: _editedProduct.stock,
-                    isFavorite: _editedProduct.isFavorite,
                     imgFile: _editedProduct.imgFile,
                   );
                 },
@@ -282,7 +279,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     imageUrl: _editedProduct.imageUrl,
                     price: _editedProduct.price,
                     stock: _editedProduct.stock,
-                    isFavorite: _editedProduct.isFavorite,
                     imgFile: _editedProduct.imgFile,
                   );
                 },
@@ -296,7 +292,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     imageUrl: _editedProduct.imageUrl,
                     price: _editedProduct.price,
                     stock: _editedProduct.stock,
-                    isFavorite: _editedProduct.isFavorite,
                     imgFile: file,
                   );
                 },

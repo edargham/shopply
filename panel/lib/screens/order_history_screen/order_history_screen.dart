@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/view_models/user.dart' as model;
+import '../../models/view_models/sys_admin.dart' as model;
 
 import '../../providers/authentication.dart';
-import '../../providers/user.dart';
+import '../../providers/sys_admin.dart';
 import '../../providers/order.dart';
 
 import './widgets/order_banner.dart';
@@ -33,7 +33,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       setState(() {
         _isLoading = true;
       });
-      final model.User? currentUser = Provider.of<User>(context).currentUser;
+      final model.SysAdmin? currentUser =
+          Provider.of<SysAdmin>(context).currentUser;
       final String? token = Provider.of<Authentication>(context).token;
 
       Provider.of<Order>(context, listen: false)

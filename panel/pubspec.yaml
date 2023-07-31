@@ -32,6 +32,7 @@ dependencies:
   provider:
   intl:
   http: 
+  http_parser: 
   image_picker: 
   image_picker_for_web: 
   file_selector:

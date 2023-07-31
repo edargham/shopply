@@ -98,41 +98,6 @@ class ProductDetailsScreen extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                     title: item.title,
                   ),
-                  (token != null && item.isFavorite)
-                      ? Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            indentation * 2,
-                            indentation,
-                            indentation * 2,
-                            indentation / 2,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const <Widget>[
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                  0.0,
-                                  0.0,
-                                  8.0,
-                                  0.0,
-                                ),
-                                child: Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                ),
-                              ),
-                              Text(
-                                'You like this item.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : Container(),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: indentation,

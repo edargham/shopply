@@ -11,7 +11,6 @@ class Product with ChangeNotifier {
   String? imageUrl;
   double price;
   int stock;
-  bool isFavorite;
   File? imgFile;
 
   Product({
@@ -21,22 +20,10 @@ class Product with ChangeNotifier {
     this.imageUrl,
     required this.price,
     required this.stock,
-    this.isFavorite = false,
     this.imgFile,
   });
 
-  void setFavorite(bool value) {
-    isFavorite = value;
-    notifyListeners();
-  }
-
   static Product fromJson(dynamic jsonBody) {
-    bool liked = false;
-
-    if (jsonBody['liked'] != null) {
-      liked = jsonBody['liked'];
-    }
-
     Product res = Product(
       id: jsonBody['id'],
       title: jsonBody['title'],
@@ -45,7 +32,6 @@ class Product with ChangeNotifier {
           '${serverConfig['scheme']}://${serverConfig['host']}:${serverConfig['port']}/${jsonBody['imageUrl']}',
       price: jsonBody['price'],
       stock: jsonBody['stock'],
-      isFavorite: liked,
     );
 
     return res;
