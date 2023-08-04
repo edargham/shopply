@@ -30,7 +30,7 @@ class Product with ChangeNotifier {
       description: jsonBody['description'],
       imageUrl:
           '${serverConfig['scheme']}://${serverConfig['host']}:${serverConfig['port']}/${jsonBody['imageUrl']}',
-      price: jsonBody['price'],
+      price: double.parse(jsonBody['price'].toString()),
       stock: jsonBody['stock'],
     );
 

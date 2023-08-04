@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/view_models/product.dart';
+import '../../providers/authentication.dart';
 import '../../providers/products.dart';
 
 import '../widgets/dialogs.dart';
@@ -86,6 +87,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   void _saveForm(BuildContext context) async {
+    String? token = Provider.of<Authentication>(context, listen: false).token;
     bool isValid = _formKey.currentState!.validate();
     if (isValid) {
       _formKey.currentState?.save();
@@ -100,17 +102,18 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           title: _editedProduct.title,
           price: _editedProduct.price,
           stock: _editedProduct.stock,
-          imageUrl: _editedProduct.imageUrl,
+          imgFile: _editedProduct.imgFile,
         );
         try {
           await Provider.of<Products>(context, listen: false)
-              .addProduct(newProduct);
+              .addProduct(token!, newProduct);
           if (!mounted) return;
           Navigator.of(context).pop();
         } catch (_) {
           showExceptionDialog(context);
-          if (!mounted) return;
-          Navigator.of(context).pop();
+          setState(() {
+            _isloading = false;
+          });
         }
       } else {
         // setState(() {
@@ -250,7 +253,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                     description: _editedProduct.description,
                     imageUrl: _editedProduct.imageUrl,
                     price: _editedProduct.price,
-                    stock: _editedProduct.stock,
+                    stock: int.parse(value!),
                     imgFile: _editedProduct.imgFile,
                   );
                 },
@@ -299,7 +302,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
               Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: MainButton(
-                  onPressed: () {}, // => _saveForm(context),
+                  onPressed: () => _saveForm(context),
                   title: 'SAVE',
                   icon: Icons.save,
                 ),
@@ -329,7 +332,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
             ),
             child: ItemButton(
               onPressed: () {
-                // _saveForm(context);
+                _saveForm(context);
               },
               icon: Icons.save,
             ),

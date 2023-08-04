@@ -39,25 +39,26 @@ class Products with ChangeNotifier {
 
   Future<AddProductResponse> addProduct(String token, Product newItem) {
     return ProductService.addProduct(token, newItem)
-        .then((StreamedResponse res) {
-      final Map<String, dynamic> data = json.decode(res.stream);
-      AddProductResponse response = AddProductResponse.fromJson(data);
-      if (response.status == 201) {
+        .then((StreamedResponse res) async {
+      final Response response = await Response.fromStream(res);
+      final Map<String, dynamic> data = json.decode(response.body);
+      AddProductResponse apResp = AddProductResponse.fromJson(data);
+      if (apResp.status == 201) {
         Product savedItem = Product(
-          id: json.decode(res.body)['name'],
+          id: apResp.product!.id,
           title: newItem.title,
           description: newItem.description,
           price: newItem.price,
           stock: newItem.stock,
-          imageUrl: newItem.imageUrl,
+          imageUrl: apResp.product!.imageUrl,
         );
         _items.add(savedItem);
         notifyListeners();
       } else {
-        throw Exception(response.message);
+        throw Exception(apResp.message);
       }
 
-      return response;
+      return apResp;
     });
   }
 

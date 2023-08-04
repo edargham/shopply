@@ -16,7 +16,7 @@ class ProductService {
         scheme: serverConfig['scheme'],
         host: serverConfig['host'],
         port: serverConfig['port'],
-        path: '/',
+        path: baseUrl,
       ),
     );
 
@@ -36,7 +36,7 @@ class ProductService {
     final http.MultipartFile img = await http.MultipartFile.fromPath(
       'image',
       item.imgFile!.path,
-      contentType: MediaType('image', 'jpg'),
+      contentType: MediaType('image', 'jpeg'),
     );
 
     if (item.imgFile != null) {
