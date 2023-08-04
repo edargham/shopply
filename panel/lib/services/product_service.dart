@@ -46,6 +46,18 @@ class ProductService {
     return multipartReq.send();
   }
 
+  static Future<http.Response> deleteProduct(String token, String id) {
+    return http.delete(
+      Uri(
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: "$baseUrl/$id",
+      ),
+      headers: generateHeader(token: token),
+    );
+  }
+
   static Future<http.Response> getProducts({String? token}) {
     return http.get(
       Uri(
