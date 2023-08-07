@@ -123,6 +123,10 @@ class ProductService {
         path: '$baseUrl/update-photo/${item.id}',
       ),
     );
+
+    multipartReq.headers['Content-Type'] = 'multipart/formdata';
+    multipartReq.headers['Authorization'] = 'Bearer $token';
+
     if (item.imgFile != null) {
       final http.MultipartFile img = await http.MultipartFile.fromPath(
         'image',

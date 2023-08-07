@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/view_models/product.dart';
+
 import '../../providers/authentication.dart';
 import '../../providers/products.dart';
 
 import '../../services/product_service.dart';
+
 import '../widgets/dialogs.dart';
 import '../widgets/text_box.dart';
 import '../widgets/image_input_box.dart';
@@ -126,27 +128,32 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           });
         }
       } else {
-        // setState(() {
-        //   _isloading = true;
-        // });
-        // Product newProduct = Product(
-        //   id: _editedProduct.id,
-        //   description: _editedProduct.description,
-        //   title: _editedProduct.title,
-        //   price: _editedProduct.price,
-        //   stock: _editedProduct.stock,
-        //   imageUrl: _editedProduct.imageUrl,
-        // );
-        // try {
-        //   await Provider.of<Products>(context, listen: false)
-        //       .updateProduct(newProduct);
-        //   if (!mounted) return;
-        //   Navigator.of(context).pop();
-        // } catch (_) {
-        //   showExceptionDialog(context);
-        //   if (!mounted) return;
-        //   Navigator.of(context).pop();
-        // }
+        setState(() {
+          _isloading = true;
+        });
+        Product newProduct = Product(
+          id: _editedProduct.id,
+          description: _editedProduct.description,
+          title: _editedProduct.title,
+          price: _editedProduct.price,
+          stock: _editedProduct.stock,
+          imageUrl: _editedProduct.imageUrl,
+          imgFile: _editedProduct.imgFile,
+        );
+        try {
+          String? token =
+              Provider.of<Authentication>(context, listen: false).token;
+          await Provider.of<Products>(context, listen: false)
+              .updateProduct(token!, newProduct);
+          if (!mounted) return;
+          Navigator.of(context).pop();
+        } catch (_) {
+          showExceptionDialog(context);
+
+          setState(() {
+            _isloading = false;
+          });
+        }
       }
     }
     FocusManager.instance.primaryFocus?.unfocus();
