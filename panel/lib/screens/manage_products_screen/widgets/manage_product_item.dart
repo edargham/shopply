@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../../../models/view_models/product.dart';
 
+import '../../../providers/authentication.dart';
+import '../../../providers/products.dart';
+
 import '../../product_details_screen/product_details_screen.dart';
 import '../../product_form_screen/product_form_screen.dart';
 
@@ -48,8 +51,10 @@ class _ManageProductItemState extends State<ManageProductItem> {
             ItemButton(
               onPressed: () async {
                 try {
-                  // await Provider.of<Products>(context, listen: false)
-                  //     .deleteProduct(item);
+                  String? token =
+                      Provider.of<Authentication>(context, listen: false).token;
+                  await Provider.of<Products>(context, listen: false)
+                      .deleteProduct(token!, item);
                 } catch (_) {
                   await showDialog(
                     context: context,

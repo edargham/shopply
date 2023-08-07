@@ -85,22 +85,26 @@ class Products with ChangeNotifier {
   //   });
   // }
 
-  // Future<void> deleteProduct(Product item) {
-  //   final int itemIdx = _items.indexWhere((Product p) => item.id == p.id);
-  //   Product? itemToRemove = _items[itemIdx];
-  //   _items.removeAt(itemIdx);
-  //   return ProductService.deleteProduct(item).then((Response res) {
-  //     if (res.statusCode >= 400) {
-  //       throw HttpException('Delete failed.');
-  //     }
-  //     notifyListeners();
-  //     itemToRemove = null;
-  //   }).catchError((error) {
-  //     _items.insert(itemIdx, itemToRemove!);
-  //     notifyListeners();
-  //     throw error;
-  //   });
-  // }
+  Future<void> deleteProduct(String token, Product item) {
+    final int itemIdx = _items.indexWhere((Product p) => item.id == p.id);
+    Product? itemToRemove = _items[itemIdx];
+    _items.removeAt(itemIdx);
+    return ProductService.deleteProduct(token, item.id).then((Response res) {
+      final AddProductResponse resp =
+          AddProductResponse.fromJson(json.decode(res.body));
+
+      if (resp.status == 200) {
+        notifyListeners();
+        itemToRemove = null;
+      } else {
+        throw resp.message!;
+      }
+    }).catchError((error) {
+      _items.insert(itemIdx, itemToRemove!);
+      notifyListeners();
+      throw error;
+    });
+  }
 
   Product findProductById(String productId) {
     return items.firstWhere((Product itm) => productId == itm.id);
