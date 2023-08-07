@@ -7,6 +7,7 @@ import '../../models/view_models/product.dart';
 import '../../providers/authentication.dart';
 import '../../providers/products.dart';
 
+import '../../services/product_service.dart';
 import '../widgets/dialogs.dart';
 import '../widgets/text_box.dart';
 import '../widgets/image_input_box.dart';
@@ -55,7 +56,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     if (_init) {
       final String? productId = (ModalRoute.of(context)?.settings.arguments
           as Map<String, String?>)['productId'];
@@ -71,6 +72,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           'imageUrl': _editedProduct.imageUrl,
           'file': _editedProduct.imgFile,
         };
+
+        if (_editedProduct.imageUrl != null) {
+          File file = await ProductService.getPhotoAsFile(
+              _editedProduct.imageUrl!, _editedProduct.title);
+
+          setState(() {
+            _initValues['file'] = file;
+          });
+        }
       }
     }
     _init = false;
@@ -287,6 +297,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 },
               ),
               ImageInputBox(
+                initialFile: _initValues['file'] as File?,
                 onImageSelected: (File file) {
                   _editedProduct = Product(
                     id: _editedProduct.id,

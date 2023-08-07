@@ -77,13 +77,33 @@ class Products with ChangeNotifier {
       notifyListeners();
     });
   }
-  // Future<void> updateProduct(Product item) {
-  //   return ProductService.updateProduct(item).then((_) {
-  //     int index = _items.indexWhere((Product itm) => item.id == itm.id);
-  //     _items[index] = item;
-  //     notifyListeners();
-  //   });
-  // }
+
+  Future<void> updateProduct(String token, Product item) {
+    return ProductService.updateProduct(token, item)
+        .then((Response updatedDataResponse) async {
+      AddProductResponse updatedProductDataResponse =
+          AddProductResponse.fromJson(json.decode(updatedDataResponse.body));
+      if (updatedProductDataResponse.status == 200) {
+        await ProductService.updateProductPhoto(token, item)
+            .then((StreamedResponse res) async {
+          Response resp = await Response.fromStream(res);
+          AddProductResponse finalResponse =
+              AddProductResponse.fromJson(json.decode(resp.body));
+
+          if (finalResponse.status == 200) {
+            item = finalResponse.product!;
+            int index = _items.indexWhere((Product itm) => item.id == itm.id);
+            _items[index] = item;
+            notifyListeners();
+          } else {
+            throw finalResponse.message!;
+          }
+        });
+      } else {
+        throw updatedProductDataResponse.message!;
+      }
+    });
+  }
 
   Future<void> deleteProduct(String token, Product item) {
     final int itemIdx = _items.indexWhere((Product p) => item.id == p.id);

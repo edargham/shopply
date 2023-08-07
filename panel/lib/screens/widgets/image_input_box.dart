@@ -6,9 +6,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_selector_platform_interface/file_selector_platform_interface.dart';
 
 class ImageInputBox extends StatefulWidget {
+  final File? initialFile;
   final Function(File) onImageSelected;
-  const ImageInputBox({Key? key, required this.onImageSelected})
-      : super(key: key);
+  const ImageInputBox({
+    Key? key,
+    required this.onImageSelected,
+    this.initialFile,
+  }) : super(key: key);
 
   @override
   State<ImageInputBox> createState() => _ImageInputBoxState();
@@ -71,7 +75,7 @@ class _ImageInputBoxState extends State<ImageInputBox> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content = (_selectedImage == null)
+    Widget content = (_selectedImage == null && widget.initialFile == null)
         ? MainButton(
             onPressed: _chooseFromGallery,
             icon: Icons.camera,
@@ -109,7 +113,9 @@ class _ImageInputBoxState extends State<ImageInputBox> {
                 ],
               ),
               child: Image.file(
-                _selectedImage!,
+                (_selectedImage != null)
+                    ? _selectedImage!
+                    : widget.initialFile!,
                 fit: BoxFit.scaleDown,
                 width: double.infinity,
                 height: double.infinity,

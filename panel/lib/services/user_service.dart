@@ -28,31 +28,33 @@ class UserService {
   ) {
     if (middleName == null) {
       return http.patch(
-          Uri(
-            scheme: serverConfig['scheme'],
-            host: serverConfig['host'],
-            port: serverConfig['port'],
-            path: '$_baseUrl/$username',
-          ),
-          headers: generateHeader(token: token),
-          body: json.encode({
-            'firstName': firstName,
-            'lastName': lastName,
-          }));
+        Uri(
+          scheme: serverConfig['scheme'],
+          host: serverConfig['host'],
+          port: serverConfig['port'],
+          path: '$_baseUrl/$username',
+        ),
+        headers: generateHeader(token: token),
+        body: json.encode({
+          'firstName': firstName,
+          'lastName': lastName,
+        }),
+      );
     } else {
       return http.patch(
-          Uri(
-            scheme: serverConfig['scheme'],
-            host: serverConfig['host'],
-            port: serverConfig['port'],
-            path: '$_baseUrl/$username',
-          ),
-          headers: generateHeader(token: token),
-          body: json.encode({
-            'firstName': firstName,
-            'middleName': middleName,
-            'lastName': lastName,
-          }));
+        Uri(
+          scheme: serverConfig['scheme'],
+          host: serverConfig['host'],
+          port: serverConfig['port'],
+          path: '$_baseUrl/$username',
+        ),
+        headers: generateHeader(token: token),
+        body: json.encode({
+          'firstName': firstName,
+          'middleName': middleName,
+          'lastName': lastName,
+        }),
+      );
     }
   }
 
@@ -62,16 +64,17 @@ class UserService {
     String email,
   ) {
     return http.patch(
-        Uri(
-          scheme: serverConfig['scheme'],
-          host: serverConfig['host'],
-          port: serverConfig['port'],
-          path: '$_baseUrl/change-email/$username',
-        ),
-        headers: generateHeader(token: token),
-        body: json.encode({
-          'email': email,
-        }));
+      Uri(
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: '$_baseUrl/change-email/$username',
+      ),
+      headers: generateHeader(token: token),
+      body: json.encode({
+        'email': email,
+      }),
+    );
   }
 
   static Future<http.Response> updatePassword(
@@ -81,16 +84,17 @@ class UserService {
     String password,
   ) {
     return http.patch(
-        Uri(
-          scheme: serverConfig['scheme'],
-          host: serverConfig['host'],
-          port: serverConfig['port'],
-          path: '$_baseUrl/change-password/$username',
-        ),
-        headers: generateHeader(token: token),
-        body: json.encode({
-          'oldPassword': oldPassword,
-          'password': password,
-        }));
+      Uri(
+        scheme: serverConfig['scheme'],
+        host: serverConfig['host'],
+        port: serverConfig['port'],
+        path: '$_baseUrl/change-password/$username',
+      ),
+      headers: generateHeader(token: token),
+      body: json.encode({
+        'oldPassword': oldPassword,
+        'password': password,
+      }),
+    );
   }
 }
