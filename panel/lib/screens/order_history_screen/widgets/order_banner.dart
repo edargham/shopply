@@ -126,7 +126,7 @@ class _OrderBannerState extends State<OrderBanner> {
   Widget build(BuildContext context) {
     MediaQueryData deviceDisplay = MediaQuery.of(context);
     const double radius = 8.0;
-    const double hScale = 0.08;
+    const double hScale = 0.1;
     const double expandedAddedHeight = 256.0;
     const double iconSize = 16.0;
     return InkWell(
@@ -181,6 +181,13 @@ class _OrderBannerState extends State<OrderBanner> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            Text(
+                              'User: ${widget.item.username!}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                              ),
+                            ),
                             Text(
                               'Order Id: ${widget.item.id}',
                               style: const TextStyle(

@@ -14,7 +14,7 @@ import {
 
 import OrderViewModel from '../models/view_models/order_view';
 
-import { authenticateToken, AuthenticatedRequest, authorizeSelf } from '../config/auth.config';
+import { authenticateToken, AuthenticatedRequest, authorizeSelf, escalatePrivilages } from '../config/auth.config';
 
 import StatusCodes from '../utils/status_codes';
 
@@ -62,6 +62,8 @@ const buildOrderResponse = async (orders: OrderModel[]): Promise<OrderViewModel[
 
 router.get(
   '/',
+  authenticateToken,
+  escalatePrivilages,
   OrdersValidator.validateGetQuery(),
   checkValidationResult,
   async (req: Request, res: Response) => {
@@ -176,6 +178,8 @@ router.get(
     }
   }
 );
+
+// TODO - Update order status.
 
 router.post(
   '/',

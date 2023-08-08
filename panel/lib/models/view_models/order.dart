@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'cart.dart';
 
 enum OrderStatus {
@@ -17,6 +19,7 @@ class OrderItem {
   final List<CartItem> products;
   final DateTime? dateOrdered;
   final OrderStatus? status;
+  final String? username;
 
   const OrderItem({
     this.id,
@@ -24,6 +27,7 @@ class OrderItem {
     required this.products,
     this.dateOrdered,
     this.status,
+    this.username,
   });
 
   static OrderItem fromJson(dynamic jsonBody) {
@@ -37,6 +41,7 @@ class OrderItem {
       amount: jsonBody['_amountPaid'],
       products: products,
       dateOrdered: DateTime.parse(jsonBody['_dateOrdered']),
+      username: jsonBody['_username'],
       status: OrderStatus.values
           .where((status) => status.index == (jsonBody['_statusId'] - 1))
           .first,
