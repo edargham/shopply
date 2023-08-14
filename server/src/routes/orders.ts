@@ -13,6 +13,7 @@ import {
 } from '../models/cart_item';
 
 import OrderViewModel from '../models/view_models/order_view';
+import { ProductModel } from '../models/product';
 
 import { authenticateToken, AuthenticatedRequest, authorizeSelf, escalatePrivilages } from '../config/auth.config';
 
@@ -180,6 +181,68 @@ router.get(
 );
 
 // TODO - Update order status.
+router.patch(
+  '/update-status/:orderId',
+  authenticateToken,
+  escalatePrivilages,
+  async (req: Request, res: Response) => {
+    const orderId: string = req.params.orderId;
+    
+    try {
+      let transaction = await db.transaction();
+      const statusUpdate: OrderStatus = req.body.orderStatus;
+
+      let order: OrderModel | null = await OrderModel.findOne({
+        where: {
+          id: orderId
+        }
+      });
+
+      if (order) {
+        switch (statusUpdate) {
+          case OrderStatus.Processing:
+            let cartItems: VwCartItemModel[] | null = await VwCartItemModel.findAll({
+              where: {
+                id: orderId
+              }
+            });
+
+            if (cartItems) {
+              for (const cartItem of cartItems) {
+                const product: ProductModel | null = await ProductModel.findOne({
+                  where: {
+                    id: cartItem.get().productId
+                  }
+                });
+
+                if (product) {
+                  const newStock: number = product.get().stock - cartItem.get().quantity
+                }
+              }
+            }
+          break;
+          case OrderStatus.Delivering:
+          break;
+          case OrderStatus.Completed:
+          break;
+          default:
+          break;
+        }
+      } else {
+
+      }
+    } catch (error) {
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        message: 'Failed to update order status.',
+        route: `PATCH ${ ordersRouteName }/update-status/${ orderId }`
+      });
+    }
+  }
+);
 
 router.post(
   '/',

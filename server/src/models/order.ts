@@ -13,7 +13,8 @@ export enum OrderStatus {
   Pending    = 1,
   Processing = 2,
   Delivering = 3,
-  Completed  = 4
+  Completed  = 4,
+  Canceled   = 5
 }
 
 export class OrderModel extends Model<IOrder> {}

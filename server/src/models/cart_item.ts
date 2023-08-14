@@ -14,7 +14,7 @@ export interface IVwCartItem {
   id: string | null,
   username: string,
   productId: string,
-  quantity: string,
+  quantity: number,
   price: number,
   orderId: string | null,
   title: string | null
