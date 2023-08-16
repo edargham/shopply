@@ -21,6 +21,7 @@ import StatusCodes from '../utils/status_codes';
 
 import OrdersValidator from '../validators/orders';
 import { checkValidationResult } from '../validators/validation_result';
+import { STATUS_CODES } from 'http';
 
 export const ordersRouteName: string = '/api/orders';
 const router: Router = Router();
@@ -187,10 +188,12 @@ router.patch(
   escalatePrivilages,
   async (req: Request, res: Response) => {
     const orderId: string = req.params.orderId;
+    let transaction = await db.transaction();
     
     try {
-      let transaction = await db.transaction();
       const statusUpdate: OrderStatus = req.body.orderStatus;
+      
+      let statusCode: number = StatusCodes.SUCCESS_CODE;
 
       let order: OrderModel | null = await OrderModel.findOne({
         where: {
@@ -201,6 +204,10 @@ router.patch(
       if (order) {
         switch (statusUpdate) {
           case OrderStatus.Processing:
+            await order.update({
+              statusId: OrderStatus.Processing
+            });
+
             let cartItems: VwCartItemModel[] | null = await VwCartItemModel.findAll({
               where: {
                 id: orderId
@@ -216,22 +223,85 @@ router.patch(
                 });
 
                 if (product) {
-                  const newStock: number = product.get().stock - cartItem.get().quantity
+                  const newStock: number = product.get().stock - cartItem.get().quantity;
+
+                  await product.update({
+                    stock: newStock,
+                  });
+                } else {
+                  await transaction.rollback();
+                  statusCode = StatusCodes.NOT_FOUND;
+                  res.status(statusCode);
+                  return res.json({
+                    status: statusCode,
+                    message: `Could not find the product being ordered in order id ${ orderId }.`,
+                    route: `PATCH ${ ordersRouteName }/update-status/${ orderId }`
+                  });
                 }
               }
+            } else {
+              await transaction.rollback();
+              statusCode = StatusCodes.NOT_FOUND;
+              res.status(statusCode);
+              return res.json({
+                status: statusCode,
+                message: `Could not find the cart items of the order with id ${ orderId }.`,
+                route: `PATCH ${ ordersRouteName }/update-status/${ orderId }`
+              });
             }
-          break;
+
+            await transaction.commit();
+
+            res.status(statusCode);
+            return res.json({
+              status: statusCode,
+              message: 'Successfuly updated order status.',
+              orderId: orderId,
+              orderStatus: OrderStatus.Processing
+            });
           case OrderStatus.Delivering:
-          break;
+            await order.update({
+              statusId: OrderStatus.Delivering
+            });
+
+            await transaction.commit();
+
+            res.status(statusCode);
+            return res.json({
+              status: statusCode,
+              message: 'Successfuly updated order status.',
+              orderId: orderId,
+              orderStatus: OrderStatus.Delivering,
+            });
           case OrderStatus.Completed:
-          break;
+            await order.update({
+              statusId: OrderStatus.Completed
+            });
+
+            await transaction.commit();
+
+            res.status(statusCode);
+            return res.json({
+              status: statusCode,
+              message: 'Successfuly updated order status.',
+              orderId: orderId,
+              orderStatus: OrderStatus.Completed,
+            });
           default:
           break;
         }
       } else {
-
+        await transaction.rollback();
+        statusCode = StatusCodes.NOT_FOUND;
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          message: `Could not find order with id ${ orderId }.`,
+          route: `PATCH ${ ordersRouteName }/update-status/${ orderId }`
+        });
       }
     } catch (error) {
+      await transaction.rollback();
       console.error(error);
       const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
       res.status(statusCode);
@@ -239,6 +309,105 @@ router.patch(
         status: statusCode,
         message: 'Failed to update order status.',
         route: `PATCH ${ ordersRouteName }/update-status/${ orderId }`
+      });
+    }
+  }
+);
+
+router.patch(
+  '/cancel/:orderId',
+  authenticateToken,
+  authorizeSelf,
+  async (req: AuthenticatedRequest, res: Response) => {
+    const orderId: string = req.params.orderId;
+    let transaction = await db.transaction();
+
+    try {
+      const statusUpdate: OrderStatus = req.body.orderStatus;
+      
+      let statusCode: number = StatusCodes.SUCCESS_CODE;
+
+      let order: OrderModel | null = await OrderModel.findOne({
+        where: {
+          id: orderId
+        }
+      });
+
+      if (order) {
+        await order.update({
+          statusId: OrderStatus.Canceled
+        });
+
+        let cartItems: VwCartItemModel[] | null = await VwCartItemModel.findAll({
+          where: {
+            id: orderId
+          }
+        });
+
+        if (cartItems) {
+          for (const cartItem of cartItems) {
+            const product: ProductModel | null = await ProductModel.findOne({
+              where: {
+                id: cartItem.get().productId
+              }
+            });
+
+            if (product) {
+              const newStock: number = product.get().stock + cartItem.get().quantity;
+
+              await product.update({
+                stock: newStock,
+              });
+            } else {
+              await transaction.rollback();
+              statusCode = StatusCodes.NOT_FOUND;
+              res.status(statusCode);
+              return res.json({
+                status: statusCode,
+                message: `Could not find the product being ordered in order id ${ orderId }.`,
+                route: `PATCH ${ ordersRouteName }/cancel/${ orderId }`
+              });
+            }
+          }
+        } else {
+          await transaction.rollback();
+          statusCode = StatusCodes.NOT_FOUND;
+          res.status(statusCode);
+          return res.json({
+            status: statusCode,
+            message: `Could not find the cart items of the order with id ${ orderId }.`,
+            route: `PATCH ${ ordersRouteName }/cancel/${ orderId }`
+          });
+        }
+
+        await transaction.commit();
+
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          message: 'Successfuly updated order status.',
+          orderId: orderId,
+          orderStatus: OrderStatus.Canceled,
+        });
+      } else {
+        await transaction.rollback();
+        statusCode = StatusCodes.NOT_FOUND;
+        res.status(statusCode);
+        return res.json({
+          status: statusCode,
+          message: `Could not find order with id ${ orderId }.`,
+          route: `PATCH ${ ordersRouteName }/cancel/${ orderId }`
+        });
+      }
+    } catch (error) {
+      await transaction.rollback();
+      console.error(error);
+      const statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
+      res.status(statusCode);
+      return res.json({
+        status: statusCode,
+        message: 'Failed to update order status.',
+        route: `PATCH ${ ordersRouteName }/cancel/${ orderId }`
       });
     }
   }
